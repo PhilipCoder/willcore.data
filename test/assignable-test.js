@@ -1,5 +1,6 @@
 const assert = require('chai').assert;
 const assignable = require("../assignables/assignable.js");
+const willCoreProxy = require("../proxies/willCore/willCoreProxy.js");
 
 describe('assignable-base', function() {
     it('constructor - direct', function() {
@@ -16,7 +17,7 @@ describe('assignable-base', function() {
     //Assignable to test with
     class testAssignable extends assignable{
         constructor(){
-            super({object:2, function:1});
+            super({object:2, function:1}, willCoreProxy);
             this.completedCalled = false;
         }
         completed(){
