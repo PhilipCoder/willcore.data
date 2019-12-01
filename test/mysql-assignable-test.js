@@ -51,4 +51,40 @@ describe('mySQL-assignable', function () {
         let json = proxy.myDB._mysqlAssignable.getDBJson();
         assert(targetJSON === json,"The generated DB JSON is incorrect.");
     });
+    it('test-primary-key', function () {
+        let targetJSON = `{"name":"myDB","connectionString":"myConnection","userName":"myUser","password":"myPassword","tables":[{"name":"user","columns":[{"name":"id","type":"int","primary":true},{"name":"name","type":"string"}]},{"name":"product","columns":[{"name":"id","type":"int","primary":true},{"name":"name","type":"string"}]}]}`;
+        let proxy = willCoreProxy.new();
+        proxy.myDB.mysql = [connectionString, userName, password];
+        proxy.myDB.user.table;
+        proxy.myDB.user.id.column.int;
+        proxy.myDB.user.id.primary;
+        proxy.myDB.user.name.column.string;
+
+        proxy.myDB.product.table;
+        proxy.myDB.product.id.column.int;
+        proxy.myDB.product.id.primary;
+        proxy.myDB.product.name.column.string;
+
+        let json = proxy.myDB._mysqlAssignable.getDBJson();
+        assert(targetJSON === json,"The generated DB JSON is incorrect.");
+    });
+    it('test-foreign-key', function () {
+        let targetJSON = `{"name":"myDB","connectionString":"myConnection","userName":"myUser","password":"myPassword","tables":[{"name":"user","columns":[{"name":"id","type":"int","primary":true},{"name":"name","type":"string"}]},{"name":"product","columns":[{"name":"id","type":"int","primary":true},{"name":"name","type":"string"}]}]}`;
+        let proxy = willCoreProxy.new();
+        proxy.myDB.mysql = [connectionString, userName, password];
+        proxy.myDB.user.table;
+        proxy.myDB.user.id.column.int;
+        proxy.myDB.user.id.primary;
+        proxy.myDB.user.name.column.string;
+
+        proxy.myDB.product.table;
+        proxy.myDB.product.id.column.int;
+        proxy.myDB.product.id.primary;
+        proxy.myDB.product.name.column.string;
+        proxy.myDB.product.owner.column.int;
+        proxy.myDB.product.owner.one_many.reference = proxy.myDB.user.id;
+
+        let json = proxy.myDB._mysqlAssignable.getDBJson();
+      //  assert(targetJSON === json,"The generated DB JSON is incorrect.");
+    });
 })

@@ -12,7 +12,6 @@ class assignableProxyHandler extends baseProxyHandler {
     }
 
     assignStraightValue(target, property, value, proxy) {
-        console.log( property );
         if (property.startsWith("_")) {
             this.hiddenVariables[property] = value;
             return { value: true };
@@ -82,7 +81,6 @@ class assignableProxyHandler extends baseProxyHandler {
     }
 
     getAssignable(target, property, proxy) {
-
         if (target[property]) {
             return { value: target[property], status: true };
         }
