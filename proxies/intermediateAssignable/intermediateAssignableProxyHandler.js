@@ -3,7 +3,7 @@ const willCoreModules = require("../../willCoreModules.js");
 const intermediateProxy = require("../intermediate/intermediateProxy.js");
 
 class intermediateAssignableProxyHandler extends baseProxyHandler {
-    constructor(parentProxy,parentProperty) {
+    constructor(parentProxy, parentProperty) {
         super();
         this.getTraps = [this.getValue];
         this.setTraps = [this.setValue];
@@ -12,17 +12,17 @@ class intermediateAssignableProxyHandler extends baseProxyHandler {
     }
 
     getValue(target, property) {
-        if (willCoreModules.assignables[property]){
+        if (willCoreModules.assignables[property]) {
             this.parentProxy[this.parentProperty] = willCoreModules.assignables[property];
-            return { value: intermediateProxy.new(this.parentProxy, this.parentProperty), status:true };
+            return { value: intermediateProxy.new(this.parentProxy, this.parentProperty), status: true };
         }
         throw "Invalid assignment. Only assignables can be assigned.";
     }
 
     setValue(target, property, value, proxy) {
-        this.parentProxy[this.parentProperty] = property;
-        this.parentProxy[this.parentProperty] = value;
-        return { value: intermediateProxy.new(this.parentProxy, this.parentProperty), status:true };
+        this.parentProxy[this.parentProperty] = willCoreModules.assignables[property] ? willCoreModules.assignables[property] : property;
+        this.parentProxy[this.parentProperty] = typeof value === "string" && willCoreModules.assignables[property] ? willCoreModules.assignables[property] : value;
+        return { value: intermediateProxy.new(this.parentProxy, this.parentProperty), status: true };
     }
 }
 

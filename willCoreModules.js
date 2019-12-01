@@ -1,7 +1,11 @@
-const willCoreModules = {
-    assignables: {
-        mysql : require("./assignables/mysql/mysql.js")
-    }
-};
+const willCoreModules = require("./proxies/moduleContainment/moduleProxyHandler.js");
 
-module.exports = willCoreModules;
+const willCoreModuleInstance = willCoreModules.new();
+willCoreModuleInstance.assignables = willCoreModules.new();
+willCoreModuleInstance.assignables.mysql = () => require("./assignables/mysql/mysql.js");
+willCoreModuleInstance.assignables.table = () => require("./assignables/mysql/table/dbTable.js");
+willCoreModuleInstance.assignables.column = () => require("./assignables/mysql/column/dbColumn.js");
+
+
+
+module.exports = willCoreModuleInstance;

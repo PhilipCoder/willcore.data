@@ -1,6 +1,7 @@
 const baseProxyHandler = require("./baseProxyHandler.js");
 const assignable = require("../../assignables/assignable.js");
 const intermediateAssignableProxy = require("../intermediateAssignable/intermediateAssignableProxy.js");
+const baseProxy = require("./baseProxy.js");
 
 class assignableProxyHandler extends baseProxyHandler {
     constructor() {
@@ -33,7 +34,12 @@ class assignableProxyHandler extends baseProxyHandler {
         if (target[property] === undefined && value.prototype instanceof assignable) {
             let result = new value();
             if (result.canAssign(proxy, property)) {
-                return { value: new value(), status: true }
+                if (result.isCompleted){
+                    target[property] = result;
+                    result.completed();
+                    return this.assignCompleted(target, property, value, proxy);
+                }
+                return { value: result, status: true }
             } else {
                 throw "Invalid target proxy type for the assignable!";
             }
@@ -51,6 +57,9 @@ class assignableProxyHandler extends baseProxyHandler {
     assignCompleted(target, property, value, proxy) {
         if (target[property] instanceof assignable && target[property].isCompleted) {
             let completionResult = target[property].completionResult();
+            if (completionResult instanceof baseProxy){
+                completionResult._parent = target;
+            }
             if (completionResult === false) {
                 delete target[property];
                 return { value: true };

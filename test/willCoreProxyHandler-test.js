@@ -32,6 +32,8 @@ class testAssingableObj extends assignable {
 }
 
 describe('willCoreProxyHandler', function () {
+    willCoreModules.assignables.testAssingableObj = () => testAssingableObj;
+    willCoreModules.assignables.testAssingable = () => testAssingable;
     it('exception-invalid-assignment', function () {
         let proxyHandler = new willCoreProxyHandler();
         let proxy = new Proxy({}, proxyHandler);
@@ -40,7 +42,7 @@ describe('willCoreProxyHandler', function () {
     it('assignable-assignment-invalid-target-type', function () {
         let proxyHandler = new willCoreProxyHandler();
         let proxy = new Proxy({}, proxyHandler);
-        assert.throws(()=>proxy.myDB = testAssingable,"Invalid target proxy type for the assignable!");
+        assert.throws(() => proxy.myDB = testAssingable, "Invalid target proxy type for the assignable!");
     });
     it('willCore-factory', function () {
         let proxy = willCoreProxy.new();
@@ -94,13 +96,12 @@ describe('willCoreProxyHandler', function () {
         assert(assignableProxy instanceof intermediateAssignableProxy, "An intermediateAssignableProxy was not returned.");
     });
     it('willCore-assignment-property-assign-assignable', function () {
-        willCoreModules.assignables.testAssingable = testAssingable;
+        willCoreModules.assignables.testAssingable = () => testAssingable;
         let proxy = willCoreProxy.new();
         proxy.myDB.testAssingable;
         assert(proxy.myDB instanceof testAssingable, "Assignable instance not created.");
     });
     it('willCore-assignment-property-assign-values', function () {
-        willCoreModules.assignables.testAssingableObj = testAssingableObj;
         let proxy = willCoreProxy.new();
         proxy.myDB.testAssingableObj.one.two.three = { testing: 20 };
         assert(typeof proxy.myDB === "object", "The assignable is not an object.");

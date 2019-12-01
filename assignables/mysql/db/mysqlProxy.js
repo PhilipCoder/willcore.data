@@ -1,17 +1,20 @@
 const mysqlProxyHandler = require("./mysqlProxyHandler.js");
+const baseProxy = require("../../../proxies/base/baseProxy.js");
 /**
  * Proxy class for the main willCore instance.
  */
-class mysqlProxy{
+class mysqlProxy extends baseProxy{
     constructor(){
-        
+        super();
     }
     /**
      * Factory method.
      * @type {InstanceType<mysqlProxy>}
      */
-    static new(){
-        return new Proxy(new mysqlProxy(), new mysqlProxyHandler());
+    static new(mysqlAssignable){
+        let result= new Proxy(new mysqlProxy(), new mysqlProxyHandler());
+        result._mysqlAssignable = mysqlAssignable;
+        return result;
     }
 }
 
