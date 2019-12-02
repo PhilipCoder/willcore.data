@@ -69,7 +69,6 @@ describe('mySQL-assignable', function () {
         assert(targetJSON === json,"The generated DB JSON is incorrect.");
     });
     it('test-foreign-key', function () {
-        let targetJSON = `{"name":"myDB","connectionString":"myConnection","userName":"myUser","password":"myPassword","tables":[{"name":"user","columns":[{"name":"id","type":"int","primary":true},{"name":"name","type":"string"}]},{"name":"product","columns":[{"name":"id","type":"int","primary":true},{"name":"name","type":"string"}]}]}`;
         let proxy = willCoreProxy.new();
         proxy.myDB.mysql = [connectionString, userName, password];
         proxy.myDB.user.table;
@@ -84,7 +83,56 @@ describe('mySQL-assignable', function () {
         proxy.myDB.product.owner.column.int;
         proxy.myDB.product.owner.one_many.reference = proxy.myDB.user.id;
 
-        let json = proxy.myDB._mysqlAssignable.getDBJson();
-      //  assert(targetJSON === json,"The generated DB JSON is incorrect.");
+        let productOwnerColumn = proxy.myDB.product.owner._dbColumnAssignable.columnInfo;
+        let userIdColumn = proxy.myDB.user.id._dbColumnAssignable.columnInfo;
+
+        assert(productOwnerColumn.reference.column === "id");
+        assert(productOwnerColumn.reference.table === "user");
+        assert(productOwnerColumn.reference.multiplication === "one");
+
+        assert(userIdColumn.reference.column === "owner");
+        assert(userIdColumn.reference.table === "product");
+        assert(userIdColumn.reference.multiplication === "many");
+    });
+
+    it('test-operator-overloading', function () {
+        class operatorTarget{
+            constructor(){
+                this.operands = [];
+            }
+            valueOf() {
+                this.operands.push(this);
+
+            return 4; // not a primitive
+           }
+           }
+           
+           Object.defineProperty(operatorTarget.prototype, "_", {
+            set: function (value) {
+                var ops = Point.operands;
+                var operator;
+                if (ops.length === 2 && value === 0) { // 3 - 3
+                    operator = this.setSubtract;
+                } else if (ops.length === 2 && value === 1) { // 3 / 3
+                    operator = this.setDivide;
+                } else if (ops.length >= 2 && (value === 3 * ops.length)) {
+                    // 3 + 3 + 3 + ...
+                    operator = this.setAdd;
+                } else if (ops.length >= 2 && (value === Math.pow(3, ops.length))) {
+                    // 3 * 3 * 3 * ...
+                    operator = this.setMultiply;
+                } else {
+                    throw new Error("Unsupported operation (code "+value+")");
+                }
+                Point.operands = []; // reset
+                return operator.apply(this, ops);
+            }
+        });
+
+           var one = new operatorTarget();
+           var two = new operatorTarget();
+           
+           console.log(one+two);
+           
     });
 })

@@ -42,6 +42,10 @@ module.exports = (view, willCore, assignables) => {
     //Using a right join: >. Left join is <
     willCore.myDB.dogs = (name = dogs.name, ownerCount = count(dogs[">"].owner.name)) => dogs.age > 90 && dogs[">"].owner.name === "Philip";
     let result = await willCore.myDB.dogs;
+
+    //
+    let result = willCore.myDB.dogs.filter(dogs => dogs.name == "vlekkie" && dogs.age > 2 || dogs.owner).select(dogs => ({name:dogs.name, age:dogs.age, owners:}));
+
   
   };
   
