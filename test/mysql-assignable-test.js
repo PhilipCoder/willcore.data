@@ -82,7 +82,6 @@ describe('mySQL-assignable', function () {
         proxy.myDB.product.name.column.string;
         proxy.myDB.product.owner.column.int;
         proxy.myDB.product.owner.one_many.reference = proxy.myDB.user.id;
-        proxy.myDB();
 
         let productOwnerColumn = proxy.myDB.product.owner._dbColumnAssignable.columnInfo;
         let userIdColumn = proxy.myDB.user.id._dbColumnAssignable.columnInfo;
