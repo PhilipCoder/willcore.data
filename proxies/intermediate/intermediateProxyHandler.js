@@ -15,8 +15,6 @@ class intermediateProxyHandler extends baseProxyHandler {
     }
 
     setValue(target, property, value, proxy) {
-        console.log(value);
-        console.log(property);
         this.parentProxy[this.parentProperty] = property;
         this.parentProxy[this.parentProperty] = value;
         return { value: true, status:false };

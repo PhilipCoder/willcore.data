@@ -15,7 +15,6 @@ class testAssingable extends assignable {
         return this.result;
     }
     completed() {
-        console.log("completed");
         this.isCompletedAssignment = true;
     }
 }
@@ -124,7 +123,6 @@ describe('willCoreProxyHandler', function () {
     });
     it('willCore-assignment-property-assign-direct', function () {
         let proxy = willCoreProxy.new();
-        console.log(proxy);
         proxy._name = "philip";
         assert(proxy._name === "philip", "Assigned values are incorrect");
     });

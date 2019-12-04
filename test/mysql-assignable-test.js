@@ -94,4 +94,27 @@ describe('mySQL-assignable', function () {
         assert(userIdColumn.reference.table === "product");
         assert(userIdColumn.reference.multiplication === "many");
     });
+    it('test-reference', function () {
+        let proxy = willCoreProxy.new();
+        proxy.myDB.mysql = [connectionString, userName, password];
+        proxy.myDB.user.table;
+        proxy.myDB.user.id.column.int;
+        proxy.myDB.user.id.primary;
+        proxy.myDB.user.name.column.string;
+
+        proxy.myDB.product.table;
+        proxy.myDB.product.id.column.int;
+        proxy.myDB.product.id.primary;
+        proxy.myDB.product.name.column.string;
+        proxy.myDB.product.owner.column.int;
+        proxy.myDB.product.owner = proxy.myDB.user.id;
+
+        let productOwnerColumn = proxy.myDB.product.owner._dbColumnAssignable.columnInfo;
+        let userIdColumn = proxy.myDB.user.id._dbColumnAssignable.columnInfo;
+
+        assert(productOwnerColumn.reference.column === "id");
+        assert(productOwnerColumn.reference.table === "user");
+
+        assert(userIdColumn.reference === undefined);
+    });
 })
