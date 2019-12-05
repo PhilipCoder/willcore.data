@@ -121,7 +121,6 @@ describe('mySQL-db-generation', function () {
         proxy.myDB.product.id.primary;
         proxy.myDB.product.name.column.string;
         proxy.myDB.product.audit.column.date;
-        
         let col = new table(proxy.myDB.product._dbTableAssignable.tableInfo);
         let sqlType = col.getSQL();
         assert(sqlType === `
@@ -132,4 +131,62 @@ CREATE TABLE \`product\` (
 \`audit\` datetime(6) null
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;`);
      });
+
+     it('sql-table-foreign-key', function () {
+      let proxy = willCoreProxy.new();
+      proxy.myDB.mysql = [connectionString, userName, password];
+
+      proxy.myDB.category.table;
+      proxy.myDB.category.id.column.int;
+      proxy.myDB.category.id.primary;
+      proxy.myDB.category.name.column.string;
+      proxy.myDB.category.description.column.string;
+      
+      proxy.myDB.product.table;
+      proxy.myDB.product.id.column.int;
+      proxy.myDB.product.id.primary;
+      proxy.myDB.product.categoryId.column.int;
+      proxy.myDB.product.categoryId = proxy.myDB.category.id;
+      proxy.myDB.product.name.column.string;
+      proxy.myDB.product.audit.column.date;
+
+      let sql = new table(proxy.myDB.product._dbTableAssignable.tableInfo).getSQL();
+   });
+
+   it('test-db-create-sql', function () {
+      let proxy = willCoreProxy.new();
+      proxy.myDB.mysql = [connectionString, userName, password];
+      proxy.myDB.user.table;
+      proxy.myDB.user.id.column.int;
+      proxy.myDB.user.id.primary;
+      proxy.myDB.user.name.column.string;
+
+      proxy.myDB.product.table;
+      proxy.myDB.product.id.column.int;
+      proxy.myDB.product.id.primary;
+      proxy.myDB.product.name.column.string;
+      proxy.myDB.product.owner.column.int;
+      proxy.myDB.product.owner = proxy.myDB.user.id;
+
+      let sqlCreator = new db(proxy.myDB._mysqlAssignable.dbInfo);
+      let sql = sqlCreator.getSQL();
+  });
+
+  it('test-db-comparison-obj-copy', function () {
+   let proxy = willCoreProxy.new();
+   proxy.myDB.mysql = [connectionString, userName, password];
+
+   proxy.myDB.product.table;
+   proxy.myDB.product.id.column.int;
+   proxy.myDB.product.id.primary;
+   proxy.myDB.product.name.column.string;
+   proxy.myDB.product.owner.column.int;
+
+   let originalConf = proxy.myDB._mysqlAssignable.dbInfo;
+   let sqlCreator = new db(originalConf);
+   let copyConf = sqlCreator.getDBCopyObj(originalConf);
+
+   copyConf.tables.product.columns.name.test = 4;
+   assert(proxy.myDB.product.name._dbColumnAssignable.columnInfo.test === undefined);
+});
 });

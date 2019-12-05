@@ -36,7 +36,6 @@ describe('willCoreProxyHandler', function () {
     it('exception-invalid-assignment', function () {
         let proxyHandler = new willCoreProxyHandler();
         let proxy = new Proxy({}, proxyHandler);
-        //    assert.throws(() => { proxy.one = 5 });
     });
     it('assignable-assignment-invalid-target-type', function () {
         let proxyHandler = new willCoreProxyHandler();
@@ -110,7 +109,6 @@ describe('willCoreProxyHandler', function () {
         assert(proxy.myDB["object"].length === 1, "Assigned values are incorrect");
         assert(proxy.myDB["object"][0].testing === 20, "Assigned values are incorrect");
     });
-
     it('willCore-assignment-property-assign-array', function () {
         let proxy = willCoreProxy.new();
         proxy.myDB = [testAssingableObj, "one", "two", "three", { testing: 20 }];

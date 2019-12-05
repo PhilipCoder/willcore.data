@@ -10,9 +10,11 @@ class dbTableProxyHandler extends assignableProxyHandler {
     if (value instanceof columnProxy && target[property] instanceof columnProxy) {
       let targetColumnName = value._dbColumnAssignable.columnInfo.name;
       let targetTableName = value._dbColumnAssignable.parentProxy._dbTableAssignable.tableInfo.name;
+      let tableName = proxy[property]._dbColumnAssignable.parentProxy._dbTableAssignable.tableInfo.name;
       target[property]._dbColumnAssignable.columnInfo.reference = {
         table: targetTableName,
-        column: targetColumnName
+        column: targetColumnName,
+        thisTable:tableName
       };
       return { value: true };
     }

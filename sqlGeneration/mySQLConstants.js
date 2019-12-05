@@ -10,7 +10,11 @@ const keywords = {
         engineStatement: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci"
     },
     createColumn:{
-        primaryKey:"AUTO_INCREMENT PRIMARY KEY"
+        primaryKey:"AUTO_INCREMENT PRIMARY KEY",
+        foreignKey:"FOREIGN KEY",
+        reference:"REFERENCES",
+        keyDelete:"ON DELETE CASCADE",
+        index:"INDEX"
     }
 };
 

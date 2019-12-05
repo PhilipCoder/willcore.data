@@ -9,6 +9,8 @@ class column {
     getSQL(){
         if (this.columnInfo.primary){
             return this.getPrimaryKey();
+        }else if (this.columnInfo.reference){
+            return this.getForeignKey();
         }else{
             return this.getColumn();
         }
@@ -20,6 +22,12 @@ class column {
 
     getPrimaryKey(){
         return `\`${this.columnInfo.name}\` ${this.getSQLType(this.columnInfo.type, this.columnInfo.size)} ${keywords.createColumn.primaryKey}`;
+    }
+
+    getForeignKey(){
+        let indexName = `${this.columnInfo.reference.thisTable}_${this.columnInfo.name}_${this.columnInfo.reference.table}_${this.columnInfo.reference.column}`;
+        return this.getColumn() + `,\n${keywords.createColumn.index} ${indexName}(${this.columnInfo.name}),\n` +
+        `${keywords.createColumn.foreignKey} (${this.columnInfo.name}) ${keywords.createColumn.reference} ${this.columnInfo.reference.table}(${this.columnInfo.reference.column}) ${keywords.createColumn.keyDelete}`;
     }
 
     getSQLType(name, typeSize){
