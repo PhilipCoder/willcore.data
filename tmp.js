@@ -17,6 +17,7 @@ module.exports = (view, willCore, assignables) => {
     willCore.myDB.dogs.owner = willCore.myDB.owners;
     //Foreign key (many)
     willCore.myDB.dogs["*owners"] = willCore.myDB.owners;
+
     //Updates the db
     await willCore.myDB();
     

@@ -1,9 +1,8 @@
 const assert = require('chai').assert;
 const willCoreProxy = require("../proxies/willCore/willCoreProxy.js");
-const mysqlProxy = require("../assignables/mysql/db/mysqlProxy.js");
-const db = require("../sqlGeneration/db.js");
-const table = require("../sqlGeneration/table.js");
-const column = require("../sqlGeneration/column.js");
+const db = require("../sqlGeneration/components/db.js");
+const table = require("../sqlGeneration/components/table.js");
+const column = require("../sqlGeneration/components/column.js");
 
 
 describe('mySQL-db-generation', function () {
@@ -170,48 +169,5 @@ CREATE TABLE \`product\` (
 
       let sqlCreator = new db(proxy.myDB._mysqlAssignable.dbInfo);
       let sql = sqlCreator.getSQL();
-   });
-
-   it('test-db-comparison-obj-copy', function () {
-      let proxy = willCoreProxy.new();
-      proxy.myDB.mysql = [connectionString, userName, password];
-
-      proxy.myDB.product.table;
-      proxy.myDB.product.id.column.int;
-      proxy.myDB.product.id.primary;
-      proxy.myDB.product.name.column.string;
-      proxy.myDB.product.owner.column.int;
-
-      let originalConf = proxy.myDB._mysqlAssignable.dbInfo;
-      let sqlCreator = new db(originalConf);
-      let copyConf = sqlCreator.getDBCopyObj(originalConf);
-
-      copyConf.tables.product.columns.name.test = 4;
-      assert(proxy.myDB.product.name._dbColumnAssignable.columnInfo.test === undefined);
-   });
-   it('test-same-comparison', function () {
-      let sqlCreator = new db();
-      let sourceA = {
-         name:"Phil",
-         age:2,
-         fields:[]
-      };
-      let sourceB = {
-         name:"Phil",
-         age:1,
-         fields:[]
-      };
-      let targetA = {
-         name:"Phil",
-         age:2,
-         fields:[1]
-      };
-      let targetB = {
-         name:"Phil",
-         age:1,
-         fields:[1]
-      };
-      assert(sqlCreator.objectsSame(sourceA,targetA));
-      assert(sqlCreator.objectsSame(sourceB,targetB));
    });
 });

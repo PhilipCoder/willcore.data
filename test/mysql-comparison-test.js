@@ -1,9 +1,6 @@
 const assert = require('chai').assert;
 const willCoreProxy = require("../proxies/willCore/willCoreProxy.js");
-const mysqlProxy = require("../assignables/mysql/db/mysqlProxy.js");
-const db = require("../sqlGeneration/db.js");
-const table = require("../sqlGeneration/table.js");
-const column = require("../sqlGeneration/column.js");
+const migrationComparitor = require("../sqlGeneration/migration/migrationComparitor.js");
 
 
 describe('mySQL-comparison-test', function () {
@@ -34,8 +31,10 @@ describe('mySQL-comparison-test', function () {
         proxyScoped.baseDB.product.owner.column.int;
         proxyScoped.baseDB.product.owner = proxyScoped.baseDB.user.id;
 
-        let sqlCreator = new db(proxyScoped.baseDB._mysqlAssignable.dbInfo);
-        let comparisonResult = sqlCreator.runMigrationComparison(proxy.baseDB._mysqlAssignable.dbInfo);
+        let comparisonResult = migrationComparitor.runMigrationComparison(
+            proxy.baseDB._mysqlAssignable.dbInfo,
+            proxyScoped.baseDB._mysqlAssignable.dbInfo);
+
         assert(getTablesWithStatus(comparisonResult.target, "new").length === 0);
         assert(getColumnsWithStatus(comparisonResult.target, "new").length === 0);
         assert(getTablesWithStatus(comparisonResult.source, "deleted").length === 0);
@@ -62,8 +61,10 @@ describe('mySQL-comparison-test', function () {
         proxyScoped.baseDB.product.owner.column.int;
         proxyScoped.baseDB.product.owner = proxyScoped.baseDB.user.id;
 
-        let sqlCreator = new db(proxyScoped.baseDB._mysqlAssignable.dbInfo);
-        let comparisonResult = sqlCreator.runMigrationComparison();
+        let comparisonResult = migrationComparitor.runMigrationComparison(
+            undefined,
+            proxyScoped.baseDB._mysqlAssignable.dbInfo);
+
         assert(getTablesWithStatus(comparisonResult.target, "new").length === 2);
         assert(getColumnsWithStatus(comparisonResult.target, "new").length === 5);
         assert(getTablesWithStatus(comparisonResult.source, "deleted").length === 0);
@@ -96,8 +97,10 @@ describe('mySQL-comparison-test', function () {
         proxyScoped.baseDB.product.owner.column.int;
         proxyScoped.baseDB.product.owner = proxyScoped.baseDB.user.id;
 
-        let sqlCreator = new db(proxyScoped.baseDB._mysqlAssignable.dbInfo);
-        let comparisonResult = sqlCreator.runMigrationComparison(proxy.baseDB._mysqlAssignable.dbInfo);
+       let comparisonResult = migrationComparitor.runMigrationComparison(
+            proxy.baseDB._mysqlAssignable.dbInfo,
+            proxyScoped.baseDB._mysqlAssignable.dbInfo);
+
         assert(getTablesWithStatus(comparisonResult.target, "new").length === 1);
         assert(getColumnsWithStatus(comparisonResult.target, "new").length === 3);
         assert(getTablesWithStatus(comparisonResult.source, "deleted").length === 0);
@@ -123,8 +126,10 @@ describe('mySQL-comparison-test', function () {
         proxyScoped.baseDB.product.owner.column.int;
         proxyScoped.baseDB.product.owner = proxyScoped.baseDB.user.id;
 
-        let sqlCreator = new db(proxyScoped.baseDB._mysqlAssignable.dbInfo);
-        let comparisonResult = sqlCreator.runMigrationComparison(proxy.baseDB._mysqlAssignable.dbInfo);
+        let comparisonResult = migrationComparitor.runMigrationComparison(
+            proxy.baseDB._mysqlAssignable.dbInfo,
+            proxyScoped.baseDB._mysqlAssignable.dbInfo);
+
         assert(getTablesWithStatus(comparisonResult.target, "new").length === 0);
         assert(getColumnsWithStatus(comparisonResult.target, "new").length === 0);
         assert(getTablesWithStatus(comparisonResult.source, "deleted").length === 0);
@@ -150,8 +155,10 @@ describe('mySQL-comparison-test', function () {
         proxyScoped.baseDB.product.owner.column.int;
         proxyScoped.baseDB.product.owner = proxyScoped.baseDB.user.name;
 
-        let sqlCreator = new db(proxyScoped.baseDB._mysqlAssignable.dbInfo);
-        let comparisonResult = sqlCreator.runMigrationComparison(proxy.baseDB._mysqlAssignable.dbInfo);
+        let comparisonResult = migrationComparitor.runMigrationComparison(
+            proxy.baseDB._mysqlAssignable.dbInfo,
+            proxyScoped.baseDB._mysqlAssignable.dbInfo);
+
         assert(getTablesWithStatus(comparisonResult.target, "new").length === 0);
         assert(getColumnsWithStatus(comparisonResult.target, "new").length === 0);
         assert(getTablesWithStatus(comparisonResult.source, "deleted").length === 0);
@@ -178,8 +185,10 @@ describe('mySQL-comparison-test', function () {
         proxyScoped.baseDB.product.owner = proxyScoped.baseDB.user.name;
         proxyScoped.baseDB.product.name = proxyScoped.baseDB.user.name;
 
-        let sqlCreator = new db(proxyScoped.baseDB._mysqlAssignable.dbInfo);
-        let comparisonResult = sqlCreator.runMigrationComparison(proxy.baseDB._mysqlAssignable.dbInfo);
+        let comparisonResult = migrationComparitor.runMigrationComparison(
+            proxy.baseDB._mysqlAssignable.dbInfo,
+            proxyScoped.baseDB._mysqlAssignable.dbInfo);
+
         assert(getTablesWithStatus(comparisonResult.target, "new").length === 0);
         assert(getColumnsWithStatus(comparisonResult.target, "new").length === 0);
         assert(getTablesWithStatus(comparisonResult.source, "deleted").length === 0);
@@ -204,8 +213,10 @@ describe('mySQL-comparison-test', function () {
         proxyScoped.baseDB.product.name.column.string;
         proxyScoped.baseDB.product.owner.column.int;
 
-        let sqlCreator = new db(proxyScoped.baseDB._mysqlAssignable.dbInfo);
-        let comparisonResult = sqlCreator.runMigrationComparison(proxy.baseDB._mysqlAssignable.dbInfo);
+        let comparisonResult = migrationComparitor.runMigrationComparison(
+            proxy.baseDB._mysqlAssignable.dbInfo,
+            proxyScoped.baseDB._mysqlAssignable.dbInfo);
+
         assert(getTablesWithStatus(comparisonResult.target, "new").length === 0);
         assert(getColumnsWithStatus(comparisonResult.target, "new").length === 0);
         assert(getTablesWithStatus(comparisonResult.source, "deleted").length === 0);
@@ -228,8 +239,10 @@ describe('mySQL-comparison-test', function () {
         proxyScoped.baseDB.product.id.primary;
         proxyScoped.baseDB.product.name.column.string;
 
-        let sqlCreator = new db(proxyScoped.baseDB._mysqlAssignable.dbInfo);
-        let comparisonResult = sqlCreator.runMigrationComparison(proxy.baseDB._mysqlAssignable.dbInfo);
+        let comparisonResult = migrationComparitor.runMigrationComparison(
+            proxy.baseDB._mysqlAssignable.dbInfo,
+            proxyScoped.baseDB._mysqlAssignable.dbInfo);
+
         assert(getTablesWithStatus(comparisonResult.target, "new").length === 0);
         assert(getColumnsWithStatus(comparisonResult.target, "new").length === 0);
         assert(getTablesWithStatus(comparisonResult.source, "deleted").length === 0);
@@ -248,8 +261,10 @@ describe('mySQL-comparison-test', function () {
         proxyScoped.baseDB.user.id.column.int;
         proxyScoped.baseDB.user.id.primary;
 
-        let sqlCreator = new db(proxyScoped.baseDB._mysqlAssignable.dbInfo);
-        let comparisonResult = sqlCreator.runMigrationComparison(proxy.baseDB._mysqlAssignable.dbInfo);
+        let comparisonResult = migrationComparitor.runMigrationComparison(
+            proxy.baseDB._mysqlAssignable.dbInfo,
+            proxyScoped.baseDB._mysqlAssignable.dbInfo);
+
         assert(getTablesWithStatus(comparisonResult.target, "new").length === 0);
         assert(getColumnsWithStatus(comparisonResult.target, "new").length === 0);
         assert(getTablesWithStatus(comparisonResult.source, "deleted").length === 1);
@@ -261,6 +276,23 @@ describe('mySQL-comparison-test', function () {
         assert(getColumnsWithStatus(comparisonResult.target, "removeReference").length === 0);
         assert(getColumnsWithStatus(comparisonResult.target, "changeReference").length === 0);
     });
+    it('test-db-comparison-obj-copy', function () {
+        let proxy = willCoreProxy.new();
+        proxy.myDB.mysql = ["connection", "userName", "connection"];
+  
+        proxy.myDB.product.table;
+        proxy.myDB.product.id.column.int;
+        proxy.myDB.product.id.primary;
+        proxy.myDB.product.name.column.string;
+        proxy.myDB.product.owner.column.int;
+  
+        let originalConf = proxy.myDB._mysqlAssignable.dbInfo;
+        let copyConf = migrationComparitor.getDBCopyObj(originalConf);
+  
+        copyConf.tables.product.columns.name.test = 4;
+        assert(proxy.myDB.product.name._dbColumnAssignable.columnInfo.test === undefined);
+     });
+    
 });
 
 function getTablesWithStatus(dbInfo, status) {
