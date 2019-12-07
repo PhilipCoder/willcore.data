@@ -6,8 +6,9 @@ class table{
         this.tableInfo = tableInfo;
     }
     getSQL(){
-        if (!this.tableInfo.exists && this.tableInfo.columns.length > 0){
-            let columnsString = this.tableInfo.columns.map(x=>new column(x).getSQL()).join(",\n");
+        let columnList = this.tableInfo.columnList || this.tableInfo.columns;
+        if (!this.tableInfo.exists && columnList.length > 0){
+            let columnsString = columnList.map(x=>new column(x).getSQL()).join(",\n");
             return `\n${keywords.createTable.createComment}\n${keywords.createTable.createStatement} \`${this.tableInfo.name}\` (\n${columnsString}\n) ${keywords.createTable.engineStatement};`;
         }
         else{

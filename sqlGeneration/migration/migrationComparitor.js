@@ -1,3 +1,4 @@
+const dbStatus = require("./statusEnum.js");
 /**
  * Compares two database objects to find the differences.
  */
@@ -10,10 +11,12 @@ class migrationComparitor {
     static runMigrationComparison(source, target) {
         if (source && source.name !== target.name)  return "DB names does not match.";
         
-        if (!source) return { target: migrationComparitor.getDBCopyObj(target,"new") };
+        if (!source) return { target: migrationComparitor.getDBCopyObj(target,dbStatus.new) };
         
         let sourceDBTables = migrationComparitor.getDBCopyObj(source);
         let targetDBTables = migrationComparitor.getDBCopyObj(target);
+
+        targetDBTables.status = dbStatus.skip;
 
         migrationComparitor.handleNewAndModifiedItems(targetDBTables, sourceDBTables);
         migrationComparitor.handleDeletedItems(sourceDBTables, targetDBTables);
@@ -39,8 +42,8 @@ class migrationComparitor {
      * @private
      */
     static handleNewTable(currentTargetTable) {
-        currentTargetTable.status = "new";
-        currentTargetTable.columnList.forEach(targetColumn => { targetColumn.status = "new"; });
+        currentTargetTable.status = dbStatus.new;
+        currentTargetTable.columnList.forEach(targetColumn => { targetColumn.status = dbStatus.new; });
     }
 
     /**
@@ -51,7 +54,7 @@ class migrationComparitor {
         currentTargetTable.columnList.forEach(targetColumn => {
             modifiedColumnCounter = migrationComparitor.processColumn(currentSourceTable, targetColumn, modifiedColumnCounter);
         });
-        currentTargetTable.status = modifiedColumnCounter === 0 ? "skip" : "modified";
+        currentTargetTable.status = modifiedColumnCounter === 0 ? dbStatus.skip :dbStatus.modified;
     }
 
     /**
@@ -61,13 +64,13 @@ class migrationComparitor {
         sourceDBTables.tableList.forEach(currentSourceTable => {
             let currentTargetTable = targetDBTables.tables[currentSourceTable.name];
             if (!currentTargetTable) {
-                currentSourceTable.status = "deleted";
+                currentSourceTable.status = dbStatus.deleted;
             }
             else {
                 currentSourceTable.columnList.forEach(sourceColumn => {
                     let targetColumn = currentTargetTable.columns[sourceColumn.name];
                     if (!targetColumn) {
-                        sourceColumn.status = "deleted";
+                        sourceColumn.status = dbStatus.deleted;
                     }
                 });
             }
@@ -81,7 +84,7 @@ class migrationComparitor {
         let sourceColumn = currentSourceTable.columns[targetColumn.name];
         if (!sourceColumn) {
             modifiedColumnCounter++;
-            targetColumn.status = "new";
+            targetColumn.status = dbStatus.new;
         }
         else {
             modifiedColumnCounter = migrationComparitor.processChangedColumns(sourceColumn, targetColumn, modifiedColumnCounter);
@@ -97,22 +100,22 @@ class migrationComparitor {
             (Array.isArray(targetColumn.size) && targetColumn.size.filter((x, i) => targetColumn.size[i] !== sourceColumn.size[i]).length !== 0) ||
             (!Array.isArray(targetColumn.size) && targetColumn.size !== sourceColumn.size)) {
             modifiedColumnCounter++;
-            targetColumn.status = "typeChanged";
+            targetColumn.status =  dbStatus.typeChanged;
         }
         else if (targetColumn.reference && !sourceColumn.reference) {
             modifiedColumnCounter++;
-            targetColumn.status = "addReference";
+            targetColumn.status = dbStatus.addReference;
         }
         else if (!targetColumn.reference && sourceColumn.reference) {
             modifiedColumnCounter++;
-            targetColumn.status = "removeReference";
+            targetColumn.status = dbStatus.removeReference;
         }
         else if (targetColumn.reference && sourceColumn.reference && (sourceColumn.reference.column !== targetColumn.reference.column || sourceColumn.reference.table !== targetColumn.reference.table)) {
             modifiedColumnCounter++;
-            targetColumn.status = "changeReference";
+            targetColumn.status = dbStatus.changeReference;
         }
         else {
-            targetColumn.status = "skip";
+            targetColumn.status = dbStatus.skip;
         }
         return modifiedColumnCounter;
     }

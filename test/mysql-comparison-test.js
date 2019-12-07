@@ -1,7 +1,7 @@
 const assert = require('chai').assert;
 const willCoreProxy = require("../proxies/willCore/willCoreProxy.js");
 const migrationComparitor = require("../sqlGeneration/migration/migrationComparitor.js");
-
+const dbStatus = require("../sqlGeneration/migration/statusEnum.js");
 
 describe('mySQL-comparison-test', function () {
     let proxy = willCoreProxy.new();
@@ -35,16 +35,16 @@ describe('mySQL-comparison-test', function () {
             proxy.baseDB._mysqlAssignable.dbInfo,
             proxyScoped.baseDB._mysqlAssignable.dbInfo);
 
-        assert(getTablesWithStatus(comparisonResult.target, "new").length === 0);
-        assert(getColumnsWithStatus(comparisonResult.target, "new").length === 0);
-        assert(getTablesWithStatus(comparisonResult.source, "deleted").length === 0);
-        assert(getTablesWithStatus(comparisonResult.source, "deleted").length === 0);
-        assert(getTablesWithStatus(comparisonResult.target, "skip").length === 2);
-        assert(getColumnsWithStatus(comparisonResult.target, "skip").length === 5);
-        assert(getColumnsWithStatus(comparisonResult.target, "typeChanged").length === 0);
-        assert(getColumnsWithStatus(comparisonResult.target, "addReference").length === 0);
-        assert(getColumnsWithStatus(comparisonResult.target, "removeReference").length === 0);
-        assert(getColumnsWithStatus(comparisonResult.target, "changeReference").length === 0);
+        assert(getTablesWithStatus(comparisonResult.target, dbStatus.new).length === 0);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.new).length === 0);
+        assert(getTablesWithStatus(comparisonResult.source, dbStatus.deleted).length === 0);
+        assert(getTablesWithStatus(comparisonResult.source, dbStatus.deleted).length === 0);
+        assert(getTablesWithStatus(comparisonResult.target, dbStatus.skip).length === 2);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.skip).length === 5);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.typeChanged).length === 0);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.addReference).length === 0);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.removeReference).length === 0);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.changeReference).length === 0);
     });
 
     it('test-create-new', function () {
@@ -65,16 +65,16 @@ describe('mySQL-comparison-test', function () {
             undefined,
             proxyScoped.baseDB._mysqlAssignable.dbInfo);
 
-        assert(getTablesWithStatus(comparisonResult.target, "new").length === 2);
-        assert(getColumnsWithStatus(comparisonResult.target, "new").length === 5);
-        assert(getTablesWithStatus(comparisonResult.source, "deleted").length === 0);
-        assert(getTablesWithStatus(comparisonResult.source, "deleted").length === 0);
-        assert(getTablesWithStatus(comparisonResult.target, "skip").length === 0);
-        assert(getColumnsWithStatus(comparisonResult.target, "skip").length === 0);
-        assert(getColumnsWithStatus(comparisonResult.target, "typeChanged").length === 0);
-        assert(getColumnsWithStatus(comparisonResult.target, "addReference").length === 0);
-        assert(getColumnsWithStatus(comparisonResult.target, "removeReference").length === 0);
-        assert(getColumnsWithStatus(comparisonResult.target, "changeReference").length === 0);
+        assert(getTablesWithStatus(comparisonResult.target, dbStatus.new).length === 2);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.new).length === 5);
+        assert(getTablesWithStatus(comparisonResult.source, dbStatus.deleted).length === 0);
+        assert(getTablesWithStatus(comparisonResult.source, dbStatus.deleted).length === 0);
+        assert(getTablesWithStatus(comparisonResult.target, dbStatus.skip).length === 0);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.skip).length === 0);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.typeChanged).length === 0);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.addReference).length === 0);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.removeReference).length === 0);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.changeReference).length === 0);
     });
     it('test-add-table', function () {
         let proxyScoped = willCoreProxy.new();
@@ -101,16 +101,16 @@ describe('mySQL-comparison-test', function () {
             proxy.baseDB._mysqlAssignable.dbInfo,
             proxyScoped.baseDB._mysqlAssignable.dbInfo);
 
-        assert(getTablesWithStatus(comparisonResult.target, "new").length === 1);
-        assert(getColumnsWithStatus(comparisonResult.target, "new").length === 3);
-        assert(getTablesWithStatus(comparisonResult.source, "deleted").length === 0);
-        assert(getTablesWithStatus(comparisonResult.source, "deleted").length === 0);
-        assert(getTablesWithStatus(comparisonResult.target, "skip").length === 2);
-        assert(getColumnsWithStatus(comparisonResult.target, "skip").length === 5);
-        assert(getColumnsWithStatus(comparisonResult.target, "typeChanged").length === 0);
-        assert(getColumnsWithStatus(comparisonResult.target, "addReference").length === 0);
-        assert(getColumnsWithStatus(comparisonResult.target, "removeReference").length === 0);
-        assert(getColumnsWithStatus(comparisonResult.target, "changeReference").length === 0);
+        assert(getTablesWithStatus(comparisonResult.target, dbStatus.new).length === 1);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.new).length === 3);
+        assert(getTablesWithStatus(comparisonResult.source, dbStatus.deleted).length === 0);
+        assert(getTablesWithStatus(comparisonResult.source, dbStatus.deleted).length === 0);
+        assert(getTablesWithStatus(comparisonResult.target, dbStatus.skip).length === 2);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.skip).length === 5);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.typeChanged).length === 0);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.addReference).length === 0);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.removeReference).length === 0);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.changeReference).length === 0);
     });
     it('test-type-change', function () {
         let proxyScoped = willCoreProxy.new();
@@ -130,16 +130,16 @@ describe('mySQL-comparison-test', function () {
             proxy.baseDB._mysqlAssignable.dbInfo,
             proxyScoped.baseDB._mysqlAssignable.dbInfo);
 
-        assert(getTablesWithStatus(comparisonResult.target, "new").length === 0);
-        assert(getColumnsWithStatus(comparisonResult.target, "new").length === 0);
-        assert(getTablesWithStatus(comparisonResult.source, "deleted").length === 0);
-        assert(getTablesWithStatus(comparisonResult.source, "deleted").length === 0);
-        assert(getTablesWithStatus(comparisonResult.target, "skip").length === 1);
-        assert(getColumnsWithStatus(comparisonResult.target, "skip").length === 4);
-        assert(getColumnsWithStatus(comparisonResult.target, "typeChanged").length === 1);
-        assert(getColumnsWithStatus(comparisonResult.target, "addReference").length === 0);
-        assert(getColumnsWithStatus(comparisonResult.target, "removeReference").length === 0);
-        assert(getColumnsWithStatus(comparisonResult.target, "changeReference").length === 0);
+        assert(getTablesWithStatus(comparisonResult.target, dbStatus.new).length === 0);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.new).length === 0);
+        assert(getTablesWithStatus(comparisonResult.source, dbStatus.deleted).length === 0);
+        assert(getTablesWithStatus(comparisonResult.source, dbStatus.deleted).length === 0);
+        assert(getTablesWithStatus(comparisonResult.target, dbStatus.skip).length === 1);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.skip).length === 4);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.typeChanged).length === 1);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.addReference).length === 0);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.removeReference).length === 0);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.changeReference).length === 0);
     });
     it('test-reference-change', function () {
         let proxyScoped = willCoreProxy.new();
@@ -159,16 +159,16 @@ describe('mySQL-comparison-test', function () {
             proxy.baseDB._mysqlAssignable.dbInfo,
             proxyScoped.baseDB._mysqlAssignable.dbInfo);
 
-        assert(getTablesWithStatus(comparisonResult.target, "new").length === 0);
-        assert(getColumnsWithStatus(comparisonResult.target, "new").length === 0);
-        assert(getTablesWithStatus(comparisonResult.source, "deleted").length === 0);
-        assert(getTablesWithStatus(comparisonResult.source, "deleted").length === 0);
-        assert(getTablesWithStatus(comparisonResult.target, "skip").length === 1);
-        assert(getColumnsWithStatus(comparisonResult.target, "skip").length === 4);
-        assert(getColumnsWithStatus(comparisonResult.target, "typeChanged").length === 0);
-        assert(getColumnsWithStatus(comparisonResult.target, "addReference").length === 0);
-        assert(getColumnsWithStatus(comparisonResult.target, "removeReference").length === 0);
-        assert(getColumnsWithStatus(comparisonResult.target, "changeReference").length === 1);
+        assert(getTablesWithStatus(comparisonResult.target, dbStatus.new).length === 0);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.new).length === 0);
+        assert(getTablesWithStatus(comparisonResult.source, dbStatus.deleted).length === 0);
+        assert(getTablesWithStatus(comparisonResult.source, dbStatus.deleted).length === 0);
+        assert(getTablesWithStatus(comparisonResult.target, dbStatus.skip).length === 1);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.skip).length === 4);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.typeChanged).length === 0);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.addReference).length === 0);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.removeReference).length === 0);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.changeReference).length === 1);
     });
     it('test-reference-add', function () {
         let proxyScoped = willCoreProxy.new();
@@ -189,16 +189,16 @@ describe('mySQL-comparison-test', function () {
             proxy.baseDB._mysqlAssignable.dbInfo,
             proxyScoped.baseDB._mysqlAssignable.dbInfo);
 
-        assert(getTablesWithStatus(comparisonResult.target, "new").length === 0);
-        assert(getColumnsWithStatus(comparisonResult.target, "new").length === 0);
-        assert(getTablesWithStatus(comparisonResult.source, "deleted").length === 0);
-        assert(getTablesWithStatus(comparisonResult.source, "deleted").length === 0);
-        assert(getTablesWithStatus(comparisonResult.target, "skip").length === 1);
-        assert(getColumnsWithStatus(comparisonResult.target, "skip").length === 3);
-        assert(getColumnsWithStatus(comparisonResult.target, "typeChanged").length === 0);
-        assert(getColumnsWithStatus(comparisonResult.target, "addReference").length === 1);
-        assert(getColumnsWithStatus(comparisonResult.target, "removeReference").length === 0);
-        assert(getColumnsWithStatus(comparisonResult.target, "changeReference").length === 1);
+        assert(getTablesWithStatus(comparisonResult.target, dbStatus.new).length === 0);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.new).length === 0);
+        assert(getTablesWithStatus(comparisonResult.source, dbStatus.deleted).length === 0);
+        assert(getTablesWithStatus(comparisonResult.source, dbStatus.deleted).length === 0);
+        assert(getTablesWithStatus(comparisonResult.target, dbStatus.skip).length === 1);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.skip).length === 3);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.typeChanged).length === 0);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.addReference).length === 1);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.removeReference).length === 0);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.changeReference).length === 1);
     });
     it('test-reference-remove', function () {
         let proxyScoped = willCoreProxy.new();
@@ -217,16 +217,16 @@ describe('mySQL-comparison-test', function () {
             proxy.baseDB._mysqlAssignable.dbInfo,
             proxyScoped.baseDB._mysqlAssignable.dbInfo);
 
-        assert(getTablesWithStatus(comparisonResult.target, "new").length === 0);
-        assert(getColumnsWithStatus(comparisonResult.target, "new").length === 0);
-        assert(getTablesWithStatus(comparisonResult.source, "deleted").length === 0);
-        assert(getTablesWithStatus(comparisonResult.source, "deleted").length === 0);
-        assert(getTablesWithStatus(comparisonResult.target, "skip").length === 1);
-        assert(getColumnsWithStatus(comparisonResult.target, "skip").length === 4);
-        assert(getColumnsWithStatus(comparisonResult.target, "typeChanged").length === 0);
-        assert(getColumnsWithStatus(comparisonResult.target, "addReference").length === 0);
-        assert(getColumnsWithStatus(comparisonResult.target, "removeReference").length === 1);
-        assert(getColumnsWithStatus(comparisonResult.target, "changeReference").length === 0);
+        assert(getTablesWithStatus(comparisonResult.target, dbStatus.new).length === 0);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.new).length === 0);
+        assert(getTablesWithStatus(comparisonResult.source, dbStatus.deleted).length === 0);
+        assert(getTablesWithStatus(comparisonResult.source, dbStatus.deleted).length === 0);
+        assert(getTablesWithStatus(comparisonResult.target, dbStatus.skip).length === 1);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.skip).length === 4);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.typeChanged).length === 0);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.addReference).length === 0);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.removeReference).length === 1);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.changeReference).length === 0);
     });
     it('test-columns-remove', function () {
         let proxyScoped = willCoreProxy.new();
@@ -243,16 +243,16 @@ describe('mySQL-comparison-test', function () {
             proxy.baseDB._mysqlAssignable.dbInfo,
             proxyScoped.baseDB._mysqlAssignable.dbInfo);
 
-        assert(getTablesWithStatus(comparisonResult.target, "new").length === 0);
-        assert(getColumnsWithStatus(comparisonResult.target, "new").length === 0);
-        assert(getTablesWithStatus(comparisonResult.source, "deleted").length === 0);
-        assert(getColumnsWithStatus(comparisonResult.source, "deleted").length === 2);
-        assert(getTablesWithStatus(comparisonResult.target, "skip").length === 2);
-        assert(getColumnsWithStatus(comparisonResult.target, "skip").length === 3);
-        assert(getColumnsWithStatus(comparisonResult.target, "typeChanged").length === 0);
-        assert(getColumnsWithStatus(comparisonResult.target, "addReference").length === 0);
-        assert(getColumnsWithStatus(comparisonResult.target, "removeReference").length === 0);
-        assert(getColumnsWithStatus(comparisonResult.target, "changeReference").length === 0);
+        assert(getTablesWithStatus(comparisonResult.target, dbStatus.new).length === 0);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.new).length === 0);
+        assert(getTablesWithStatus(comparisonResult.source, dbStatus.deleted).length === 0);
+        assert(getColumnsWithStatus(comparisonResult.source, dbStatus.deleted).length === 2);
+        assert(getTablesWithStatus(comparisonResult.target, dbStatus.skip).length === 2);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.skip).length === 3);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.typeChanged).length === 0);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.addReference).length === 0);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.removeReference).length === 0);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.changeReference).length === 0);
     });
     it('test-table-column-remove', function () {
         let proxyScoped = willCoreProxy.new();
@@ -265,16 +265,16 @@ describe('mySQL-comparison-test', function () {
             proxy.baseDB._mysqlAssignable.dbInfo,
             proxyScoped.baseDB._mysqlAssignable.dbInfo);
 
-        assert(getTablesWithStatus(comparisonResult.target, "new").length === 0);
-        assert(getColumnsWithStatus(comparisonResult.target, "new").length === 0);
-        assert(getTablesWithStatus(comparisonResult.source, "deleted").length === 1);
-        assert(getColumnsWithStatus(comparisonResult.source, "deleted").length === 1);
-        assert(getTablesWithStatus(comparisonResult.target, "skip").length === 1);
-        assert(getColumnsWithStatus(comparisonResult.target, "skip").length === 1);
-        assert(getColumnsWithStatus(comparisonResult.target, "typeChanged").length === 0);
-        assert(getColumnsWithStatus(comparisonResult.target, "addReference").length === 0);
-        assert(getColumnsWithStatus(comparisonResult.target, "removeReference").length === 0);
-        assert(getColumnsWithStatus(comparisonResult.target, "changeReference").length === 0);
+        assert(getTablesWithStatus(comparisonResult.target, dbStatus.new).length === 0);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.new).length === 0);
+        assert(getTablesWithStatus(comparisonResult.source, dbStatus.deleted).length === 1);
+        assert(getColumnsWithStatus(comparisonResult.source, dbStatus.deleted).length === 1);
+        assert(getTablesWithStatus(comparisonResult.target, dbStatus.skip).length === 1);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.skip).length === 1);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.typeChanged).length === 0);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.addReference).length === 0);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.removeReference).length === 0);
+        assert(getColumnsWithStatus(comparisonResult.target, dbStatus.changeReference).length === 0);
     });
     it('test-db-comparison-obj-copy', function () {
         let proxy = willCoreProxy.new();
