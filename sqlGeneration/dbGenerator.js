@@ -14,6 +14,15 @@ class dbGenerator {
         this._comparisonInfo = null;
         this._comparisonTarget = null;
         this._comparisonSource = null;
+        this._dropDB = false;
+    }
+
+    get dropDB() {
+        return this._dropDB;
+    }
+
+    set dropDB(value) {
+        this._dropDB = value;
     }
 
     get dbInfo() {
@@ -35,26 +44,26 @@ class dbGenerator {
         return this._comparisonSource;
     }
 
-    get sql(){
-        return new db(this.comparisonTarget,this.comparisonSource).getSQL();
+    get sql() {
+        return new db(this.comparisonTarget, this.comparisonSource, this._dropDB).getSQL();
     }
 
-    generateDB(){
+    generateDB() {
         throw "Method not implemented yet.";
     }
 
     getTablesWithStatus(status) {
-        if (status === dbStatus.deleted){
+        if (status === dbStatus.deleted) {
             return this.comparisonSource.tableList.filter(x => x.status === status || !status);
         }
         return this.comparisonTarget.tableList.filter(x => x.status === status || !status);
     }
 
     getColumnsWithStatus(status) {
-        if (status === dbStatus.deleted){
-            return privateLogic.getColumnsWithStatus.call(this,this.comparisonSource, status);
+        if (status === dbStatus.deleted) {
+            return privateLogic.getColumnsWithStatus.call(this, this.comparisonSource, status);
         }
-        return privateLogic.getColumnsWithStatus.call(this,this.comparisonTarget, status);
+        return privateLogic.getColumnsWithStatus.call(this, this.comparisonTarget, status);
     }
 }
 
@@ -72,7 +81,7 @@ const privateLogic = {
             this._comparisonSource = result.source;
         }
     },
-    getColumnsWithStatus: function (data ,status) {
+    getColumnsWithStatus: function (data, status) {
         return data.tableList.reduce((accumulator, table) => {
             table.columnList.forEach(column => {
                 accumulator.push({ table, column });

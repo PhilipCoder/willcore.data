@@ -9,12 +9,22 @@ const keywords = {
         createStatement: "CREATE TABLE",
         engineStatement: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci"
     },
-    createColumn:{
-        primaryKey:"AUTO_INCREMENT PRIMARY KEY",
-        foreignKey:"FOREIGN KEY",
-        reference:"REFERENCES",
-        keyDelete:"ON DELETE CASCADE",
-        index:"INDEX"
+    createColumn: {
+        primaryKey: "AUTO_INCREMENT PRIMARY KEY",
+        foreignKey: "FOREIGN KEY",
+        reference: "REFERENCES",
+        keyDelete: "ON DELETE CASCADE",
+        index: "INDEX"
+
+    },
+    alterTable: {
+        alterTable: "ALTER TABLE",
+        addColumn: "ADD COLUMN",
+        add: "ADD",
+        dropColumn: "DROP COLUMN",
+        dropTable: "DROP TABLE",
+        dropForeignKey: "DROP FOREIGN KEY",
+        constraint:"CONSTRAINT"
     }
 };
 

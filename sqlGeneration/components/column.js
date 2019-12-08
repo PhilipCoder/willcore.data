@@ -1,33 +1,44 @@
 const keywords = require("./mySQLConstants.js").keywords;
 const typeMappings =require("./mySQLConstants.js").typeMappings;
+const status = require("../migration/statusEnum.js");
 
 class column {
     constructor(columnInfo){
         this.columnInfo = columnInfo;
     }
 
-    getSQL(){
+    getSQL(tableExists){
+       let result = this.getSQLColumnStatement(tableExists);
+       return result;
+    }
+
+    getSQLColumnStatement(tableExists){
         if (this.columnInfo.primary){
-            return this.getPrimaryKey();
+            return this.getPrimaryKey(tableExists);
         }else if (this.columnInfo.reference){
-            return this.getForeignKey();
+            return this.getForeignKey(tableExists);
         }else{
-            return this.getColumn();
+            return this.getColumn(tableExists);
         }
     }
 
-    getColumn(){
-        return `\`${this.columnInfo.name}\` ${this.getSQLType(this.columnInfo.type, this.columnInfo.size)} null`;
+    getColumn(tableExists){
+        let alterationStatement = tableExists ? `${keywords.alterTable.addColumn} ` : '';
+        return `${alterationStatement}\`${this.columnInfo.name}\` ${this.getSQLType(this.columnInfo.type, this.columnInfo.size)} null`;
     }
 
-    getPrimaryKey(){
-        return `\`${this.columnInfo.name}\` ${this.getSQLType(this.columnInfo.type, this.columnInfo.size)} ${keywords.createColumn.primaryKey}`;
+    getPrimaryKey(tableExists){
+        let alterationStatement = tableExists ? `${keywords.alterTable.addColumn} ` : '';
+        return `${alterationStatement}\`${this.columnInfo.name}\` ${this.getSQLType(this.columnInfo.type, this.columnInfo.size)} ${keywords.createColumn.primaryKey}`;
     }
 
-    getForeignKey(){
+    getForeignKey(tableExists){
+        let alterationAddStatement = tableExists ? `${keywords.alterTable.add} ` : '';
         let indexName = `${this.columnInfo.reference.thisTable}_${this.columnInfo.name}_${this.columnInfo.reference.table}_${this.columnInfo.reference.column}`;
-        return this.getColumn() + `,\n${keywords.createColumn.index} ${indexName}(${this.columnInfo.name}),\n` +
-        `${keywords.createColumn.foreignKey} (${this.columnInfo.name}) ${keywords.createColumn.reference} ${this.columnInfo.reference.table}(${this.columnInfo.reference.column}) ${keywords.createColumn.keyDelete}`;
+        let result = this.columnInfo.status === status.new ? `${this.getColumn(tableExists)},\n` : '';
+        result += `${alterationAddStatement}${keywords.createColumn.index} ${indexName}(${this.columnInfo.name}),\n` +
+        `${alterationAddStatement}${keywords.alterTable.constraint} \`fk_${indexName}\` ${keywords.createColumn.foreignKey} (${this.columnInfo.name}) ${keywords.createColumn.reference} ${this.columnInfo.reference.table}(${this.columnInfo.reference.column}) ${keywords.createColumn.keyDelete}`;
+        return result;
     }
 
     getSQLType(name, typeSize){
