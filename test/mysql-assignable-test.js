@@ -4,11 +4,12 @@ const willCoreProxy = require("../proxies/willCore/willCoreProxy.js");
 const mysqlProxy = require("../assignables/mysql/db/mysqlProxy.js");
 const dbTableProxy = require("../assignables/mysql/table/dbTableProxy.js");
 const dbColumnProxy = require("../assignables/mysql/column/dbColumnProxy.js");
+const migrationSetup = require("../assignables/mysql/setup/dbMigrationSetup.js");
 
 describe('mySQL-assignable', function () {
+    migrationSetup.migrationTablesEnabled = false;
     let dbName = "myDB", connectionString = "myConnection", userName = "myUser", password = "myPassword", tableName = "testTable";
     //---------------------------------------------------
-  
     it('create', function () {
         let proxy = willCoreProxy.new();
         proxy.myDB.mysql = [connectionString, userName, password];

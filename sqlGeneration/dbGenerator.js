@@ -2,6 +2,8 @@ const migrationComparitor = require("./migration/migrationComparitor.js");
 const db = require("./components/db.js");
 const migrationSource = require("./migration/migrationSource.js");
 const dbStatus = require("../sqlGeneration/migration/statusEnum.js");
+const mysql = require("mysql2/promise");
+const queryExecutor = require("../sqlExecutor/runQuery.js");
 /**
  * Core DB / Migration class.
  */
@@ -48,8 +50,16 @@ class dbGenerator {
         return new db(this.comparisonTarget, this.comparisonSource, this._dropDB).getSQL();
     }
 
+    getSQL() {
+        return new db(this.comparisonTarget, this.comparisonSource, this._dropDB).getSQL();
+    }
+
     generateDB() {
-        throw "Method not implemented yet.";
+        return new Promise(async (resolve, reject) => {
+            await queryExecutor.initDB(this._dbInfo.connectionString, this._dbInfo.userName, this._dbInfo.password);
+            let result = queryExecutor.execute(this.sql);
+            resolve(result);
+        });
     }
 
     getTablesWithStatus(status) {

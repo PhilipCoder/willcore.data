@@ -1,6 +1,7 @@
 const assignable = require("../assignable.js");
 const willCoreProxy = require("../../proxies/willCore/willCoreProxy.js");
 const mysqlProxy = require("./db/mysqlProxy.js");
+const dbMigrationSetup = require("./setup/dbMigrationSetup.js");
 
 class mysql extends assignable {
     constructor() {
@@ -10,12 +11,14 @@ class mysql extends assignable {
             connectionString: null,
             userName: null,
             password: null,
-            tables:[]
+            tables: []
         };
     }
 
     completionResult() {
-        return mysqlProxy.new(this);
+        let proxyResult = mysqlProxy.new(this);
+        dbMigrationSetup.setupTables(proxyResult, this.propertyName);
+        return proxyResult;
     }
 
     completed() {
@@ -25,7 +28,7 @@ class mysql extends assignable {
         this.dbInfo.password = this.bindedValues.string[2];
     }
 
-    getDBJson(){
+    getDBJson() {
         return JSON.stringify(this.dbInfo);
     }
 }

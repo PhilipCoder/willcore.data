@@ -3,12 +3,12 @@ const willCoreProxy = require("../proxies/willCore/willCoreProxy.js");
 const db = require("../sqlGeneration/components/db.js");
 const table = require("../sqlGeneration/components/table.js");
 const column = require("../sqlGeneration/components/column.js");
-
+const migrationSetup = require("../assignables/mysql/setup/dbMigrationSetup.js");
 
 describe('mySQL-db-generation', function () {
+   migrationSetup.migrationTablesEnabled = false;
    let dbName = "testDB", connectionString = "myConnection", userName = "myUser", password = "myPassword", tableName = "testTable";
    //---------------------------------------------------
-
    it('create-db', function () {
       let proxy = willCoreProxy.new();
       proxy.myDB.mysql = [connectionString, userName, password];

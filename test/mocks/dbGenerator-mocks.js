@@ -279,7 +279,7 @@ const dropFK = () => {
 
 const manyFKCreateDB = () =>{
     let proxy = willCoreProxy.new();
-    proxy.myDB.mysql = ["", "", ""];
+    proxy.myDB.mysql = ["localhost", "root", "wilropark126"];
     proxy.myDB.user.table;
     proxy.myDB.user.id.column.int;
     proxy.myDB.user.id.primary;
