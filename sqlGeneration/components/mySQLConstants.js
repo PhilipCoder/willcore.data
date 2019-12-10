@@ -1,4 +1,3 @@
-var mysqlx = require('mysqlx');
 const keywords = {
     createDB: {
         createComment: "-- DB does not exists, creating DB.",
