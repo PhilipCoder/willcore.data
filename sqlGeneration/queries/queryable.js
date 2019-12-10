@@ -25,7 +25,7 @@ class queryFactory{
          * Query. Executes a query.
          */
         const queryable = function(){
-            
+            //step 1 : calulate
 
         };
 
@@ -36,6 +36,7 @@ class queryFactory{
             scopedVariables.filter.filterExpression = filterExpression;
             scopedVariables.filter.queryScope = queryScope;
             let selectQuery = new query();
+            scopedVariables.filter.parts = selectQuery.filter(filterExpression.toString(), queryScope);
             return queryable;
         };
 

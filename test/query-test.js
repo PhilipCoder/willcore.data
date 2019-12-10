@@ -16,15 +16,16 @@ describe('query', function () {
 
   it('query-filter-expression', function () {
     let selectQuery = new query();
-    selectQuery.filter(() => name === "one" && age > 10 && owner.name === "Philip");
+    selectQuery.filter(() => name === "one" && age > 10 && owner.name === "Philip",{});
     assert(selectQuery.run.filterExpression.length === 13, "The assigned select expression has an incorrect type.");
   });
   it('queryFactory-test', function () {
     let queryAble = queryFactory.get({},"person");
     let name = "Phil";
     queryAble.
-    filter({name:name},
-      (person) => person.name === name && person.details.age > 21 
+    filter(
+      (person) => person.name === name && person.details.age > 21 ,
+      {name:name}
       ).
       select((person) => ({
         name:person.name,
@@ -51,7 +52,7 @@ describe('query', function () {
 
   it('query-getScopeFields-test', function () {
     let selectQuery = new query();
-    let parts = selectQuery.filter(() => name === "one" && age > 10 && owner.name === "Philip");
+    let parts = selectQuery.filter((person) => person.name === name && person.age > 10 && person.owner.name === owner.name,{});
     let scopeFields =selectQuery.getScopeFields({
       name:"DrPhil",
       owner:{
@@ -61,5 +62,38 @@ describe('query', function () {
     assert(scopeFields.length === 2);
     assert(scopeFields[0].length === 1);
     assert(scopeFields[1].length === 2);
+  });
+
+  it('query-getObjectProperty-test', function () {
+    let selectQuery = new query();
+
+    let obj = {
+      name:"Phil",
+      address:{
+        city:"centurion",
+        area:{
+          postal:123
+        }
+      }
+    };
+
+    let name = selectQuery.getObjectProperty(obj,[{value:"name"}]);
+    let city = selectQuery.getObjectProperty(obj,[{value:"address"},{value:"city"}]);
+    let postal = selectQuery.getObjectProperty(obj,[{value:"address"},{value:"area"},{value:"postal"}]);
+
+    assert(name === "Phil");
+    assert(city === "centurion");
+    assert(postal === 123);
+
+  });
+
+  it('query-filter-scoped-test', function () {
+    let selectQuery = new query();
+    let parts = selectQuery.filter((person) => person.name === name && person.age > 10 && person.owner.name === owner.name || one === "ss",{
+      name:"DrPhil",
+      owner:{
+        name:"Life"
+      }
+    });
   });
 })
