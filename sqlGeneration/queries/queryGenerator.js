@@ -8,14 +8,19 @@ class queryGenerator {
         this.tableName = tableName;
     }
 
-    getQuerySQL(){
+    getQuerySQL() {
 
     }
 
-    getJoinObj(selectParts, queryParts){
+    getJoinObj(selectParts, queryParts) {
         let joinObj = {};
-        let currentTable = this.db.tables[this.tableName];
-        
+        let tableAliases = {};
+        let table = this.db.tables[this.tableName];
+        for (let i = 0; i < selectParts.length; i++) {
+            let currentTable = table;
+            let currentParts = selectParts[i];
+            //let 
+        }
     }
 
     select(selectFunc) {
