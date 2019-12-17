@@ -124,4 +124,23 @@ describe('query', function () {
     let selectQuery = new query(dbInfo, "product");
     let result = selectQuery.getJoinObj(queryValues.select.selectParts)
   });
+  it('query-where-join-obj', function () {
+    migrationSetup.migrationTablesEnabled = true;
+    rewiremock(() => require("../sqlGeneration/migration/migrationSource.js")).with(mocks.emptyMigrationSource);
+    rewiremock.enable();
+    let myDB = mocks.dbSelectJoin();
+    const dbGenerator = new (require("../sqlGeneration/dbGenerator.js"))(myDB);
+    dbGenerator.dropDB = true;
+    dbGenerator.sql;
+    let dbInfo = dbGenerator._comparisonTarget;
+
+    let queryAble = queryFactory.get(dbInfo, "product");
+    queryAble.filter((product) => product.name === "TV" && product.owner.name.contains("Philip"),{});
+    rewiremock.disable();
+    migrationSetup.migrationTablesEnabled = false;
+
+    let queryValues = queryAble.getValues();
+    let selectQuery = new query(dbInfo, "product");
+    let result = selectQuery.getJoinObj({},queryValues.filter.parts)
+  });
 })
