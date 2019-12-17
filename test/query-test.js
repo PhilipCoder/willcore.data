@@ -123,6 +123,17 @@ describe('query', function () {
     let queryValues = queryAble.getValues();
     let selectQuery = new query(dbInfo, "product");
     let result = selectQuery.getJoinObj(queryValues.select.selectParts)
+
+    assert(result["product"].length === 1);
+    assert(result["product.details"].length === 2);
+    assert(result["product.owner"].length === 2);
+
+    assert(result["product"][0] === "product");
+    assert(result["product.details"][0] === "product");
+    assert(result["product.details"][1] === "productDetails");
+
+    assert(result["product.owner"][0] === "product");
+    assert(result["product.owner"][1] === "user");
   });
   it('query-where-join-obj', function () {
     migrationSetup.migrationTablesEnabled = true;
@@ -141,6 +152,12 @@ describe('query', function () {
 
     let queryValues = queryAble.getValues();
     let selectQuery = new query(dbInfo, "product");
-    let result = selectQuery.getJoinObj({},queryValues.filter.parts)
+    let result = selectQuery.getJoinObj({},queryValues.filter.parts);
+    assert(result["product"].length === 1);
+    assert(result["product"][0] === "product");
+
+    assert(result["product.owner"].length === 2);
+    assert(result["product.owner"][0] === "product");
+    assert(result["product.owner"][1] === "user");
   });
 })
