@@ -339,6 +339,7 @@ const dbSelectJoin= () =>{
     proxy.myDB.product.owner = proxy.myDB.user.id;
     proxy.myDB.product.details.column.int;
     proxy.myDB.product.details = proxy.myDB.productDetails.id;
+  //  proxy.myDB.productDetails.products = 
     return proxy.myDB;
 };
 

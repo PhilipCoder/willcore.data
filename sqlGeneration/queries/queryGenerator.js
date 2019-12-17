@@ -13,7 +13,6 @@ class queryGenerator {
     }
 
     getJoinObj(selectParts, queryParts) {
-        let joinObj = {};
         let tableAliases = {};
         let table = this.db.tables[this.tableName];
         for (let i in selectParts) {
@@ -34,6 +33,7 @@ class queryGenerator {
             }
             tableAliases[currentPath] = tableNames;
         }
+        return tableAliases;
     }
 
     select(selectFunc) {

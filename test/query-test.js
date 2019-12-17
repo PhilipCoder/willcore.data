@@ -111,18 +111,17 @@ describe('query', function () {
     let dbInfo = dbGenerator._comparisonTarget;
 
     let queryAble = queryFactory.get(dbInfo, "product");
-    let name = "Phil";
     queryAble.
       select((product) => ({
         name: product.name,
         ownerName: product.owner.name,
         detailName: product.details.name
-      }))
+      }));
     rewiremock.disable();
     migrationSetup.migrationTablesEnabled = false;
 
     let queryValues = queryAble.getValues();
     let selectQuery = new query(dbInfo, "product");
-    selectQuery.getJoinObj(queryValues.select.selectParts)
+    let result = selectQuery.getJoinObj(queryValues.select.selectParts)
   });
 })
