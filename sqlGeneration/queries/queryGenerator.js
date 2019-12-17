@@ -16,10 +16,23 @@ class queryGenerator {
         let joinObj = {};
         let tableAliases = {};
         let table = this.db.tables[this.tableName];
-        for (let i = 0; i < selectParts.length; i++) {
+        for (let i in selectParts) {
             let currentTable = table;
             let currentParts = selectParts[i];
-            //let 
+            let currentPath = `${currentTable.name}`;
+            let tableNames = [currentTable.name];
+            for (let pathI = 0; pathI < currentParts.length - 1; pathI++) {
+                tableNames.push(currentTable.name);
+                let path = currentParts[pathI + 1];
+                let currentColumn = currentTable.columns[path];
+                if (!currentColumn) throw `Invalid column. Table ${currentTable.name} does not have a column named ${path}.`;
+                if (pathI < currentParts.length - 2 && !currentColumn.reference) throw `Column ${path} on table ${currentTable.name} is not a reference to another table.`;
+                currentPath = `${currentPath}.${path}`;
+                if (pathI < currentParts.length - 1 && currentColumn.reference) {
+                    currentTable = this.db.tables[currentColumn.reference.table];
+                }
+            }
+            tableAliases[currentPath] = tableNames;
         }
     }
 

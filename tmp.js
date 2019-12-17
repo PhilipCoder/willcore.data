@@ -48,5 +48,7 @@ module.exports = (view, willCore, assignables) => {
     let result = willCore.myDB.dogs.filter(dogs => dogs.name == "vlekkie" && dogs.age > 2 || dogs.owner).select(dogs => ({name:dogs.name, age:dogs.age, owners:}));
 
   
+    //workflow for queries
+    //
   };
   

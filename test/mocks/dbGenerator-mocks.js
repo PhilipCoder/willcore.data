@@ -310,6 +310,39 @@ const manyFKCreateDB = () =>{
 };
 
 
+const dbSelectJoin= () =>{
+    let proxy = willCoreProxy.new();
+    proxy.myDB.mysql = ["localhost", "root", "Bandit1250s"];
+    proxy.myDB.user.table;
+    proxy.myDB.user.id.column.int;
+    proxy.myDB.user.id.primary;
+    proxy.myDB.user.name.column.string;
+
+    proxy.myDB.profile.table;
+    proxy.myDB.profile.id.column.int;
+    proxy.myDB.profile.id.primary;
+    proxy.myDB.profile.name.column.string;
+    proxy.myDB.profile.person.column.int;
+    proxy.myDB.profile.person = proxy.myDB.user.id;
+
+    proxy.myDB.productDetails.table;
+    proxy.myDB.productDetails.id.column.int;
+    proxy.myDB.productDetails.id.primary;
+    proxy.myDB.productDetails.name.column.string;
+ 
+
+    proxy.myDB.product.table;
+    proxy.myDB.product.id.column.int;
+    proxy.myDB.product.id.primary;
+    proxy.myDB.product.name.column.string;
+    proxy.myDB.product.owner.column.int;
+    proxy.myDB.product.owner = proxy.myDB.user.id;
+    proxy.myDB.product.details.column.int;
+    proxy.myDB.product.details = proxy.myDB.productDetails.id;
+    return proxy.myDB;
+};
+
+
 exports.migrationSourceStub = migrationSourceStub;
 exports.emptyMigrationSource = emptyMigrationSource;
 exports.defaultTwoTableDBFactory = defaultTwoTableDBFactory;
@@ -325,3 +358,4 @@ exports.dropColumnsFK = dropColumnsFK;
 exports.migrationSourceManyFKStub = migrationSourceManyFKStub;
 exports.dropFK = dropFK;
 exports.manyFKCreateDB = manyFKCreateDB;
+exports.dbSelectJoin = dbSelectJoin;
