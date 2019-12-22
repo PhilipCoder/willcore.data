@@ -146,18 +146,52 @@ describe('query', function () {
     let dbInfo = dbGenerator._comparisonTarget;
 
     let queryAble = queryFactory.get(dbInfo, "product");
-    queryAble.filter((product) => product.name === "TV" && product.owner.name.contains("Philip"),{});
+    queryAble.filter((product) => product.name === "TV" && product.owner.name.contains("Philip"), {});
+
     rewiremock.disable();
     migrationSetup.migrationTablesEnabled = false;
 
     let queryValues = queryAble.getValues();
     let selectQuery = new query(dbInfo, "product");
-    let result = selectQuery.getJoinObj({},queryValues.filter.parts);
+    let result = selectQuery.getJoinObj({}, queryValues.filter.parts);
     assert(result["product"].length === 1);
     assert(result["product"][0] === "product");
 
     assert(result["product.owner"].length === 2);
     assert(result["product.owner"][0] === "product");
     assert(result["product.owner"][1] === "user");
+  });
+  it('query-where-join-tree', function () {
+    migrationSetup.migrationTablesEnabled = true;
+    rewiremock(() => require("../sqlGeneration/migration/migrationSource.js")).with(mocks.emptyMigrationSource);
+    rewiremock.enable();
+    let myDB = mocks.dbSelectJoin();
+    const dbGenerator = new (require("../sqlGeneration/dbGenerator.js"))(myDB);
+    dbGenerator.dropDB = true;
+    dbGenerator.sql;
+    let dbInfo = dbGenerator._comparisonTarget;
+
+    let queryAble = queryFactory.get(dbInfo, "product");
+    queryAble.filter((product) =>
+      product.name.equals("TV") &&
+      product.owner.name.like("Philip") || (
+        product.owner.name.notLike("Bella") &&
+        product.name.notEquals("Radio")
+      )
+      , {});
+    queryAble.
+      select((product) => ({
+        name: product.name,
+        ownerName: product.owner.name,
+        detailName: product.details.name,
+        ownerCount: product.owner.count
+      }));
+    rewiremock.disable();
+    migrationSetup.migrationTablesEnabled = false;
+
+    let queryValues = queryAble.getValues();
+    let selectQuery = new query(dbInfo, "product");
+    let result = selectQuery.getJoinTree(queryValues.select.selectParts, queryValues.filter.parts);
+
   });
 })

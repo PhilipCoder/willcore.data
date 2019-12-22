@@ -1,5 +1,6 @@
 const esprima = require('esprima');
 const escodegen = require("escodegen");
+const functionMappings = require("./functionMappings.js");
 
 class queryGenerator {
     constructor(db, tableName) {
@@ -12,18 +13,87 @@ class queryGenerator {
 
     }
 
-    getJoinSQL(selectParts, queryParts){
-        
+    //steps: 
+    //input : "{"product":["product"],"product.owner":["product","user"],"product.details":["product","productDetails"]}"
+    /*output: {
+        table:"product",
+        joins:{
+            owner:{
+                table:"user",
+                left:"details",
+                right:"id",
+                joins:{
+
+                }
+            },
+            details:{
+                table:"productDetails",
+                left:"details",
+                right:"id",
+                joins:{}
+            }
+        }
+    }*/
+    //Loop through the tables
+    //case direct reference, example product details
+    //right is column product.details
+    //left is target of product.details -> productDetails.Id
+    //case of indirect reference, example productDetails.products
+    //left is the target of the target of productDetails.product : productDetails.product -> product.details -> productDetails.id
+    //right is the target of productDetails.product : productDetails.product
+    getJoinTree(selectParts, queryParts) {
+        let joinObj = this.getJoinObj(selectParts, queryParts);
+        let joinDetails = {};
+        for (let key in joinObj) {
+            let keyParts = key.split(".");
+            let table = null;
+            let currentJoinTable = joinDetails;
+            let index = 0;
+            keyParts.forEach(part => {
+                if (table === null) {
+                    if (!joinDetails.joins) {
+                        joinDetails.table = part;
+                        joinDetails.joins = {};
+                    }
+                    table = this.db.tables[part];
+                } else if (!currentJoinTable.joins[part]) {
+                    let tableName = joinObj[key][index];
+                    let column = table.columns[part];
+                    let reference = this.db.tables[column.reference.table].columns[column.reference.column];
+                    if (!reference.primary) {
+                        column = reference;
+                        reference = this.db.tables[column.reference.table].columns[column.reference.column];
+                    }
+                    currentJoinTable.joins[part] = {
+                        joins: {},
+                        table: tableName,
+                        left: column.name,
+                        right: reference.name
+                    };
+                    currentJoinTable = currentJoinTable.joins[part];
+                    table = this.db.tables[tableName];
+                }
+                index++;
+            });
+        }
+        return joinDetails;
     }
 
     getJoinObj(selectParts, queryParts) {
         let tableAliases = {};
         let table = this.db.tables[this.tableName];
+        let selects = [];
+        let queryNodes = [];
         for (let i in selectParts) {
             let currentTable = table;
             let currentParts = selectParts[i];
             let currentPath = `${currentTable.name}`;
             let tableNames = [];
+            let aggregateFunction = null;
+            if (functionMappings.aggregationFunctions[currentParts[currentParts.length - 1]]) {
+                aggregateFunction = currentParts[currentParts.length - 1];
+                currentParts = currentParts.slice(0, currentParts.length - 1);
+            }
             for (let pathI = 0; pathI < currentParts.length - 1; pathI++) {
                 tableNames.push(currentTable.name);
                 let path = currentParts[pathI + 1];
@@ -32,10 +102,15 @@ class queryGenerator {
                 if (pathI < currentParts.length - 2 && !currentColumn.reference) throw `Column ${path} on table ${currentTable.name} is not a reference to another table.`;
                 if (pathI < currentParts.length - 2) {
                     currentPath = `${currentPath}.${path}`;
+                } else {
+                    selects.push([currentParts[pathI], path]);
                 }
                 if (pathI < currentParts.length - 1 && currentColumn.reference) {
                     currentTable = this.db.tables[currentColumn.reference.table];
                 }
+            }
+            if (aggregateFunction) {
+                selects[selects.length - 1].push(aggregateFunction);
             }
             tableAliases[currentPath] = tableNames;
         }
@@ -62,7 +137,7 @@ class queryGenerator {
                     }
                 } else if (queryPart.type !== "Punctuator") {
                     isTable = false;
-                    if (currentPath.indexOf(".")>0){
+                    if (currentPath.indexOf(".") > 0) {
                         currentPath = currentPath.substring(0, currentPath.lastIndexOf("."));
                     }
                     tableAliases[currentPath] = tableNames;
@@ -70,6 +145,56 @@ class queryGenerator {
                     currentTable = table;
                     tableNames = [currentTable.name];
                 }
+                index++;
+            });
+            //converting to mysql syntax
+            //
+            table = this.db.tables[this.tableName];
+            currentTable = table;
+            isTable = false;
+            let lastTable = currentTable.name;
+            let lastColumn = null;
+            index = 0;
+            let isBusyWithFunction = false;
+            let currentFunction = null;
+            queryParts.forEach(queryPart => {
+                if (!isTable && queryPart.type === "Identifier" && queryPart.value === this.tableName) {
+                    isTable = true;
+                } else if (isTable && queryParts[index - 1].type === "Punctuator" && queryParts[index - 1].value === "." && queryPart.type === "Identifier") {
+                    let isFunction = index < queryParts.length - 2 && queryParts[index + 1].type === "Punctuator" && queryParts[index + 1].value === "(";
+                    if (!isFunction) {
+                        isBusyWithFunction = true;
+                        let currentColumn = currentTable.columns[queryPart.value];
+                        if (!currentColumn) throw `Invalid column. Table ${currentTable.name} does not have a column named ${queryPart.value}.`;
+                        lastColumn = queryPart.value;
+                        if (currentColumn.reference) {
+                            currentTable = this.db.tables[currentColumn.reference.table];
+                            lastTable = currentTable.name;
+                        }
+                    } else {
+                        currentFunction = queryPart.value;
+                    }
+                } else if (isBusyWithFunction && queryPart.type === "Punctuator" && queryPart.value === ")") {
+                    isBusyWithFunction = false;
+                }
+                else if (queryPart.type !== "Punctuator") {
+                    isTable = false;
+                    currentTable = table;
+                    queryNodes.push({ type: "tableColumn", column: lastColumn, table: lastTable });
+                    if (currentFunction) {
+                        let functionType = functionMappings.aggregationFunctions[currentFunction] ? "aggregationFunction" :
+                            functionMappings.queryColumnFunctions[currentFunction] ? "queryColumnFunction" :
+                                functionMappings.queryValuesFunctions[currentFunction] ? "queryValuesFunction" :
+                                    functionMappings.queryValueFunctions[currentFunction] ? "queryValueFunction" :
+                                        functionMappings.queryFunctions[currentFunction] ? "queryFunction" :
+                                            functionMappings.statements[currentFunction] ? "statement" :
+                                                null;
+                        if (functionType === null) throw `Function ${currentFunction} not supported.`;
+                        queryNodes.push({ type: "function", functionType: functionType, function: currentFunction });
+                        currentFunction = null;
+                    }
+                }
+
                 index++;
             });
         }
