@@ -1,16 +1,17 @@
-const dbGenerator = require("../dbGenerator.js");
-const queryFactory = require("../queries/queryable.js")
+const queryAble = require("../queries/queryable.js")
+const query = require("../../sqlGeneration/queries/queryGenerator.js");
+
 class queryFactory{
     constructor(db,table){
         this.db = db;
         this.table = table;
     }
     getQuery(){
-        this.generator = new dbGenerator(this.db);
+        this.generator = new ( require("../dbGenerator.js"))(this.db);
         this.generator.dropDB = true;
         this.generator.sql;
-        this.dbInfo = this.dbGenerator._comparisonTarget;
-        this.queryAble = this.queryFactory.get(this.dbInfo,this.table);
+        this.dbInfo = this.generator._comparisonTarget;
+        this.queryAble = queryAble.get(this.dbInfo,this.table);
         return this.queryAble;
     }
     getCalculationValues(){
