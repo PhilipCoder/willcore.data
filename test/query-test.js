@@ -122,7 +122,7 @@ describe('query', function () {
 
     let queryValues = queryAble.getValues();
     let selectQuery = new query(dbInfo, "product");
-    let result = selectQuery.getJoinObj(queryValues.select.selectParts)
+    let result = selectQuery.getJoinObj(queryValues.select.selectParts).tableAliases;
 
     assert(result["product"].length === 1);
     assert(result["product.details"].length === 2);
@@ -146,14 +146,14 @@ describe('query', function () {
     let dbInfo = dbGenerator._comparisonTarget;
 
     let queryAble = queryFactory.get(dbInfo, "product");
-    queryAble.filter((product) => product.name === "TV" && product.owner.name.contains("Philip"), {});
+    queryAble.filter((product) => product.name === "TV" && product.owner.name.like("Philip"), {});
 
     rewiremock.disable();
     migrationSetup.migrationTablesEnabled = false;
 
     let queryValues = queryAble.getValues();
     let selectQuery = new query(dbInfo, "product");
-    let result = selectQuery.getJoinObj({}, queryValues.filter.parts);
+    let result = selectQuery.getJoinObj({}, queryValues.filter.parts).tableAliases;
     assert(result["product"].length === 1);
     assert(result["product"][0] === "product");
 
@@ -191,7 +191,7 @@ describe('query', function () {
 
     let queryValues = queryAble.getValues();
     let selectQuery = new query(dbInfo, "product");
-    let result = selectQuery.getJoinTree(queryValues.select.selectParts, queryValues.filter.parts);
-
+    let joinObj =  selectQuery.getJoinObj(queryValues.select.selectParts, queryValues.filter.parts);
+    let result = selectQuery.getJoinTree(joinObj);
   });
 })
