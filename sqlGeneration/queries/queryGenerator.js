@@ -118,7 +118,7 @@ class queryGenerator {
                     currentPath = `${currentPath}.${path}`;
                 }
                 else {
-                    selects.push([currentParts[pathI], path]);
+                    selects.push([i,currentParts[pathI], path]);
                 }
                 if (pathI < currentParts.length - 1 && currentColumn.reference) {
                     currentTable = this.db.tables[currentColumn.reference.table];

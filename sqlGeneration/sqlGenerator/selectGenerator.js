@@ -6,12 +6,14 @@ class selectGenerator{
      */
     static getSQL(selectStatements){
         let selectParts = selectStatements.map(selectArray => {
-            if (selectArray.length === 2){
-                return `${selectArray[0]}.${selectArray[1]} \`${selectArray[0]}.${selectArray[1]}\``;
-            } else if (selectArray.length === 3){
-                return `${functionMappings.aggregationFunctions[selectArray[2](selectArray[0],selectArray[1])]}${}.${} \`${selectArray[0]}.${selectArray[1]}\``;
+            if (selectArray.length === 3){
+                return `    ${selectArray[1]}.${selectArray[2]} \`${selectArray[0]}\``;
+            } else if (selectArray.length === 4){
+                return `    ${functionMappings.aggregationFunctions[selectArray[3]](selectArray[1],selectArray[2])} \`${selectArray[0]}\``;
             }
         });
-        return `SELECT\n    `;
+        return `SELECT\n${selectParts.join("\n")}\nFROM\n`;
     }
 }
+
+module.exports = selectGenerator;

@@ -3,7 +3,7 @@ const migrationSetup = require("../assignables/mysql/setup/dbMigrationSetup.js")
 const queryFactory = require("../sqlGeneration/queries/queryFactory.js");
 const rewiremock = require('rewiremock/node');
 const mocks = require("./mocks/dbGenerator-mocks.js");
-
+const selectGenerator = require("../sqlGeneration/sqlGenerator/selectGenerator.js");
 describe('mySQL-query-factory', function () {
     migrationSetup.migrationTablesEnabled = false;
     //---------------------------------------------------
@@ -28,7 +28,7 @@ describe('mySQL-query-factory', function () {
         let calculationValues = factory.getCalculationValues();
         rewiremock.disable();
         migrationSetup.migrationTablesEnabled = false;
-
+        let selectSQL = selectGenerator.getSQL(calculationValues.selects);
     });
 
 });
