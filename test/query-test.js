@@ -6,12 +6,17 @@ const migrationSetup = require("../assignables/mysql/setup/dbMigrationSetup.js")
 const rewiremock = require('rewiremock/node');
 const mocks = require("./mocks/dbGenerator-mocks.js");
 
+/**
+ * Test for generic query operations
+ */
 describe('query', function () {
+
   it('query-select-expression', function () {
     let selectQuery = new query();
     selectQuery.select(() => ({ name, age, ownerName: owner.name }));
     assert(selectQuery.run.selectExpression.length === 11, "The assigned select expression an incorrect number of tokens.");
   });
+
   it('query-select-expression-validate', function () {
     let selectQuery = new query();
     assert.throws(() => selectQuery.select(() => "sss"), "Invalid argument passed to the query select statement. The select statement should be an arrow function returning an object with the fields selected.", "The validation did not block the assignment.");
@@ -22,6 +27,7 @@ describe('query', function () {
     selectQuery.filter(() => name === "one" && age > 10 && owner.name === "Philip", {});
     assert(selectQuery.run.filterExpression.length === 13, "The assigned select expression has an incorrect type.");
   });
+
   it('queryFactory-test', function () {
     let queryAble = queryFactory.get({}, "person");
     let name = "Phil";
@@ -40,17 +46,18 @@ describe('query', function () {
       sort(true, (person) => person.name);
 
     let queryValues = queryAble.getValues();
-
+    assert(queryValues !== null, "Query factory not getting right queryable.");
   });
+
   it('chainableProxy-test', function () {
     let user = chainableProxyHandler.new("user");
     let chainResult = user.details.address.city;
     let value = chainResult._name;
     assert(value.length === 4);
-    assert(value[0] === "user");
-    assert(value[1] === "details");
-    assert(value[2] === "address");
-    assert(value[3] === "city");
+    assert(value[0] === "user", "Chainable proxy not assigning correct values.");
+    assert(value[1] === "details", "Chainable proxy not assigning correct values.");
+    assert(value[2] === "address", "Chainable proxy not assigning correct values.");
+    assert(value[3] === "city", "Chainable proxy not assigning correct values.");
   });
 
   it('query-getScopeFields-test', function () {
@@ -62,9 +69,9 @@ describe('query', function () {
         name: "Life"
       }
     }, parts);
-    assert(scopeFields.length === 2);
-    assert(scopeFields[0].length === 1);
-    assert(scopeFields[1].length === 2);
+    assert(scopeFields.length === 2, "Incorrect scope fields.");
+    assert(scopeFields[0].length === 1, "Incorrect scope fields.");
+    assert(scopeFields[1].length === 2, "Incorrect scope fields.");
   });
 
   it('query-getObjectProperty-test', function () {
@@ -84,10 +91,9 @@ describe('query', function () {
     let city = selectQuery.getObjectProperty(obj, [{ value: "address" }, { value: "city" }]);
     let postal = selectQuery.getObjectProperty(obj, [{ value: "address" }, { value: "area" }, { value: "postal" }]);
 
-    assert(name === "Phil");
-    assert(city === "centurion");
-    assert(postal === 123);
-
+    assert(name === "Phil", "Incorrect property retrieved from object.");
+    assert(city === "centurion", "Incorrect property retrieved from object.");
+    assert(postal === 123, "Incorrect property retrieved from object.");
   });
 
   it('query-filter-scoped-test', function () {
@@ -98,6 +104,7 @@ describe('query', function () {
         name: "Life"
       }
     });
+    assert(parts.length === 23, "The generated filter query has incorrect parts");
   });
 
   it('query-select-join-obj', function () {
@@ -124,17 +131,18 @@ describe('query', function () {
     let selectQuery = new query(dbInfo, "product");
     let result = selectQuery.getJoinObj(queryValues.select.selectParts).tableAliases;
 
-    assert(result["product"].length === 1);
-    assert(result["product.details"].length === 2);
-    assert(result["product.owner"].length === 2);
+    assert(result["product"].length === 1, "Generated join object is incorrect");
+    assert(result["product.details"].length === 2, "Generated join object is incorrect");
+    assert(result["product.owner"].length === 2, "Generated join object is incorrect");
 
-    assert(result["product"][0] === "product");
-    assert(result["product.details"][0] === "product");
-    assert(result["product.details"][1] === "productDetails");
+    assert(result["product"][0] === "product", "Generated join object is incorrect");
+    assert(result["product.details"][0] === "product", "Generated join object is incorrect");
+    assert(result["product.details"][1] === "productDetails", "Generated join object is incorrect");
 
-    assert(result["product.owner"][0] === "product");
-    assert(result["product.owner"][1] === "user");
+    assert(result["product.owner"][0] === "product", "Generated join object is incorrect");
+    assert(result["product.owner"][1] === "user", "Generated join object is incorrect");
   });
+
   it('query-where-join-obj', function () {
     migrationSetup.migrationTablesEnabled = true;
     rewiremock(() => require("../sqlGeneration/migration/migrationSource.js")).with(mocks.emptyMigrationSource);
@@ -154,13 +162,48 @@ describe('query', function () {
     let queryValues = queryAble.getValues();
     let selectQuery = new query(dbInfo, "product");
     let result = selectQuery.getJoinObj({}, queryValues.filter.parts).tableAliases;
-    assert(result["product"].length === 1);
-    assert(result["product"][0] === "product");
+    assert(result["product"].length === 1, "Generated join object is incorrect");
+    assert(result["product"][0] === "product", "Generated join object is incorrect");
 
-    assert(result["product.owner"].length === 2);
-    assert(result["product.owner"][0] === "product");
-    assert(result["product.owner"][1] === "user");
+    assert(result["product.owner"].length === 2, "Generated join object is incorrect");
+    assert(result["product.owner"][0] === "product", "Generated join object is incorrect");
+    assert(result["product.owner"][1] === "user", "Generated join object is incorrect");
   });
+
+  it('query-include-test', function () {
+    migrationSetup.migrationTablesEnabled = true;
+    rewiremock(() => require("../sqlGeneration/migration/migrationSource.js")).with(mocks.emptyMigrationSource);
+    rewiremock.enable();
+    let myDB = mocks.dbSelectJoin();
+    const dbGenerator = new (require("../sqlGeneration/dbGenerator.js"))(myDB);
+    dbGenerator.dropDB = true;
+    dbGenerator.sql;
+    let dbInfo = dbGenerator._comparisonTarget;
+
+    let queryAble = queryFactory.get(dbInfo, "product");
+    queryAble.include((product) => product.owner);
+    assert(queryAble.getValues().includes["product.owner"] === true, "Queryable's include values not correct.");
+    rewiremock.disable();
+    migrationSetup.migrationTablesEnabled = false;
+  });
+
+  it('query-include-selects-test', function () {
+    migrationSetup.migrationTablesEnabled = true;
+    rewiremock(() => require("../sqlGeneration/migration/migrationSource.js")).with(mocks.emptyMigrationSource);
+    rewiremock.enable();
+    let myDB = mocks.dbSelectJoin();
+    const dbGenerator = new (require("../sqlGeneration/dbGenerator.js"))(myDB);
+    dbGenerator.dropDB = true;
+    dbGenerator.sql;
+    let dbInfo = dbGenerator._comparisonTarget;
+
+    let queryAble = queryFactory.get(dbInfo, "product");
+    queryAble.include((product) => product.owner);
+    assert(queryAble.getValues().includes["product.owner"] === true, "Queryable's include values not correct.");
+    rewiremock.disable();
+    migrationSetup.migrationTablesEnabled = false;
+  });
+
   it('query-where-join-tree', function () {
     migrationSetup.migrationTablesEnabled = true;
     rewiremock(() => require("../sqlGeneration/migration/migrationSource.js")).with(mocks.emptyMigrationSource);
@@ -191,7 +234,16 @@ describe('query', function () {
 
     let queryValues = queryAble.getValues();
     let selectQuery = new query(dbInfo, "product");
-    let joinObj =  selectQuery.getJoinObj(queryValues.select.selectParts, queryValues.filter.parts);
+    let joinObj = selectQuery.getJoinObj(queryValues.select.selectParts, queryValues.filter.parts);
     let result = selectQuery.getJoinTree(joinObj);
+    assert(result.table === "product", "Generated join tree has an incorrect table.");
+    assert(result.joins.owner.table === "user", "Generated join tree has an incorrect table.");
+    assert(result.joins.owner.left === "owner", "Generated join tree has an incorrect column.");
+    assert(result.joins.owner.right === "id", "Generated join tree has an incorrect column.");
+
+    assert(result.joins.details.table === "productDetails", "Generated join tree has an incorrect table.");
+    assert(result.joins.details.left === "details", "Generated join tree has an incorrect column.");
+    assert(result.joins.details.right === "id", "Generated join tree has an incorrect column.");
+
   });
 })

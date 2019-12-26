@@ -41,7 +41,7 @@ class queryGenerator {
     //left is the target of the target of productDetails.product : productDetails.product -> product.details -> productDetails.id
     //right is the target of productDetails.product : productDetails.product
     getJoinTree(joinObj) {
-        let tableAliases =joinObj.tableAliases;
+        let tableAliases = joinObj.tableAliases;
         let joinDetails = {};
         for (let key in tableAliases) {
             let keyParts = key.split(".");
@@ -52,6 +52,7 @@ class queryGenerator {
                 if (table === null) {
                     if (!joinDetails.joins) {
                         joinDetails.table = part;
+                        joinDetails.alias = part;
                         joinDetails.joins = {};
                     }
                     table = this.db.tables[part];
@@ -67,8 +68,13 @@ class queryGenerator {
                         joins: {},
                         table: tableName,
                         left: column.name,
-                        right: reference.name
+                        right: reference.name,
+                        alias: `${table.name}_${column.name}`
                     };
+                    currentJoinTable = currentJoinTable.joins[part];
+                    table = this.db.tables[tableName];
+                }else{
+                    let tableName = tableAliases[key][index];
                     currentJoinTable = currentJoinTable.joins[part];
                     table = this.db.tables[tableName];
                 }
@@ -82,11 +88,11 @@ class queryGenerator {
         let { tableAliases, queryNodes, selects } = this.getSelectJoins(selectParts);
         if (queryParts) {
             this.getWhereJoins(queryParts, tableAliases);
-            queryNodes = this.getWhereParts(  queryParts, queryNodes);
+            queryNodes = this.getWhereParts(queryParts, queryNodes);
         }
         return {
-            selects:selects,
-            tableAliases : tableAliases,
+            selects: selects,
+            tableAliases: tableAliases,
             queryNodes: queryNodes
         };
     }
@@ -118,7 +124,7 @@ class queryGenerator {
                     currentPath = `${currentPath}.${path}`;
                 }
                 else {
-                    selects.push([i,currentParts[pathI], path]);
+                    selects.push([i, currentParts[pathI], path]);
                 }
                 if (pathI < currentParts.length - 1 && currentColumn.reference) {
                     currentTable = this.db.tables[currentColumn.reference.table];
@@ -170,7 +176,7 @@ class queryGenerator {
         });
     }
 
-    getWhereParts( queryParts, queryNodes) {
+    getWhereParts(queryParts, queryNodes) {
         let table = this.db.tables[this.tableName];
         let currentTable = table;
         let isTable = false;
@@ -264,9 +270,9 @@ class queryGenerator {
         }
         let filterExpression = esprima.parseScript(filterFunc.toString());
         if (validateFilterExpression(filterExpression)) {
-         //   filterExpression = filterExpression.body[0].expression.body;
-         filterFunc = typeof filterFunc === "string" ? filterFunc :filterFunc.toString();
-            let expressionString = filterFunc.substring(filterFunc.indexOf("=>")+2);//escodegen.generate(filterExpression);
+            //   filterExpression = filterExpression.body[0].expression.body;
+            filterFunc = typeof filterFunc === "string" ? filterFunc : filterFunc.toString();
+            let expressionString = filterFunc.substring(filterFunc.indexOf("=>") + 2);//escodegen.generate(filterExpression);
             filterExpression = esprima.tokenize(expressionString);
             this.run.filterExpression = filterExpression;
         } else {
