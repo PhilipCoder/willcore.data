@@ -104,6 +104,7 @@ class queryGenerator {
         let queryNodes = [];
         for (let i in selectParts) {
             let currentTable = table;
+            let previousTable = table;
             let currentParts = selectParts[i];
             let currentPath = `${currentTable.name}`;
             let tableNames = [];
@@ -124,9 +125,15 @@ class queryGenerator {
                     currentPath = `${currentPath}.${path}`;
                 }
                 else {
-                    selects.push([i, currentParts[pathI], path]);
+                    let tableAlias =this.tableName === previousTable.name ? 
+                    previousTable.name : 
+                    `${previousTable.name}_${path}`;
+                    if (!currentColumn.reference){
+                         selects.push([i,tableAlias , path]);
+                    }
                 }
                 if (pathI < currentParts.length - 1 && currentColumn.reference) {
+                    previousTable = currentTable;
                     currentTable = this.db.tables[currentColumn.reference.table];
                 }
             }
