@@ -17,11 +17,11 @@ const functionMappings = {
         }
     },
     queryColumnFunctions:{
-        like:function(tableAlias, column,value){
-            return `${tableAlias}.${column} LIKE ${value}`
+        like:function(valueA,valueB){
+            return `${valueA} LIKE ${valueB}`
         },
-        notLike:function(tableAlias, column,value){
-            return `${tableAlias}.${column} NOT LIKE ${value}`
+        notLike:function(valueA,valueB){
+            return `${valueA} NOT LIKE ${valueB}`
         },
     },
     queryValuesFunctions:{

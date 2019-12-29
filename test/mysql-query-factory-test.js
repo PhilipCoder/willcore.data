@@ -5,6 +5,7 @@ const rewiremock = require('rewiremock/node');
 const mocks = require("./mocks/dbGenerator-mocks.js");
 const selectGenerator = require("../sqlGeneration/sqlGenerator/selectGenerator.js");
 const joinGenerator = require("../sqlGeneration/sqlGenerator/joinGenerator.js");
+const whereGenerator = require("../sqlGeneration/sqlGenerator/whereGenerator.js");
 
 describe('mySQL-query-factory', function () {
     migrationSetup.migrationTablesEnabled = false;
@@ -19,7 +20,8 @@ describe('mySQL-query-factory', function () {
             product.name.equals("TV") &&
             product.owner.name.like("Philip") || (
                 product.owner.name.notLike("Bella") &&
-                product.name.notEquals("Radio")
+                product.name.notEquals("Radio") &&
+                product.owner.profiles.name.equals(99)
             ), {}).
             include((product) => product.owner).
             include((product) => product.owner.profiles).
@@ -31,7 +33,8 @@ describe('mySQL-query-factory', function () {
         migrationSetup.migrationTablesEnabled = false;
         let selectSQL = selectGenerator.getSQL(calculationValues.selects);
         let joinSQL = joinGenerator.getSQL(calculationValues.joinTree);
-
+        let whereSQL = whereGenerator.getSQL(calculationValues.queryNodes);
+        let fullSQL = selectSQL + joinSQL + whereSQL;
     });
 
 });

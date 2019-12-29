@@ -73,7 +73,7 @@ class queryGenerator {
                     };
                     currentJoinTable = currentJoinTable.joins[part];
                     table = this.db.tables[tableName];
-                }else{
+                } else {
                     let tableName = tableAliases[key][index];
                     currentJoinTable = currentJoinTable.joins[part];
                     table = this.db.tables[tableName];
@@ -125,11 +125,11 @@ class queryGenerator {
                     currentPath = `${currentPath}.${path}`;
                 }
                 else {
-                    let tableAlias =this.tableName === previousTable.name ? 
-                    previousTable.name : 
-                    `${previousTable.name}_${path}`;
-                    if (!currentColumn.reference){
-                         selects.push([i,tableAlias , path]);
+                    let tableAlias = this.tableName === previousTable.name ?
+                        previousTable.name :
+                        `${previousTable.name}_${path}`;
+                    if (!currentColumn.reference) {
+                        selects.push([i, tableAlias, path]);
                     }
                 }
                 if (pathI < currentParts.length - 1 && currentColumn.reference) {
@@ -192,6 +192,7 @@ class queryGenerator {
         let index = 0;
         let isBusyWithFunction = false;
         let currentFunction = null;
+        let previousColumn = null;
         queryParts.forEach(queryPart => {
             if (!isTable && queryPart.type === "Identifier" && queryPart.value === this.tableName) {
                 isTable = true;
@@ -203,6 +204,7 @@ class queryGenerator {
                     let currentColumn = currentTable.columns[queryPart.value];
                     if (!currentColumn)
                         throw `Invalid column. Table ${currentTable.name} does not have a column named ${queryPart.value}.`;
+                    previousColumn = lastColumn;
                     lastColumn = queryPart.value;
                     if (currentColumn.reference) {
                         currentTable = this.db.tables[currentColumn.reference.table];
@@ -219,7 +221,7 @@ class queryGenerator {
             else if (queryPart.type !== "Punctuator" && isTable) {
                 isTable = false;
                 currentTable = table;
-                queryNodes.push({ type: "tableColumn", column: lastColumn, table: lastTable });
+                queryNodes.push({ type: "tableColumn", column: lastColumn, table: lastTable, alias: previousColumn ? `${table.name}_${previousColumn}` : table.name });
                 if (currentFunction) {
                     let functionType = functionMappings.aggregationFunctions[currentFunction] ? "aggregationFunction" :
                         functionMappings.queryColumnFunctions[currentFunction] ? "queryColumnFunction" :
@@ -236,12 +238,15 @@ class queryGenerator {
             }
             else if (queryPart.value !== "." && !(isBusyWithFunction && queryPart.type === "Punctuator" && queryPart.value === "(")) {
                 queryNodes.push(queryPart.value);
+                currentFunction = null;
             }
             else if (queryPart.type !== "Punctuator" && !isTable) {
                 queryNodes.push(queryPart.value);
+                currentFunction = null;
             }
-            if (queryPart.type === "String" || queryPart.type === "Number" || queryPart.type === "Boolean" || queryPart.type === "null") {
+            if (queryPart.type === "String" || queryPart.type === "Numeric" || queryPart.type === "Boolean" || queryPart.type === "null") {
                 queryNodes.push({ type: "litteral", value: queryPart.value });
+                currentFunction = null;
             }
             index++;
         });

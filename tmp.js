@@ -48,7 +48,16 @@ module.exports = (view, willCore, assignables) => {
     let result = willCore.myDB.dogs.filter(dogs => dogs.name == "vlekkie" && dogs.age > 2 || dogs.owner).select(dogs => ({name:dogs.name, age:dogs.age, owners:}));
 
   
-    //workflow for queries
-    //
+    //=============================================================
+    /* Toto:
+    1)  Table proxies to return Queryable function when any queryable function is called on table proxy.
+    2)  Adding of table rows to table.
+          let user = {name:"John",age:30,surname:"Doe"};
+          context.users.add(user);
+          context.save();
+          let newId = user.id;
+    3)  Proxies to modify objects;
+          
+    */
   };
   
