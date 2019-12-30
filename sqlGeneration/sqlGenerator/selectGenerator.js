@@ -12,7 +12,7 @@ class selectGenerator{
                 return `    ${functionMappings.aggregationFunctions[selectArray[3]](selectArray[1],selectArray[2])} \`${selectArray[0]}\``;
             }
         });
-        return `SELECT\n${selectParts.join("\n")}\n`;
+        return `SELECT\n${selectParts.join(",\n")}\n`;
     }
 }
 

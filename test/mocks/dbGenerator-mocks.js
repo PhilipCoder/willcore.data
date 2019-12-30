@@ -298,6 +298,7 @@ const manyFKCreateDB = () =>{
     proxy.myDB.profile.name.column.string;
     proxy.myDB.profile.person.column.int;
     proxy.myDB.profile.person = proxy.myDB.user.id;
+    proxy.myDB.user.profiles = proxy.myDB.profile.person;
 
     proxy.myDB.productDetails.table;
     proxy.myDB.productDetails.id.column.int;

@@ -125,7 +125,7 @@ class queryGenerator {
                     currentPath = `${currentPath}.${path}`;
                 }
                 else {
-                    let tableAlias = this.tableName === previousTable.name ?
+                    let tableAlias = this.tableName === currentTable.name ?
                         previousTable.name :
                         `${previousTable.name}_${path}`;
                     if (!currentColumn.reference) {
@@ -280,7 +280,7 @@ class queryGenerator {
         if (this.name in scopeValues) {
             throw `The scoped variable object contains a key with the same name as the expression table, ${this.name}. This is not allowed!`;
         }
-        let filterExpression = esprima.parseScript(filterFunc.toString());
+        let filterExpression = esprima.parseScript(typeof filterFunc === "string" ? filterFunc : filterFunc.toString());
         if (validateFilterExpression(filterExpression)) {
             //   filterExpression = filterExpression.body[0].expression.body;
             filterFunc = typeof filterFunc === "string" ? filterFunc : filterFunc.toString();
@@ -294,8 +294,7 @@ class queryGenerator {
             return selectExpression.body &&
                 selectExpression.body.length > 0 &&
                 selectExpression.body[0].type === "ExpressionStatement" &&
-                selectExpression.body[0].expression.type === "ArrowFunctionExpression" &&
-                selectExpression.body[0].expression.body.type === "LogicalExpression";
+                selectExpression.body[0].expression.type === "ArrowFunctionExpression" 
         }
         return this.getScopeValues(scopeValues, this.run.filterExpression);
     }

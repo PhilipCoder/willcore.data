@@ -9,7 +9,7 @@ class joinGenerator {
         let joins = [];
         for (let key in joinObj) {
             let joinRow = joinObj[key];
-            joins.push(`INNER JOIN ${joinRow.table} ${joinRow.alias} ON ${tableName}.${joinRow.left} = ${joinRow.alias}.${joinRow.right}`);
+            joins.push(`INNER JOIN ${joinRow.table} ${joinRow.alias} ON ${tableName}.${joinRow.right} = ${joinRow.alias}.${joinRow.left}`);
             if (joinRow.joins) {
                 joins.push(...joinGenerator.getJoinSQL(joinRow.joins, joinRow.alias));
             }

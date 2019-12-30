@@ -1,7 +1,7 @@
 const chainableProxy = require("../../proxies/chainable/chainableProxyHandler.js");
 const query = require("../../sqlGeneration/queries/queryGenerator.js");
 class queryFactory {
-    static get(dbConfig, tableName) {
+    static get(dbConfig, tableName,queryFactory ) {
         let scopedVariables = {
             dbConfig: dbConfig,
             tableName: tableName,
@@ -28,12 +28,15 @@ class queryFactory {
          * Query. Executes a query.
          */
         const queryable = function () {
+            queryFactory.runQuery.bind(queryFactory);
+            queryFactory.runQuery();
         };
 
         /**
          * Adds a filter clause to a SQL query.
          */
         queryable.filter = function (filterExpression, queryScope) {
+            queryScope = queryScope || {};
             scopedVariables.filter.filterExpression = filterExpression;
             scopedVariables.filter.queryScope = queryScope;
             let selectQuery = new query();

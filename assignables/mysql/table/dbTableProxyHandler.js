@@ -1,5 +1,6 @@
 const assignableProxyHandler = require("../../../proxies/base/assignableProxyHandler.js");
 const columnProxy = require("../column/dbColumnProxy.js");
+const queryFactory = require("../../../sqlGeneration/queries/queryFactory.js");
 
 class dbTableProxyHandler extends assignableProxyHandler {
   constructor() {
@@ -7,7 +8,9 @@ class dbTableProxyHandler extends assignableProxyHandler {
     this.setTraps.unshift(this.assignReference);
     this.setTraps.unshift(this.assignReferenceNewColumn);
     this.getTraps.unshift(this.getAddFunction);
+    this.getTraps.unshift(this.getQueryableFunction);
   }
+
   assignReference(target, property, value, proxy) {
     if (value instanceof columnProxy && target[property] instanceof columnProxy) {
       let targetColumnName = value._dbColumnAssignable.columnInfo.name;
@@ -16,13 +19,15 @@ class dbTableProxyHandler extends assignableProxyHandler {
       target[property]._dbColumnAssignable.columnInfo.reference = {
         table: targetTableName,
         column: targetColumnName,
-        thisTable:tableName
+        thisTable: tableName,
+        primary: !value._dbColumnAssignable.columnInfo.reference 
       };
       return { value: true };
     }
     return { value: false, status: false };
   }
-  assignReferenceNewColumn(target, property, value, proxy){
+
+  assignReferenceNewColumn(target, property, value, proxy) {
     if (value instanceof columnProxy && !target[property]) {
       proxy[property].column.int;
       target[property]._dbColumnAssignable.columnInfo.type = value._dbColumnAssignable.columnInfo.type;
@@ -34,7 +39,8 @@ class dbTableProxyHandler extends assignableProxyHandler {
       target[property]._dbColumnAssignable.columnInfo.reference = {
         table: targetTableName,
         column: targetColumnName,
-        thisTable:tableName
+        thisTable: tableName,
+        primary: !value._dbColumnAssignable.columnInfo.reference 
       };
       return { value: true };
     }
@@ -43,13 +49,22 @@ class dbTableProxyHandler extends assignableProxyHandler {
 
   getAddFunction(target, property, proxy) {
     if (property === "add") {
-      let addFunction = function(data){
+      let addFunction = function (data) {
         let statemanager = proxy._dbTableAssignable.parentProxy._mysqlAssignable.contextStateManager;
         let tableName = proxy._dbTableAssignable.tableInfo.name;
-        statemanager.addRow(tableName,data);
+        statemanager.addRow(tableName, data);
       };
       addFunction.bind(proxy);
-      return { value: addFunction, status:true };
+      return { value: addFunction, status: true };
+    }
+    return { value: false, status: false };
+  }
+
+  getQueryableFunction(target, property, proxy) {
+    if (property === "filter" || property === "select" || property === "include" || property === "sort" || property === "take" || property === "skip") {
+      let factory = new queryFactory(proxy._dbTableAssignable.parentProxy, proxy._dbTableAssignable.tableInfo.name);
+      let query = factory.getQuery();
+      return { value: query[property], status: true };
     }
     return { value: false, status: false };
   }
