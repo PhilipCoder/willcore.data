@@ -8,8 +8,9 @@ const deleteOperation = require("./operations/deleteOperation.js");
  * Author: Philip Schoeman
  */
 class contextStateManager {
-    constructor() {
+    constructor(queryExecutor) {
         this.operations = new queue();
+        this.queryExecutor = queryExecutor;
     }
 
     addRow(table, rowData){
@@ -22,6 +23,20 @@ class contextStateManager {
 
     deleteRow(table, whereField, whereValue){
         this.operations.enqueue(new deleteOperation(table, whereField, whereValue));
+    }
+
+    run(){
+        return new Promise(async (resolve, reject)=>{
+            while(!this.operations.isEmpty()){
+                let operation = this.operations.dequeue();
+                let toRun = operation.getSQL();
+                let result = await this.queryExecutor.runQuery(toRun.sql, toRun.parameter);
+                if (result.insertId > 0){
+                    operation.value.id = result.insertId;
+                }
+            }
+            resolve();
+        });
     }
 }
 

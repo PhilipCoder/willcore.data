@@ -32,7 +32,7 @@ class dbGenerator {
     }
 
     get comparisonInfo() {
-        this._comparisonInfo = this._comparisonInfo || migrationSource.getSource(this.dbInfo.name);
+        this._comparisonInfo = this._comparisonInfo || require("./migration/migrationSource.js").getSource(this.dbInfo.name);
         return this._comparisonInfo;
     }
 
@@ -56,7 +56,7 @@ class dbGenerator {
 
     generateDB() {
         return new Promise(async (resolve, reject) => {
-            await queryExecutor.initDB(this._dbInfo.connectionString, this._dbInfo.userName, this._dbInfo.password);
+            await queryExecutor.initDB(this._dbInfo.connectionString, this._dbInfo.userName, this._dbInfo.password,this._dbInfo.name);
             let result = queryExecutor.execute(this.sql);
             resolve(result);
         });

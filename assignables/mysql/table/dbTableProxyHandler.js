@@ -6,7 +6,7 @@ class dbTableProxyHandler extends assignableProxyHandler {
     super();
     this.setTraps.unshift(this.assignReference);
     this.setTraps.unshift(this.assignReferenceNewColumn);
-
+    this.getTraps.unshift(this.getAddFunction);
   }
   assignReference(target, property, value, proxy) {
     if (value instanceof columnProxy && target[property] instanceof columnProxy) {
@@ -37,6 +37,19 @@ class dbTableProxyHandler extends assignableProxyHandler {
         thisTable:tableName
       };
       return { value: true };
+    }
+    return { value: false, status: false };
+  }
+
+  getAddFunction(target, property, proxy) {
+    if (property === "add") {
+      let addFunction = function(data){
+        let statemanager = proxy._dbTableAssignable.parentProxy._mysqlAssignable.contextStateManager;
+        let tableName = proxy._dbTableAssignable.tableInfo.name;
+        statemanager.addRow(tableName,data);
+      };
+      addFunction.bind(proxy);
+      return { value: addFunction, status:true };
     }
     return { value: false, status: false };
   }

@@ -123,10 +123,19 @@ describe('dbGenerator-test', function () {
         rewiremock.enable();
         const dbGenerator = new (require("../sqlGeneration/dbGenerator.js"))(mocks.manyFKCreateDB());
         dbGenerator.dropDB = true;
-        let sql = dbGenerator.sql;
         await dbGenerator.generateDB().catch(ex=>{
             console.log(ex);
         });
+        rewiremock.disable();
+        migrationSetup.migrationTablesEnabled = false;
+    });
+
+    it('db-create-with-save', async function () {
+        migrationSetup.migrationTablesEnabled = true;
+        rewiremock(() => require("../sqlGeneration/migration/migrationSource.js")).with(mocks.emptyMigrationSource);
+        rewiremock.enable();
+        let myDB = mocks.manyFKCreateDB();
+        await myDB.init(true);
         rewiremock.disable();
         migrationSetup.migrationTablesEnabled = false;
     });

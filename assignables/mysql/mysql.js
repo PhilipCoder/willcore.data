@@ -2,7 +2,9 @@ const assignable = require("../assignable.js");
 const willCoreProxy = require("../../proxies/willCore/willCoreProxy.js");
 const mysqlProxy = require("./db/mysqlProxy.js");
 const dbMigrationSetup = require("./setup/dbMigrationSetup.js");
-
+const dbGenerator = require("../../sqlGeneration/dbGenerator.js");
+const queryExecutor = require("../../sqlExecutor/runQuery.js");
+const contextStateManager = require("../../sqlGeneration/state/contextStateManager.js");
 class mysql extends assignable {
     constructor() {
         super({ string: 3 }, willCoreProxy);
@@ -12,12 +14,17 @@ class mysql extends assignable {
             userName: null,
             password: null,
             tables: []
+           
         };
+        this.dbGenerator = null;
+        this.contextStateManager = null;
     }
 
     completionResult() {
         let proxyResult = mysqlProxy.new(this);
         dbMigrationSetup.setupTables(proxyResult, this.propertyName);
+        this.dbGenerator = new dbGenerator(proxyResult);
+        this.contextStateManager = new contextStateManager(queryExecutor);
         return proxyResult;
     }
 

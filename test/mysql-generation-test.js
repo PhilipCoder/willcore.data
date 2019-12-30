@@ -15,7 +15,7 @@ describe('mySQL-db-generation', function () {
 
       let sqlCreator = new db(proxy.myDB._mysqlAssignable.dbInfo);
       let sql = sqlCreator.getSQL();
-      assert(sql === "-- DB does not exists, creating DB.\nCREATE DATABASE myDB;\nUSE myDB;")
+      assert(sql === "-- DB does not exists, creating DB.\nCREATE DATABASE myDB;\nUSE myDB;",sql)
    });
 
    it('create-table-no-columns', function () {

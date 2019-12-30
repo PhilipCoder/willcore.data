@@ -48,7 +48,7 @@ describe('mySQL-assignable', function () {
         proxy.myDB.product.description.column.string;
         proxy.myDB.product.price.column.float;
         let json = proxy.myDB._mysqlAssignable.getDBJson();
-        assert(targetJSON === json,"The generated DB JSON is incorrect.");
+        assert(targetJSON === json,"The generated DB JSON is incorrect."+targetJSON);
     });
     it('test-primary-key', function () {
         let targetJSON = `{"name":"myDB","connectionString":"myConnection","userName":"myUser","password":"myPassword","tables":[{"name":"user","columns":[{"name":"id","type":"int","primary":true},{"name":"name","type":"string"}]},{"name":"product","columns":[{"name":"id","type":"int","primary":true},{"name":"name","type":"string"}]}]}`;
