@@ -53,7 +53,7 @@ describe('context-state-manager-tests', function () {
         myDB.profile.add({name:"balhaarB",person:1});
         myDB.profile.add({name:"vlooi",person:2});
         await myDB.save();
-        let query = await myDB.user.filter((user)=>user.id.equals(2)).include((user)=>user.profiles)();
+        let query = await myDB.user.filter((user)=>user.id.equals(1)).include((user)=>user.profiles)();
         rewiremock.disable();
         migrationSetup.migrationTablesEnabled = false;
     });

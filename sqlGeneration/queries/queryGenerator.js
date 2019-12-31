@@ -59,6 +59,7 @@ class queryGenerator {
                 } else if (!currentJoinTable.joins[part]) {
                     let tableName = tableAliases[key][index];
                     let column = table.columns[part];
+                    let directColumn = column;
                     let reference = this.db.tables[column.reference.table].columns[column.reference.column];
                     if (!reference.primary) {
                         column = reference;
@@ -69,7 +70,7 @@ class queryGenerator {
                         table: tableName,
                         left: column.name,
                         right: reference.name,
-                        alias: `${table.name}_${column.name}`
+                        alias: `${table.name}_${directColumn.name}`
                     };
                     currentJoinTable = currentJoinTable.joins[part];
                     table = this.db.tables[tableName];
@@ -109,6 +110,7 @@ class queryGenerator {
             let currentPath = `${currentTable.name}`;
             let tableNames = [];
             let aggregateFunction = null;
+            let currentRefrencedColumn = null;
             if (functionMappings.aggregationFunctions[currentParts[currentParts.length - 1]]) {
                 aggregateFunction = currentParts[currentParts.length - 1];
                 currentParts = currentParts.slice(0, currentParts.length - 1);
@@ -125,15 +127,16 @@ class queryGenerator {
                     currentPath = `${currentPath}.${path}`;
                 }
                 else {
-                    let tableAlias = this.tableName === currentTable.name ?
+                    let tableAlias = !currentRefrencedColumn ?
                         previousTable.name :
-                        `${previousTable.name}_${path}`;
+                        `${previousTable.name}_${currentRefrencedColumn.name}`;
                     if (!currentColumn.reference) {
                         selects.push([i, tableAlias, path]);
                     }
                 }
                 if (pathI < currentParts.length - 1 && currentColumn.reference) {
                     previousTable = currentTable;
+                    currentRefrencedColumn = currentColumn;
                     currentTable = this.db.tables[currentColumn.reference.table];
                 }
             }
