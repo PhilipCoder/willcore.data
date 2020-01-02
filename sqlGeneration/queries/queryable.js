@@ -29,7 +29,7 @@ class queryFactory {
          */
         const queryable = function () {
             queryFactory.runQuery.bind(queryFactory);
-            queryFactory.runQuery();
+            return queryFactory.runQuery();
         };
 
         /**

@@ -14,7 +14,7 @@ class mysql extends assignable {
             userName: null,
             password: null,
             tables: []
-           
+          
         };
         this.dbGenerator = null;
         this.contextStateManager = null;

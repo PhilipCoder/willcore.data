@@ -3,7 +3,7 @@ const rewiremock = require('rewiremock/node');
 const mocks = require("./mocks/dbGenerator-mocks.js");
 const migrationSetup = require("../assignables/mysql/setup/dbMigrationSetup.js");
 const contextStateManager = require("../sqlGeneration/state/contextStateManager.js");
-
+const proxyMapper = require("../proxies/entities/proxyMapper.js");
 describe('context-state-manager-tests', function () {
     migrationSetup.migrationTablesEnabled = false;
     it('test-add-row', function () {
@@ -57,4 +57,16 @@ describe('context-state-manager-tests', function () {
         rewiremock.disable();
         migrationSetup.migrationTablesEnabled = false;
     });
+    // it('proxy-mapper', async function () {
+    //     let input = [{"user.id":1,"user.name":"Philip","user.profiles.id":1,"user.profiles.name":"balhaarA"},{"user.id":1,"user.name":"Philip","user.profiles.id":2,"user.profiles.name":"balhaarB"}];
+    //     migrationSetup.migrationTablesEnabled = true;
+    //     rewiremock(() => require("../sqlGeneration/migration/migrationSource.js")).with(mocks.emptyMigrationSource);
+    //     rewiremock.enable();
+    //     let myDB = mocks.manyFKCreateDB();
+    //     rewiremock.disable();
+    //     migrationSetup.migrationTablesEnabled = false;
+
+    //     let mapper = new proxyMapper(myDB._mysqlAssignable.dbInfo)
+    //     let result = mapper.mapValues(input);
+    // });
 });

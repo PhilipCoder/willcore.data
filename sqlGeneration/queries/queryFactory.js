@@ -4,6 +4,7 @@ const selectGenerator = require("../../sqlGeneration/sqlGenerator/selectGenerato
 const joinGenerator = require("../../sqlGeneration/sqlGenerator/joinGenerator.js");
 const whereGenerator = require("../../sqlGeneration/sqlGenerator/whereGenerator.js");
 const queryExecutor = require("../../sqlExecutor/runQuery.js");
+const entityMapper = require("../../proxies/entities/proxyMapper.js");
 
 class queryFactory {
     constructor(db, table) {
@@ -44,9 +45,11 @@ class queryFactory {
     runQuery() {
         return new Promise(async (resolve, reject) => {
             let sql = this.getSQL();
-            let result = await queryExecutor.runQuery(sql, []);
+            let results = await queryExecutor.runQuery(sql, []);
+            let mapper = new entityMapper(this.db._mysqlAssignable.dbInfo);
+            let entities = mapper.mapValues(results);
             console.log(sql);
-            resolve();
+            resolve(entities);
         });
     }
 }
