@@ -1,40 +1,70 @@
 const entityProxy = require("./entityProxy.js");
+/**
+ * Container for the db info classes that have tables mapped to objects.
+ */
+const dbObjects = {};
+
 class proxyMapper {
     constructor(dbInfo) {
         this.dbInfo = dbInfo;
     }
 
     mapValues(values) {
-        return this.buildProxyTree(values);
+        dbObjects[this.dbInfo.name] = dbObjects[this.dbInfo.name] || this.getDBCopyObj(this.dbInfo);
+        let proxyTree = this.buildProxyTree(values);
+        return this.normalizeTree(proxyTree);
     }
 
-    buildProxyTree(values) {
-        let container = {};
+    normalizeTree(tree){
+        let treeKeys = Object.keys(tree).map(x=>x.split(".")).sort((a,b)=>a.length - b.length);
         let result = [];
-        values.forEach(value => {
-            let target = entityProxy.newSubProxy();
-            for (let key in value) {
-                let currentTarget = target;
-                let keyParts = key.split(".");
-               // let currentTable = this.dbInfo.tables[keyParts[0]];
-                for (let treeLevel = 1; treeLevel < keyParts.length - 1; treeLevel++) {
-              //      currentTable = this.dbInfo.tables[currentTable.columns[keyParts[treeLevel]].reference.table];
-                    let tmpTarget = currentTarget[keyParts[treeLevel]];
-                    if (tmpTarget === undefined) {
-                        tmpTarget = entityProxy.newSubProxy();
-                        currentTarget[keyParts[treeLevel]] = tmpTarget;
-                    }
-                    currentTarget = tmpTarget
-                }
-                currentTarget[keyParts[keyParts.length - 1]] = value[key];
-                result.push(currentTarget);
+        treeKeys.forEach(keys=>{
+            let fullKey = keys.join(".");
+            if (keys.length === 2){
+                result.push(tree[fullKey]);
+            }else{
+                let pathKey = keys.slice(0,keys.length-2).join(".");
+                let property = keys[keys.length -2];
+                let parentObj = tree[pathKey];
+                parentObj[property] = parentObj[property] || [];
+                parentObj[property].push(tree[fullKey]);
             }
         });
         return result;
     }
 
-    getTablePrimary(tableName) {
-        let table = this.dbInfo.tableList[tableName];
+    buildProxyTree(values) {
+        let container = {};
+        let dbObj = dbObjects[this.dbInfo.name];
+        values.forEach(value => {
+            let target = entityProxy.newSubProxy();
+            for (let key in value) {
+                let keyParts = key.split(".");
+                let currentTable = dbObj.tables[keyParts[0]];
+                let currentRoute = keyParts[0];
+                let currentPath =  `${keyParts[0]}.${this.getTablePrimaryValue(currentTable,currentRoute,value)}`;
+                container[currentPath] = container[currentPath] || target;
+                let currentTarget = container[currentPath];
+                for (let treeLevel = 1; treeLevel < keyParts.length - 1; treeLevel++) {
+                    currentTable = dbObj.tables[currentTable.columns[keyParts[treeLevel]].reference.table];
+                    currentRoute += `.${keyParts[treeLevel]}`;
+                    currentPath += `.${keyParts[treeLevel]}.${this.getTablePrimaryValue(currentTable,currentRoute,value)}`;
+                    container[currentPath] = container[currentPath] || entityProxy.newSubProxy();
+                    currentTarget = container[currentPath]
+                }
+                currentTarget[keyParts[keyParts.length - 1]] = value[key];
+            }
+        });
+        return container;
+    }
+
+    getTablePrimaryValue(table,path,value){
+        let primaryColumn = this.getTablePrimary(table);
+        let primaryValue = value[`${path}.${primaryColumn.name}`];
+        return primaryValue;
+    }
+
+    getTablePrimary(table) {
         if (!table) throw `Table ${tableName} not found for proxy mapper.`;
         let result = table.columnList.filter(x => x.primary);
         if (result.length === 0) throw `Table ${tableName} does not have a primary column.`;

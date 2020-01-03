@@ -54,6 +54,14 @@ describe('context-state-manager-tests', function () {
         myDB.profile.add({name:"vlooi",person:2});
         await myDB.save();
         let query = await myDB.user.filter((user)=>user.id.equals(1)).include((user)=>user.profiles)();
+        assert(query.length === 1,"The query result should only contain one item.");
+        assert(query[0].id === 1,"Invalid query result.");
+        assert(query[0].name === "Philip","Invalid query result.");
+        assert(query[0].profiles.length === 2,"Invalid query result.");
+        assert(query[0].profiles[0].id === 1,"Invalid query result.");
+        assert(query[0].profiles[0].name === "balhaarA","Invalid query result.");
+        assert(query[0].profiles[1].id === 2,"Invalid query result.");
+        assert(query[0].profiles[1].name === "balhaarB","Invalid query result.");
         rewiremock.disable();
         migrationSetup.migrationTablesEnabled = false;
     });
