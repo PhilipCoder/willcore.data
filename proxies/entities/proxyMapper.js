@@ -5,8 +5,9 @@ const entityProxy = require("./entityProxy.js");
 const dbObjects = {};
 
 class proxyMapper {
-    constructor(dbInfo) {
-        this.dbInfo = dbInfo;
+    constructor(db) {
+        this.db = db;
+        this.dbInfo = db._mysqlAssignable.dbInfo;
     }
 
     mapValues(values) {
@@ -15,21 +16,24 @@ class proxyMapper {
         return this.normalizeTree(proxyTree);
     }
 
-    normalizeTree(tree){
-        let treeKeys = Object.keys(tree).map(x=>x.split(".")).sort((a,b)=>a.length - b.length);
+    normalizeTree(tree) {
+        let treeKeys = Object.keys(tree).map(x => x.split(".")).sort((a, b) => a.length - b.length);
         let result = [];
-        treeKeys.forEach(keys=>{
+        treeKeys.forEach(keys => {
             let fullKey = keys.join(".");
-            if (keys.length === 2){
+            if (keys.length === 2) {
                 result.push(tree[fullKey]);
-            }else{
-                let pathKey = keys.slice(0,keys.length-2).join(".");
-                let property = keys[keys.length -2];
+            } else {
+                let pathKey = keys.slice(0, keys.length - 2).join(".");
+                let property = keys[keys.length - 2];
                 let parentObj = tree[pathKey];
-                parentObj[property] = parentObj[property] || [];
-                parentObj[property].push(tree[fullKey]);
+                parentObj["_" + property] = parentObj["_" + property] || [];
+                parentObj["_" + property].push(tree[fullKey]);
             }
         });
+        for (var key in tree) {
+            tree[key].$dbInstance = this.db;
+        }
         return result;
     }
 
@@ -42,24 +46,30 @@ class proxyMapper {
                 let keyParts = key.split(".");
                 let currentTable = dbObj.tables[keyParts[0]];
                 let currentRoute = keyParts[0];
-                let currentPath =  `${keyParts[0]}.${this.getTablePrimaryValue(currentTable,currentRoute,value)}`;
+                let primary = this.getTablePrimary(currentTable);
+                let currentPath = `${keyParts[0]}.${this.getTablePrimaryValue(currentTable, currentRoute, value, primary)}`;
                 container[currentPath] = container[currentPath] || target;
                 let currentTarget = container[currentPath];
+                currentTarget.$primaryIndicator = primary.name;
+                currentTarget.$tableName = currentTable.name;
                 for (let treeLevel = 1; treeLevel < keyParts.length - 1; treeLevel++) {
                     currentTable = dbObj.tables[currentTable.columns[keyParts[treeLevel]].reference.table];
+                    primary = this.getTablePrimary(currentTable);
                     currentRoute += `.${keyParts[treeLevel]}`;
-                    currentPath += `.${keyParts[treeLevel]}.${this.getTablePrimaryValue(currentTable,currentRoute,value)}`;
+                    currentPath += `.${keyParts[treeLevel]}.${this.getTablePrimaryValue(currentTable, currentRoute, value, primary)}`;
                     container[currentPath] = container[currentPath] || entityProxy.newSubProxy();
-                    currentTarget = container[currentPath]
+                    currentTarget = container[currentPath];
+                    currentTarget.$tableName = currentTable.name;
+                    currentTarget.$primaryIndicator = primary.name;
                 }
-                currentTarget[keyParts[keyParts.length - 1]] = value[key];
+                currentTarget["_" + keyParts[keyParts.length - 1]] = value[key];
             }
         });
         return container;
     }
 
-    getTablePrimaryValue(table,path,value){
-        let primaryColumn = this.getTablePrimary(table);
+    getTablePrimaryValue(table, path, value, primary) {
+        let primaryColumn = primary || this.getTablePrimary(table);
         let primaryValue = value[`${path}.${primaryColumn.name}`];
         return primaryValue;
     }
@@ -71,20 +81,20 @@ class proxyMapper {
         return result[0];
     }
 
-    
-    getDBCopyObj(source,status) {
+
+    getDBCopyObj(source, status) {
         let dbInfo = {};
         Object.assign(dbInfo, source);
         dbInfo.tables = {};
         dbInfo.tableList = [];
-        if (status){
+        if (status) {
             dbInfo.status = status;
         }
         source.tables.forEach(t => {
             let sourceTable = {};
             Object.assign(sourceTable, t);
             sourceTable.columns = {};
-            if (status){
+            if (status) {
                 sourceTable.status = status;
             }
             sourceTable.columnList = [];
@@ -92,7 +102,7 @@ class proxyMapper {
                 let sourceColumn = {};
                 Object.assign(sourceColumn, c);
                 sourceTable.columns[c.name] = sourceColumn;
-                if (status){
+                if (status) {
                     sourceColumn.status = status;
                 }
                 sourceTable.columnList.push(sourceColumn);

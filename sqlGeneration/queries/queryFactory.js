@@ -46,7 +46,7 @@ class queryFactory {
         return new Promise(async (resolve, reject) => {
             let sql = this.getSQL();
             let results = await queryExecutor.runQuery(sql, []);
-            let mapper = new entityMapper(this.db._mysqlAssignable.dbInfo);
+            let mapper = new entityMapper(this.db);
             let entities = mapper.mapValues(results);
             console.log(sql);
             resolve(entities);

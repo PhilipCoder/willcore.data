@@ -56,7 +56,7 @@ class baseProxyHandler {
         }
     }
 
-    delete(target, property, proxy) {
+    deleteProperty(target, property, proxy) {
         for (let trapIndex = 0; trapIndex < this.deleteTraps.length; trapIndex++) {
             let trapResult = this.deleteTraps[trapIndex].call(this, target, property, proxy);
             if (trapResult.status) {
