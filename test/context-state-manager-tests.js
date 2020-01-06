@@ -72,7 +72,7 @@ describe('context-state-manager-tests', function () {
         assert(queryUpdated[0].profiles.length === 2,"Invalid query result.");
         assert(queryUpdated[0].profiles[0].id === 1,"Invalid query result.");
         assert(queryUpdated[0].profiles[0].name === "John Pro Profile","Invalid query result.");
-        delete myDB.user[1];
+        myDB.user.delete(1);
         await myDB.save();
 
         rewiremock.disable();

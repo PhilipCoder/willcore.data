@@ -9,7 +9,7 @@ class dbTableProxyHandler extends assignableProxyHandler {
     this.setTraps.unshift(this.assignReferenceNewColumn);
     this.getTraps.unshift(this.getAddFunction);
     this.getTraps.unshift(this.getQueryableFunction);
-    this.deleteTraps.unshift(this.deleteRow);
+    this.getTraps.unshift(this.deleteRow);
   }
 
   assignReference(target, property, value, proxy) {
@@ -71,9 +71,16 @@ class dbTableProxyHandler extends assignableProxyHandler {
   }
 
   deleteRow(target, property,proxy) {
-    let stateManager = proxy._dbTableAssignable.parentProxy._mysqlAssignable.contextStateManager;
-    stateManager.deleteRow(proxy.$tableName,proxy.$primaryIndicator,proxy[proxy.$primaryIndicator]);
-    return { status: true };
+    if (property === "delete") {
+      let deleteFunction = function (primaryIdentifier) {
+        let statemanager = proxy._dbTableAssignable.parentProxy._mysqlAssignable.contextStateManager;
+        let primaryColumn = proxy._dbTableAssignable.tableInfo.columns.filter(x=>x.primary)[0].name;
+        statemanager.deleteRow(proxy._dbTableAssignable.tableInfo.name, primaryColumn,primaryIdentifier);
+      };
+      deleteFunction.bind(proxy);
+      return { value: deleteFunction, status: true };
+    }
+    return { value: false, status: false };
   }
 }
 
