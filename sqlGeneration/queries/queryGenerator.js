@@ -12,34 +12,7 @@ class queryGenerator {
     getQuerySQL() {
 
     }
-    //steps: 
-    //input : "{"product":["product"],"product.owner":["product","user"],"product.details":["product","productDetails"]}"
-    /*output: {
-        table:"product",
-        joins:{
-            owner:{
-                table:"user",
-                left:"details",
-                right:"id",
-                joins:{
 
-                }
-            },
-            details:{
-                table:"productDetails",
-                left:"details",
-                right:"id",
-                joins:{}
-            }
-        }
-    }*/
-    //Loop through the tables
-    //case direct reference, example product details
-    //right is column product.details
-    //left is target of product.details -> productDetails.Id
-    //case of indirect reference, example productDetails.products
-    //left is the target of the target of productDetails.product : productDetails.product -> product.details -> productDetails.id
-    //right is the target of productDetails.product : productDetails.product
     getJoinTree(joinObj) {
         let tableAliases = joinObj.tableAliases;
         let joinDetails = {};
@@ -285,9 +258,8 @@ class queryGenerator {
         }
         let filterExpression = esprima.parseScript(typeof filterFunc === "string" ? filterFunc : filterFunc.toString());
         if (validateFilterExpression(filterExpression)) {
-            //   filterExpression = filterExpression.body[0].expression.body;
             filterFunc = typeof filterFunc === "string" ? filterFunc : filterFunc.toString();
-            let expressionString = filterFunc.substring(filterFunc.indexOf("=>") + 2);//escodegen.generate(filterExpression);
+            let expressionString = filterFunc.substring(filterFunc.indexOf("=>") + 2);
             filterExpression = esprima.tokenize(expressionString);
             this.run.filterExpression = filterExpression;
         } else {

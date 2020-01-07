@@ -33,8 +33,21 @@ const functionMappings = {
         },
         equals:function(valueA, valueB){
             return `${valueA} = ${valueB}`;
-        },notEquals:function(valueA, valueB){
+        },
+        notEquals:function(valueA, valueB){
             return `${valueA} <> ${valueB}`;
+        },
+        greaterThan:function(valueA, valueB){
+            return `${valueA} > ${valueB}`;
+        },
+        smallerThan:function(valueA, valueB){
+            return `${valueA} < ${valueB}`;
+        },
+        greaterOrEqualThan:function(valueA, valueB){
+            return `${valueA} >= ${valueB}`;
+        },
+        smallerOrEqualThan:function(valueA, valueB){
+            return `${valueA} <= ${valueB}`;
         }
     },
     queryValueFunctions:{
