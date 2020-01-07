@@ -6,7 +6,7 @@ const sqlResults = require("./mocks/sqlResults.js");
 const db = require("../sqlGeneration/components/db.js");
 const migrationSetup = require("../assignables/mysql/setup/dbMigrationSetup.js");
 
-describe('dbGenerator-test', function () {
+describe('mysql-dbGenerator-test', function () {
     migrationSetup.migrationTablesEnabled = false;
     it('test-get-comparison-info', function () {
         rewiremock(() => require("../sqlGeneration/migration/migrationSource.js")).with(mocks.migrationSourceStub);

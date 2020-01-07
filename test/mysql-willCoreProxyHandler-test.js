@@ -30,7 +30,7 @@ class testAssingableObj extends assignable {
     }
 }
 
-describe('willCoreProxyHandler', function () {
+describe('mysql-willCoreProxyHandler-test', function () {
     willCoreModules.assignables.testAssingableObj = () => testAssingableObj;
     willCoreModules.assignables.testAssingable = () => testAssingable;
     it('exception-invalid-assignment', function () {

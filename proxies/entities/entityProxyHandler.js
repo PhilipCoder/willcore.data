@@ -21,7 +21,9 @@ class entityProxyHandler {
         }
         if (this._private.$dbInstance) {
             let contextStateManager = this._private.$dbInstance._mysqlAssignable.contextStateManager;
-            contextStateManager.updateField(this._private.$tableName, property, value, this._private.$primaryIndicator, target[this._private.$primaryIndicator])
+            let updateValues = {};
+            updateValues[property] = value;
+            contextStateManager.updateField(this._private.$tableName, updateValues, this._private.$primaryIndicator, target[this._private.$primaryIndicator])
         }
         target[property] = value;
         return true;

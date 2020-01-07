@@ -4,7 +4,7 @@ const migrationComparitor = require("../sqlGeneration/migration/migrationCompari
 const dbStatus = require("../sqlGeneration/migration/statusEnum.js");
 const migrationSetup = require("../assignables/mysql/setup/dbMigrationSetup.js");
 
-describe('mySQL-comparison-test', function () {
+describe('mysql-comparison-test', function () {
     migrationSetup.migrationTablesEnabled = false;
     let proxy = willCoreProxy.new();
     proxy.baseDB.mysql = ["connection", "userName", "connection"];

@@ -17,8 +17,8 @@ class contextStateManager {
         this.operations.enqueue(new addOperation(table, rowData))
     }  
     
-    updateField(table, column, value, whereField, whereValue){
-        this.operations.enqueue(new updateOperation(table, column, value, whereField, whereValue));
+    updateField(table, updateValues, whereField, whereValue){
+        this.operations.enqueue(new updateOperation(table, updateValues, whereField, whereValue));
     }
 
     deleteRow(table, whereField, whereValue){

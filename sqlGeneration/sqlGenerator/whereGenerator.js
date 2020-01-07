@@ -60,7 +60,7 @@ class whereGenerator {
             case "tableColumn":
                 return `${queryNode.alias}.${queryNode.column}`;
             case "litteral":
-                if (queryNode.value.startsWith("\"")) {
+                if (queryNode.value.startsWith && queryNode.value.startsWith("\"")) {
                     return whereGenerator.replaceAll(queryNode.value, "\"", "'");
                 }
                 return queryNode.value;

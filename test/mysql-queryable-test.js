@@ -9,7 +9,7 @@ const mocks = require("./mocks/dbGenerator-mocks.js");
 /**
  * Test for generic query operations
  */
-describe('query', function () {
+describe('mysql-queryable', function () {
 
   it('query-select-expression', function () {
     let selectQuery = new query();

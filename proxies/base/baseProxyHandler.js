@@ -63,7 +63,7 @@ class baseProxyHandler {
                 return;
             }
         }
-        delete target[property];
+       return true;
     }
 }
 

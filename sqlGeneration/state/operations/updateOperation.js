@@ -2,16 +2,18 @@
  * SQL operation to add an entry to a table.
  */
 class updateOperation {
-    constructor(table, column, value, whereField, whereValue) {
-        this.value = value;
-        this.column = column;
+    constructor(table, updateValues, whereField, whereValue) {
+        this.updateValues = updateValues;
         this.table = table;
         this.whereField = whereField;
         this.whereValue = whereValue;
     }
 
     getSQL() {
-        return { sql: `UPDATE ${this.table} SET ${this.column} = ? WHERE ${this.whereField} = ?`, parameter: [this.value, this.whereValue] };
+        let updateFields = Object.keys(this.updateValues);
+        let updatePart = updateFields.map(field=>` ${field} = ?`).join(",");
+        let updateValues = updateFields.map(field=>this.updateValues[field]);
+        return { sql: `UPDATE ${this.table} SET${updatePart} WHERE ${this.whereField} = ?`, parameter: [...updateValues, this.whereValue] };
     }
 }
 

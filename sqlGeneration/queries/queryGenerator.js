@@ -306,6 +306,7 @@ class queryGenerator {
         let scopedFields = this.getScopeFields(scopeObj, fieldArray);
         scopedFields.forEach(fields => {
             if (fields.length === 0) return;
+            fields[0].type = "Numeric";
             fields[0].value = this.getObjectProperty(scopeObj, fields);
         });
         return fieldArray.filter(x => !x.delete);

@@ -7,7 +7,7 @@ const selectGenerator = require("../sqlGeneration/sqlGenerator/selectGenerator.j
 const joinGenerator = require("../sqlGeneration/sqlGenerator/joinGenerator.js");
 const whereGenerator = require("../sqlGeneration/sqlGenerator/whereGenerator.js");
 
-describe('mySQL-query-factory', function () {
+describe('mysql-query-factory-test', function () {
     migrationSetup.migrationTablesEnabled = false;
     //---------------------------------------------------
     it('get-query-able', function () {
