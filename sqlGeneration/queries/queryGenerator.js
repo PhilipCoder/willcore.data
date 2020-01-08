@@ -197,7 +197,7 @@ class queryGenerator {
             else if (queryPart.type !== "Punctuator" && isTable) {
                 isTable = false;
                 currentTable = table;
-                queryNodes.push({ type: "tableColumn", column: lastColumn, table: lastTable, alias: previousColumn && this.tableName !== table.name ? `${table.name}_${previousColumn}` : table.name });
+                queryNodes.push({ type: "tableColumn", column: lastColumn, table: lastTable, alias: previousColumn && this.tableName !== lastTable ? `${table.name}_${previousColumn}` : table.name });
                 if (currentFunction) {
                     let functionType = functionMappings.aggregationFunctions[currentFunction] ? "aggregationFunction" :
                         functionMappings.queryColumnFunctions[currentFunction] ? "queryColumnFunction" :

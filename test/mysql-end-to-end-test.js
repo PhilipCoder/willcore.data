@@ -67,8 +67,8 @@ describe('mysql-end-to-end-test', function () {
         myDB.profile["+"] = profiles; 
         await myDB.save();
         //Get the first inserted user.
-        let query = await myDB.user.filter((user)=>user.id === userId || user.id === 3,{userId:1}).include((user)=>user.profiles)();
-        assert(query.length === 1,"The query result should only contain one item.");
+        let query = await myDB.user.filter((user)=>user.id === userId || ( user.id === 3 ) ||  user.profiles.name === "vlooi",{userId:1}).include((user)=>user.profiles)();
+        assert(query.length === 2,"The query result should only contain one item.");
         assert(query[0].id === 1,"Invalid query result.");
         assert(query[0].name === "Philip","Invalid query result.");
         assert(query[0].profiles.length === 2,"Invalid query result.");
@@ -76,6 +76,9 @@ describe('mysql-end-to-end-test', function () {
         assert(query[0].profiles[0].name === "First Profile","Invalid query result.");
         assert(query[0].profiles[1].id === 2,"Invalid query result.");
         assert(query[0].profiles[1].name === "Second Profile","Invalid query result.");
+        assert(query[1].id === 3,"Invalid query result.");
+        assert(query[1].name === "The Great White","Invalid query result.");
+        assert(query[1].profiles.length === 0,"Invalid query result.");
         query[0].name = "John";
         query[0].profiles[0].name = "John Pro Profile";
         await myDB.save();
