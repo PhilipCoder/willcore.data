@@ -67,7 +67,7 @@ describe('mysql-end-to-end-test', function () {
         myDB.profile["+"] = profiles; 
         await myDB.save();
         //Get the first inserted user.
-        let query = await myDB.user.filter((user)=>user.id.equals(userId),{userId:1}).include((user)=>user.profiles)();
+        let query = await myDB.user.filter((user)=>user.id === userId || user.id === 3,{userId:1}).include((user)=>user.profiles)();
         assert(query.length === 1,"The query result should only contain one item.");
         assert(query[0].id === 1,"Invalid query result.");
         assert(query[0].name === "Philip","Invalid query result.");
@@ -79,16 +79,16 @@ describe('mysql-end-to-end-test', function () {
         query[0].name = "John";
         query[0].profiles[0].name = "John Pro Profile";
         await myDB.save();
-        let queryUpdated = await myDB.user.filter((user)=>user.id.equals(1)).include((user)=>user.profiles)();
+        let queryUpdated = await myDB.user.filter((user)=>user.id === 1).include((user)=>user.profiles)();
         assert(queryUpdated.length === 1,"The query result should only contain one item.");
         assert(queryUpdated[0].id === 1,"Invalid query result.");
         assert(queryUpdated[0].name === "John","Invalid query result.");
         assert(queryUpdated[0].profiles.length === 2,"Invalid query result.");
         assert(queryUpdated[0].profiles[0].id === 1,"Invalid query result.");
         assert(queryUpdated[0].profiles[0].name === "John Pro Profile","Invalid query result.");
-        myDB.user.delete(1);
+        myDB.user[1] = undefined;
         await myDB.save();
-        let queryAfterDelete = await myDB.user.filter((user)=>user.id.equals(1))();
+        let queryAfterDelete = await myDB.user.filter((user)=>user.id === 1)();
         assert(queryAfterDelete.length === 0, "Row not deleted.");
         rewiremock.disable();
         migrationSetup.migrationTablesEnabled = false;

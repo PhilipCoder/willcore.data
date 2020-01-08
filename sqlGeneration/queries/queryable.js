@@ -1,5 +1,7 @@
 const chainableProxy = require("../../proxies/chainable/chainableProxyHandler.js");
 const query = require("../../sqlGeneration/queries/queryGenerator.js");
+const preProcessor = require("./tokenPreProcessor.js");
+
 class queryFactory {
     static get(dbConfig, tableName,queryFactory ) {
         let scopedVariables = {
@@ -41,6 +43,7 @@ class queryFactory {
             scopedVariables.filter.queryScope = queryScope;
             let selectQuery = new query();
             scopedVariables.filter.parts = selectQuery.filter(filterExpression.toString(), queryScope);
+            scopedVariables.filter.parts = new preProcessor().process(scopedVariables.filter.parts);
             return queryable;
         };
 

@@ -24,11 +24,14 @@ class proxyMapper {
             if (keys.length === 2) {
                 result.push(tree[fullKey]);
             } else {
+                let rowObj = tree[fullKey];
                 let pathKey = keys.slice(0, keys.length - 2).join(".");
                 let property = keys[keys.length - 2];
                 let parentObj = tree[pathKey];
                 parentObj["_" + property] = parentObj["_" + property] || [];
-                parentObj["_" + property].push(tree[fullKey]);
+                if (rowObj[rowObj.$primaryIndicator] !== null){
+                    parentObj["_" + property].push(rowObj);
+                }
             }
         });
         for (var key in tree) {
