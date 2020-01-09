@@ -1,5 +1,8 @@
 const functionMappings = require("../queries/functionMappings.js");
 
+/**
+ * Final stage SQL generation, converts queryNodes into a SQL where expression.
+ */
 class whereGenerator {
     static getSQL(queryNodes) {
         let result = '\nWHERE';

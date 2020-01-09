@@ -40,11 +40,11 @@ const typeMappings = {
     }, decimal: {
         dbType: "decimal",
         resizeAble: true,
-        defaultSize: [7, 7]
+        defaultSize: [20, 7]
     }, float: {
         dbType: "float",
         resizeAble: true,
-        defaultSize: [7, 7]
+        defaultSize: [20, 7]
     }, date: {
         dbType: "datetime",
         resizeAble: true,
