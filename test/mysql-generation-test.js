@@ -55,7 +55,7 @@ describe('mysql-generation-test', function () {
    it('sql-type-generation-decimal', function () {
       let col = new column();
       let sqlType = col.getSQLType("decimal");
-      assert(sqlType === "decimal(7,7)");
+      assert(sqlType === "decimal(20,7)");
    });
 
    it('sql-type-generation-decimal-sized', function () {
@@ -67,7 +67,7 @@ describe('mysql-generation-test', function () {
    it('sql-type-generation-float', function () {
       let col = new column();
       let sqlType = col.getSQLType("float");
-      assert(sqlType === "float(7,7)");
+      assert(sqlType === "float(20,7)");
    });
 
    it('sql-type-generation-float-sized', function () {

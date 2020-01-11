@@ -11,12 +11,19 @@ describe('mysql-car-db-test', function () {
     let db = null;
     before(function () {
         return new Promise(async (resolve, reject) => {
+
+            resolve();
+        });
+    });
+    it('db-create-end-to-end', async function () {
+        return new Promise(async (resolve, reject) => {
+            this.timeout(10000);
             migrationSetup.migrationTablesEnabled = true;
             rewiremock(() => require("../sqlGeneration/migration/migrationSource.js")).with(mocks.emptyMigrationSource);
             rewiremock.enable();
             //defines db
             let proxy = willCoreProxy.new();
-            proxy.cars.mysql = ["localhost", "root", "Bandit1250s"];
+            proxy.cars.mysql = ["127.0.0.1", "root", "Bandit1250s"];
             //defines person table
             proxy.cars.person.table;
             proxy.cars.person.id.column.int;
@@ -55,8 +62,5 @@ describe('mysql-car-db-test', function () {
             migrationSetup.migrationTablesEnabled = false;
             resolve();
         });
-    });
-    it('db-create-end-to-end', async function () {
-
     });
 });

@@ -18,13 +18,15 @@ class mysql extends assignable {
         };
         this.dbGenerator = null;
         this.contextStateManager = null;
+        this.queryExecutor = null;
     }
 
     completionResult() {
         let proxyResult = mysqlProxy.new(this);
         dbMigrationSetup.setupTables(proxyResult, this.propertyName);
-        this.dbGenerator = new dbGenerator(proxyResult);
-        this.contextStateManager = new contextStateManager(queryExecutor);
+        this.queryExecutor = new queryExecutor(this.dbInfo.connectionString,this.dbInfo.userName, this.dbInfo.password,this.dbInfo.name);
+        this.dbGenerator = new dbGenerator(proxyResult,this.queryExecutor);
+        this.contextStateManager = new contextStateManager(this.queryExecutor);
         return proxyResult;
     }
 

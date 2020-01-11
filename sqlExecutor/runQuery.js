@@ -1,19 +1,20 @@
 const mysql = require("mysql2");
 
 class runQuery {
-    constructor() {
-        this.connectionString = null;
-        this.userName = null;
-        this.password = null;
+    constructor(connectionString, userName, password,dbName) {
+        this.connectionString = connectionString;
+        this.userName = userName;
+        this.password = password;
         this.promisePool = null;
         this.connection = null;
+        this.initDB(connectionString, userName, password, dbName);
     }
 
-    initDB(connection, userName, password,dbname) {
+    initDB(connection, userName, password,dbName) {
         this.connectionString = connection;
         this.userName = userName;
         this.password = password;
-        this.dbname = dbname;
+        this.dbname = dbName;
         return new Promise((resolve, reject) => {
             this.connection = mysql.createConnection({
                 host: connection,
@@ -67,6 +68,4 @@ class runQuery {
     }
 }
 
-const queryInstance = new runQuery();
-
-module.exports = queryInstance;
+module.exports = runQuery;

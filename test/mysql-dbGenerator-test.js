@@ -5,7 +5,7 @@ const status = require("../sqlGeneration/migration/statusEnum.js");
 const sqlResults = require("./mocks/sqlResults.js");
 const db = require("../sqlGeneration/components/db.js");
 const migrationSetup = require("../assignables/mysql/setup/dbMigrationSetup.js");
-
+const runQuery = require("../sqlExecutor/runQuery.js");
 describe('mysql-dbGenerator-test', function () {
     migrationSetup.migrationTablesEnabled = false;
     it('test-get-comparison-info', function () {
@@ -118,12 +118,13 @@ describe('mysql-dbGenerator-test', function () {
         rewiremock.disable();
     });
     it('db-create-with-migration-test', async function () {
+        this.timeout(10000);
         migrationSetup.migrationTablesEnabled = true;
         rewiremock(() => require("../sqlGeneration/migration/migrationSource.js")).with(mocks.emptyMigrationSource);
         rewiremock.enable();
-        const dbGenerator = new (require("../sqlGeneration/dbGenerator.js"))(mocks.manyFKCreateDB());
+        const dbGenerator = new (require("../sqlGeneration/dbGenerator.js"))(mocks.manyFKCreateDB(),new runQuery("127.0.0.1","root","Bandit1250s","mydb"));
         dbGenerator.dropDB = true;
-        await dbGenerator.generateDB().catch(ex=>{
+        await dbGenerator.generateDB("the one").catch(ex=>{
             console.log(ex);
         });
         rewiremock.disable();
@@ -131,6 +132,7 @@ describe('mysql-dbGenerator-test', function () {
     });
 
     it('db-create-with-save', async function () {
+        this.timeout(10000);
         migrationSetup.migrationTablesEnabled = true;
         rewiremock(() => require("../sqlGeneration/migration/migrationSource.js")).with(mocks.emptyMigrationSource);
         rewiremock.enable();

@@ -3,7 +3,6 @@ const db = require("./components/db.js");
 const migrationSource = require("./migration/migrationSource.js");
 const dbStatus = require("../sqlGeneration/migration/statusEnum.js");
 const mysql = require("mysql2/promise");
-const queryExecutor = require("../sqlExecutor/runQuery.js");
 /**
  * Core DB / Migration class.
  */
@@ -11,8 +10,9 @@ class dbGenerator {
     /**
      * @param {assignable} mySqlAssignable 
      */
-    constructor(mySqlProxy) {
+    constructor(mySqlProxy,queryExecutor) {
         this._dbInfo = mySqlProxy._mysqlAssignable.dbInfo;
+        this._queryExecutor = queryExecutor;
         this._comparisonInfo = null;
         this._comparisonTarget = null;
         this._comparisonSource = null;
@@ -54,10 +54,11 @@ class dbGenerator {
         return new db(this.comparisonTarget, this.comparisonSource, this._dropDB).getSQL();
     }
 
-    generateDB() {
+    generateDB(debugVal) {
         return new Promise(async (resolve, reject) => {
-            await queryExecutor.initDB(this._dbInfo.connectionString, this._dbInfo.userName, this._dbInfo.password,this._dbInfo.name);
-            let result = queryExecutor.execute(this.sql);
+            console.log(this.sql);
+            let result = this._queryExecutor.execute(this.sql);
+            console.log(debugVal);
             resolve(result);
         });
     }
