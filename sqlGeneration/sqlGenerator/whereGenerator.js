@@ -5,6 +5,7 @@ const functionMappings = require("../queries/functionMappings.js");
  */
 class whereGenerator {
     static getSQL(queryNodes) {
+        if (queryNodes.length === 0) return "";
         let result = '\nWHERE';
         for (let nodeI = 0; nodeI < queryNodes.length; nodeI++) {
             let queryNode = queryNodes[nodeI];

@@ -3,7 +3,7 @@ const willCoreProxy = require("../../proxies/willCore/willCoreProxy.js");
 const migrationSourceStub = {
     getSource: (name) => {
         let proxy = willCoreProxy.new();
-        proxy.myDB.mysql = ["", "", ""];
+        proxy.myDB.mysql = ["127.0.0.1", "root", "Bandit1250s"];
         proxy.myDB.user.table;
         proxy.myDB.user.id.column.int;
         proxy.myDB.user.id.primary;
@@ -23,7 +23,7 @@ const migrationSourceStub = {
 const migrationSourceNoFKStub = {
     getSource: (name) => {
         let proxy = willCoreProxy.new();
-        proxy.myDB.mysql = ["", "", ""];
+        proxy.myDB.mysql  = ["127.0.0.1", "root", "Bandit1250s"];
         proxy.myDB.user.table;
         proxy.myDB.user.id.column.int;
         proxy.myDB.user.id.primary;
@@ -41,7 +41,7 @@ const migrationSourceNoFKStub = {
 const migrationSourceNoFKColStub = {
     getSource: (name) => {
         let proxy = willCoreProxy.new();
-        proxy.myDB.mysql = ["", "", ""];
+        proxy.myDB.mysql = ["127.0.0.1", "root", "Bandit1250s"];
         proxy.myDB.user.table;
         proxy.myDB.user.id.column.int;
         proxy.myDB.user.id.primary;
@@ -60,7 +60,7 @@ const migrationSourceNoFKColStub = {
 const migrationSourceMultipuleFKStub = {
     getSource: (name) => {
         let proxy = willCoreProxy.new();
-        proxy.myDB.mysql = ["", "", ""];
+        proxy.myDB.mysql  = ["127.0.0.1", "root", "Bandit1250s"];
         proxy.myDB.user.table;
         proxy.myDB.user.id.column.int;
         proxy.myDB.user.id.primary;
@@ -87,7 +87,7 @@ const migrationSourceMultipuleFKStub = {
 const migrationSourceManyFKStub = {
     getSource: (name) => {
         let proxy = willCoreProxy.new();
-        proxy.myDB.mysql = ["", "", ""];
+        proxy.myDB.mysql  = ["127.0.0.1", "root", "Bandit1250s"];
         proxy.myDB.user.table;
         proxy.myDB.user.id.column.int;
         proxy.myDB.user.id.primary;
@@ -125,7 +125,7 @@ const emptyMigrationSource = {
 
 const defaultTwoTableDBFactory = () => {
     let proxy = willCoreProxy.new();
-    proxy.myDB.mysql = ["", "", ""];
+    proxy.myDB.mysql = ["127.0.0.1", "root", "Bandit1250s"];
     proxy.myDB.user.table;
     proxy.myDB.user.id.column.int;
     proxy.myDB.user.id.primary;
@@ -142,7 +142,7 @@ const defaultTwoTableDBFactory = () => {
 
 const addtableDBFactory = () => {
     let proxy = willCoreProxy.new();
-    proxy.myDB.mysql = ["", "", ""];
+    proxy.myDB.mysql  = ["127.0.0.1", "root", "Bandit1250s"];
     proxy.myDB.user.table;
     proxy.myDB.user.id.column.int;
     proxy.myDB.user.id.primary;
@@ -166,7 +166,7 @@ const addtableDBFactory = () => {
 
 const addColumnDBFactory = () => {
     let proxy = willCoreProxy.new();
-    proxy.myDB.mysql = ["", "", ""];
+    proxy.myDB.mysql  = ["127.0.0.1", "root", "Bandit1250s"];
     proxy.myDB.user.table;
     proxy.myDB.user.id.column.int;
     proxy.myDB.user.id.primary;
@@ -185,7 +185,7 @@ const addColumnDBFactory = () => {
 
 const addColumnFKDBFactory = () => {
     let proxy = willCoreProxy.new();
-    proxy.myDB.mysql = ["", "", ""];
+    proxy.myDB.mysql  = ["127.0.0.1", "root", "Bandit1250s"];
     proxy.myDB.user.table;
     proxy.myDB.user.id.column.int;
     proxy.myDB.user.id.primary;
@@ -203,7 +203,7 @@ const addColumnFKDBFactory = () => {
 
 const addFKDBFactory = () => {
     let proxy = willCoreProxy.new();
-    proxy.myDB.mysql = ["", "", ""];
+    proxy.myDB.mysql = ["127.0.0.1", "root", "Bandit1250s"];
     proxy.myDB.user.table;
     proxy.myDB.user.id.column.int;
     proxy.myDB.user.id.primary;
@@ -221,7 +221,7 @@ const addFKDBFactory = () => {
 
 const dropColumns = () => {
     let proxy = willCoreProxy.new();
-    proxy.myDB.mysql = ["", "", ""];
+    proxy.myDB.mysql  = ["127.0.0.1", "root", "Bandit1250s"];
     proxy.myDB.user.table;
     proxy.myDB.user.id.column.int;
     proxy.myDB.user.id.primary;
@@ -236,7 +236,7 @@ const dropColumns = () => {
 
 const dropColumnsFK = () =>{
     let proxy = willCoreProxy.new();
-    proxy.myDB.mysql = ["", "", ""];
+    proxy.myDB.mysql = ["127.0.0.1", "root", "Bandit1250s"];
     proxy.myDB.user.table;
     proxy.myDB.user.id.column.int;
     proxy.myDB.user.id.primary;
@@ -257,7 +257,7 @@ const dropColumnsFK = () =>{
 
 const dropFK = () => {
     let proxy = willCoreProxy.new();
-    proxy.myDB.mysql = ["", "", ""];
+    proxy.myDB.mysql  = ["127.0.0.1", "root", "Bandit1250s"];
     proxy.myDB.user.table;
     proxy.myDB.user.id.column.int;
     proxy.myDB.user.id.primary;

@@ -3,6 +3,9 @@ const query = require("../../sqlGeneration/queries/queryGenerator.js");
 const selectGenerator = require("../../sqlGeneration/sqlGenerator/selectGenerator.js");
 const joinGenerator = require("../../sqlGeneration/sqlGenerator/joinGenerator.js");
 const whereGenerator = require("../../sqlGeneration/sqlGenerator/whereGenerator.js");
+const orderByGenerator = require("../../sqlGeneration/sqlGenerator/orderByGenerator.js");
+const limitGenerator = require("../../sqlGeneration/sqlGenerator/limitGenerator.js");
+
 const entityMapper = require("../../proxies/entities/proxyMapper.js");
 
 class queryFactory {
@@ -13,8 +16,7 @@ class queryFactory {
     getQuery() {
         this.generator = new (require("../dbGenerator.js"))(this.db);
         this.generator.dropDB = true;
-        this.generator.sql;
-        this.dbInfo = this.generator._comparisonTarget;
+        this.dbInfo = this.generator.comparisonTarget;
         this.runQuery.bind(this);
         this.queryAble = queryAble.get(this.dbInfo, this.table, this);
         this.queryAble.runFunc = this.runQuery;
@@ -34,11 +36,14 @@ class queryFactory {
         return this.calulationValues;
     }
     getSQL() {
+        let queryValues = this.queryAble.getValues();
         let calculationValues = this.getCalculationValues();
         let selectSQL = selectGenerator.getSQL(calculationValues.selects);
         let joinSQL = joinGenerator.getSQL(calculationValues.joinTree);
         let whereSQL = whereGenerator.getSQL(calculationValues.queryNodes);
-        let fullSQL = selectSQL + joinSQL + whereSQL;
+        let orderBySQL = orderByGenerator.getSQL(queryValues.sort);
+        let limitSQL = limitGenerator.getSQL(queryValues.take);
+        let fullSQL = selectSQL + joinSQL + whereSQL + orderBySQL + limitSQL;
         return fullSQL;
     }
     runQuery() {

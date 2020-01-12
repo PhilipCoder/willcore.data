@@ -50,13 +50,17 @@ class dbGenerator {
         return new db(this.comparisonTarget, this.comparisonSource, this._dropDB).getSQL();
     }
 
+    updateTargets(){
+        this.comparisonTarget; 
+        this.comparisonSource;
+    }
+
     getSQL() {
         return new db(this.comparisonTarget, this.comparisonSource, this._dropDB).getSQL();
     }
 
     generateDB(debugVal) {
         return new Promise(async (resolve, reject) => {
-            console.log(this.sql);
             let result = this._queryExecutor.execute(this.sql);
             console.log(debugVal);
             resolve(result);

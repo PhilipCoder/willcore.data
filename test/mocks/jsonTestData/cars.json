@@ -1,4 +1,4 @@
-let cars = [{ "model": "Panamera", "make": 20, "year": 2012, "owner": 421, "color": "Blue", "price": 484438.36 },
+[{ "model": "Panamera", "make": 20, "year": 2012, "owner": 421, "color": "Blue", "price": 484438.36 },
 { "model": "Explorer", "make": 19, "year": 2000, "owner": 253, "color": "Puce", "price": 629691.12 },
 { "model": "Roadster", "make": 11, "year": 2012, "owner": 327, "color": "Blue", "price": 120507.95 },
 { "model": "Summit", "make": 1, "year": 1996, "owner": 108, "color": "Purple", "price": 385521.05 },
@@ -997,5 +997,4 @@ let cars = [{ "model": "Panamera", "make": 20, "year": 2012, "owner": 421, "colo
 { "model": "Lucerne", "make": 4, "year": 2006, "owner": 162, "color": "Orange", "price": 461043.48 },
 { "model": "1500 Club Coupe", "make": 11, "year": 1995, "owner": 222, "color": "Puce", "price": 564781.86 },
 { "model": "Venture", "make": 1, "year": 1997, "owner": 179, "color": "Aquamarine", "price": 830160.11 },
-{ "model": "Chariot", "make": 14, "year": 1992, "owner": 54, "color": "Crimson", "price": 922743.97 }];
-module.exports = cars;
+{ "model": "Chariot", "make": 14, "year": 1992, "owner": 54, "color": "Crimson", "price": 922743.97 }]

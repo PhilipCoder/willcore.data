@@ -18,7 +18,7 @@ class queryFactory {
                 selectObj: null
             },
             sort: {
-                desending: null,
+                descending: null,
                 sortFunc: null
             },
             take: {
@@ -90,8 +90,8 @@ class queryFactory {
         /**
          * Adds a sort clause to a SQL query
          */
-        queryable.sort = function (desending, sortFunc) {
-            scopedVariables.sort.desending = desending;
+        queryable.sort = function (sortFunc,descending) {
+            scopedVariables.sort.descending = descending;
             scopedVariables.sort.sortFunc = sortFunc;
             scopedVariables.sort.sortParts = sortFunc(chainableProxy.new(scopedVariables.tableName))._name;
             return queryable;

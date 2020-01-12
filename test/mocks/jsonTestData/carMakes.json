@@ -1,4 +1,4 @@
-let carMakes = [{ "name": "Lexus" },
+[{ "name": "Lexus" },
 { "name": "Plymouth" },
 { "name": "Ford" },
 { "name": "Volvo" },
@@ -17,6 +17,4 @@ let carMakes = [{ "name": "Lexus" },
 { "name": "Land Rover" },
 { "name": "Mazda" },
 { "name": "Audi" },
-{ "name": "Plymouth" }];
-
-module.exports = carMakes;
+{ "name": "Plymouth" }]

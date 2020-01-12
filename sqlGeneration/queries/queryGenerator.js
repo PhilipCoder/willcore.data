@@ -34,17 +34,27 @@ class queryGenerator {
                     let column = table.columns[part];
                     let directColumn = column;
                     let reference = this.db.tables[column.reference.table].columns[column.reference.column];
-                    if (!reference.primary) {
+                    if (reference.reference) {
                         column = reference;
                         reference = this.db.tables[column.reference.table].columns[column.reference.column];
                     }
-                    currentJoinTable.joins[part] = {
-                        joins: {},
-                        table: tableName,
-                        left: column.name,
-                        right: reference.name,
-                        alias: `${table.name}_${directColumn.name}`
-                    };
+                    if (!this.db.tables[tableName].columns[column.name]) {
+                        currentJoinTable.joins[part] = {
+                            joins: {},
+                            table: tableName,
+                            left: reference.name,
+                            right: column.name,
+                            alias: `${table.name}_${directColumn.name}`
+                        };
+                    } else {
+                        currentJoinTable.joins[part] = {
+                            joins: {},
+                            table: tableName,
+                            left: column.name,
+                            right: reference.name,
+                            alias: `${table.name}_${directColumn.name}`
+                        };
+                    }
                     currentJoinTable = currentJoinTable.joins[part];
                     table = this.db.tables[tableName];
                 } else {
@@ -269,7 +279,7 @@ class queryGenerator {
             return selectExpression.body &&
                 selectExpression.body.length > 0 &&
                 selectExpression.body[0].type === "ExpressionStatement" &&
-                selectExpression.body[0].expression.type === "ArrowFunctionExpression" 
+                selectExpression.body[0].expression.type === "ArrowFunctionExpression"
         }
         return this.getScopeValues(scopeValues, this.run.filterExpression);
     }

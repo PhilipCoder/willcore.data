@@ -43,7 +43,7 @@ describe('mysql-queryable', function () {
       })).
       take(1).
       skip(2).
-      sort(true, (person) => person.name);
+      sort((person) => person.name,true);
 
     let queryValues = queryAble.getValues();
     assert(queryValues !== null, "Query factory not getting right queryable.");
@@ -238,12 +238,12 @@ describe('mysql-queryable', function () {
     let result = selectQuery.getJoinTree(joinObj);
     assert(result.table === "product", "Generated join tree has an incorrect table.");
     assert(result.joins.owner.table === "user", "Generated join tree has an incorrect table.");
-    assert(result.joins.owner.left === "owner", "Generated join tree has an incorrect column.");
-    assert(result.joins.owner.right === "id", "Generated join tree has an incorrect column.");
+    assert(result.joins.owner.left === "id", "Generated join tree has an incorrect column.");
+    assert(result.joins.owner.right === "owner", "Generated join tree has an incorrect column.");
 
     assert(result.joins.details.table === "productDetails", "Generated join tree has an incorrect table.");
-    assert(result.joins.details.left === "details", "Generated join tree has an incorrect column.");
-    assert(result.joins.details.right === "id", "Generated join tree has an incorrect column.");
+    assert(result.joins.details.left === "id", "Generated join tree has an incorrect column.");
+    assert(result.joins.details.right === "details", "Generated join tree has an incorrect column.");
 
   });
 })
