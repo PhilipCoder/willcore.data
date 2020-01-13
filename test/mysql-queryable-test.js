@@ -60,19 +60,6 @@ describe('mysql-queryable', function () {
     assert(value[3] === "city", "Chainable proxy not assigning correct values.");
   });
 
-  it('query-getScopeFields-test', function () {
-    let selectQuery = new query();
-    let parts = selectQuery.filter((person) => person.name === name && person.age > 10 && person.owner.name === owner.name, {});
-    let scopeFields = selectQuery.getScopeFields({
-      name: "DrPhil",
-      owner: {
-        name: "Life"
-      }
-    }, parts);
-    assert(scopeFields.length === 2, "Incorrect scope fields.");
-    assert(scopeFields[0].length === 1, "Incorrect scope fields.");
-    assert(scopeFields[1].length === 2, "Incorrect scope fields.");
-  });
 
   it('query-getObjectProperty-test', function () {
     let selectQuery = new query();
@@ -104,7 +91,8 @@ describe('mysql-queryable', function () {
         name: "Life"
       }
     });
-    assert(parts.length === 23, "The generated filter query has incorrect parts");
+    assert(parts.nodes.length === 23, "The generated filter query has incorrect parts");
+    assert(parts.parameters.length === 2, "The generated filter query has parameters");
   });
 
   it('query-select-join-obj', function () {

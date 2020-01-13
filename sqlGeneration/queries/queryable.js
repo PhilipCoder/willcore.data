@@ -12,6 +12,7 @@ class queryFactory {
             },
             filter: {
                 filterExpression: null,
+                parameters:null,
                 queryScope: null
             },
             select: {
@@ -42,7 +43,9 @@ class queryFactory {
             scopedVariables.filter.filterExpression = filterExpression;
             scopedVariables.filter.queryScope = queryScope;
             let selectQuery = new query();
-            scopedVariables.filter.parts = selectQuery.filter(filterExpression.toString(), queryScope);
+            let filterValues = selectQuery.filter(filterExpression.toString(), queryScope);
+            scopedVariables.filter.parts = filterValues.nodes;
+            scopedVariables.filter.parameters = filterValues.parameters;
             scopedVariables.filter.parts = new preProcessor().process(scopedVariables.filter.parts);
             return queryable;
         };

@@ -46,16 +46,17 @@ describe('mysql-car-db-test', function () {
         //owner relation
         proxy.cars.car.owner = proxy.cars.person.id;
         proxy.cars.person.cars = proxy.cars.car.owner;
-
         //creates db
         await proxy.cars.init(true);
 
-        proxy.cars.person["+"] = users;
-        await proxy.cars.save();
-        proxy.cars.carMake["+"] = carMakes;
-        await proxy.cars.save();
-        proxy.cars.car["+"] = cars;
-        await proxy.cars.save();
+        let queryDB = proxy.cars.queryDB;
+
+        queryDB.person["+"] = users;
+        await queryDB.save();
+        queryDB.carMake["+"] = carMakes;
+        await queryDB.save();
+        queryDB.car["+"] = cars;
+        await queryDB.save();
         db = proxy;
     });
     after(function () {
@@ -103,10 +104,11 @@ describe('mysql-car-db-test', function () {
             assert(allCarResults[i].id === first100Results[i].id, "Skip, taking failed.");
         }
     });
-    // it('db-greater-than', async function () {
-    //     let allCarResults = await db.cars.person.filter((person) => person.dateCreated > ).sort((car) => car.make.name, true)();
-    //     for (let i = 100; i < first100Results.length; i++) {
-    //         assert(allCarResults[i].id === first100Results[i].id, "Skip, taking failed.");
-    //     }
-    // });
+    it('db-greater-than', async function () {
+        let afterDate = new Date("2018-08-26");
+        let afterDateResults = await db.cars.person.filter((person) => person.dateCreated > inputDate,{inputDate:afterDate})();
+        for (let i = 100; i < afterDateResults.length; i++) {
+            assert(afterDateResults[i].dateCreated > afterDate, `A date that should be after the filter date is before.${afterDateResults[i].dateCreated}`);
+        }
+    });
 });
