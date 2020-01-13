@@ -103,4 +103,10 @@ describe('mysql-car-db-test', function () {
             assert(allCarResults[i].id === first100Results[i].id, "Skip, taking failed.");
         }
     });
+    // it('db-greater-than', async function () {
+    //     let allCarResults = await db.cars.person.filter((person) => person.dateCreated > ).sort((car) => car.make.name, true)();
+    //     for (let i = 100; i < first100Results.length; i++) {
+    //         assert(allCarResults[i].id === first100Results[i].id, "Skip, taking failed.");
+    //     }
+    // });
 });
