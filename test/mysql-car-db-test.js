@@ -57,14 +57,14 @@ describe('mysql-car-db-test', function () {
         await queryDB.save();
         queryDB.car["+"] = cars;
         await queryDB.save();
-        db = proxy;
+        db = queryDB;
     });
     after(function () {
         rewiremock.disable();
         migrationSetup.migrationTablesEnabled = false;
     });
     it('db-test-sort-asc', async function () {
-        let carResults = await db.cars.car.include((car) => car.make).sort((car) => car.make.name)();
+        let carResults = await db.car.include((car) => car.make).sort((car) => car.make.name)();
         let previousEntry = "Aston Martin";
         assert(carResults.length === cars.length, "Not all car entries were retrieved.");
         carResults.forEach(car => {
@@ -73,7 +73,7 @@ describe('mysql-car-db-test', function () {
         });
     });
     it('db-test-sort-desc', async function () {
-        let carResults = await db.cars.car.include((car) => car.make).sort((car) => car.make.name, true)();
+        let carResults = await db.car.include((car) => car.make).sort((car) => car.make.name, true)();
         let previousEntry = "Volvo";
         assert(carResults.length === cars.length, "Not all car entries were retrieved.");
         carResults.forEach(car => {
@@ -82,8 +82,8 @@ describe('mysql-car-db-test', function () {
         });
     });
     it('db-test-skip', async function () {
-        let allCarResults = await db.cars.car.include((car) => car.make).sort((car) => car.make.name, true)();
-        let last100Results = await db.cars.car.include((car) => car.make).skip(900).sort((car) => car.make.name, true)();
+        let allCarResults = await db.car.include((car) => car.make).sort((car) => car.make.name, true)();
+        let last100Results = await db.car.include((car) => car.make).skip(900).sort((car) => car.make.name, true)();
         let index = 0;
         for (let i = allCarResults.length - 100; i < allCarResults.length; i++) {
             assert(allCarResults[i].id === last100Results[index].id, "Skipping failed.");
@@ -91,22 +91,22 @@ describe('mysql-car-db-test', function () {
         }
     });
     it('db-test-take', async function () {
-        let allCarResults = await db.cars.car.include((car) => car.make).sort((car) => car.make.name, true)();
-        let first100Results = await db.cars.car.include((car) => car.make).take(100).sort((car) => car.make.name, true)();
+        let allCarResults = await db.car.include((car) => car.make).sort((car) => car.make.name, true)();
+        let first100Results = await db.car.include((car) => car.make).take(100).sort((car) => car.make.name, true)();
         for (let i = 0; i < first100Results.length; i++) {
             assert(allCarResults[i].id === first100Results[i].id, "Taking failed.");
         }
     });
     it('db-test-skip-take', async function () {
-        let allCarResults = await db.cars.car.include((car) => car.make).sort((car) => car.make.name, true)();
-        let first100Results = await db.cars.car.include((car) => car.make).take(100).skip(100).sort((car) => car.make.name, true)();
+        let allCarResults = await db.car.include((car) => car.make).sort((car) => car.make.name, true)();
+        let first100Results = await db.car.include((car) => car.make).take(100).skip(100).sort((car) => car.make.name, true)();
         for (let i = 100; i < first100Results.length; i++) {
             assert(allCarResults[i].id === first100Results[i].id, "Skip, taking failed.");
         }
     });
     it('db-greater-than', async function () {
         let afterDate = new Date("2018-08-26");
-        let afterDateResults = await db.cars.person.filter((person) => person.dateCreated > inputDate,{inputDate:afterDate})();
+        let afterDateResults = await db.person.filter((person) => person.dateCreated > inputDate,{inputDate:afterDate})();
         for (let i = 100; i < afterDateResults.length; i++) {
             assert(afterDateResults[i].dateCreated > afterDate, `A date that should be after the filter date is before.${afterDateResults[i].dateCreated}`);
         }

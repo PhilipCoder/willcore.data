@@ -6,10 +6,12 @@ const baseProxy = require("./baseProxy.js");
 class assignableProxyHandler extends baseProxyHandler {
     constructor() {
         super();
-        this.getTraps = [this.getStraightValue, this.getAssignable];
+        this.getTraps = [this.getCopy,this.getStraightValue, this.getAssignable];
         this.setTraps = [this.assignStraightValue, this.assignArray, this.assignAssignable, this.assignAssignableValue, this.assignCompleted];
         this.hiddenVariables = {};
     }
+
+
 
     assignStraightValue(target, property, value, proxy) {
         if (property.startsWith("_")) {
@@ -33,7 +35,7 @@ class assignableProxyHandler extends baseProxyHandler {
         if (target[property] === undefined && value.prototype instanceof assignable) {
             let result = new value();
             if (result.canAssign(proxy, property)) {
-                if (result.isCompleted){
+                if (result.isCompleted) {
                     target[property] = result;
                     result.completed();
                     return this.assignCompleted(target, property, value, proxy);
@@ -56,7 +58,7 @@ class assignableProxyHandler extends baseProxyHandler {
     assignCompleted(target, property, value, proxy) {
         if (target[property] instanceof assignable && target[property].isCompleted) {
             let completionResult = target[property].completionResult();
-            if (completionResult instanceof baseProxy){
+            if (completionResult instanceof baseProxy) {
                 completionResult._parent = target;
             }
             if (completionResult === false) {
@@ -73,7 +75,7 @@ class assignableProxyHandler extends baseProxyHandler {
         return { value: false, status: false };
     }
 
-    getStraightValue(target, property, proxy){
+    getStraightValue(target, property, proxy) {
         if (property.startsWith("_")) {
             return { value: this.hiddenVariables[property], status: true };
         }
@@ -87,6 +89,18 @@ class assignableProxyHandler extends baseProxyHandler {
         else {
             return { value: intermediateAssignableProxy.new(proxy, property), status: true };
         }
+    }
+
+    getCopy(target, property, value, proxy) {
+        if (property === "getCopy") {
+            let result = () => {
+                let handler = new this.constructor();
+                handler.hiddenVariables = this.hiddenVariables;
+                return new Proxy(target, handler);
+            };
+            return { value: result, status: true };
+        }
+        return { value: false, status: false };
     }
 
 }

@@ -1,12 +1,25 @@
 const assignableProxyHandler = require("../../../proxies/base/assignableProxyHandler.js");
 const contextStateManager = require("../../../sqlGeneration/state/contextStateManager.js");
-
+//const tableProxy = require("../table/dbTable.js");
 class mysqlProxyHandler extends assignableProxyHandler {
   constructor() {
     super();
+    this.getTraps.unshift(this.getTableCopy);
     this.getTraps.unshift(this.getUpdateFunction);
     this.getTraps.unshift(this.getSaveFunction);
     this.getTraps.unshift(this.getQueryDB);
+  }
+
+  getTableCopy(target, property, proxy){
+    if (target[property]){
+      let result = target[property].getCopy();
+      let dbTableAssignable = new target[property]._dbTableAssignable.constructor();
+      dbTableAssignable.tableInfo = target[property]._dbTableAssignable.tableInfo;
+      dbTableAssignable.parentProxy = proxy;
+      result._dbTableAssignable = dbTableAssignable;
+      return { value: result, status: true };
+    }
+    return { value: false, status: false };
   }
 
   getUpdateFunction(target, property, proxy) {
