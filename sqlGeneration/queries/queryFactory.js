@@ -46,15 +46,12 @@ class queryFactory {
         let fullSQL = selectSQL + joinSQL + whereSQL + orderBySQL + limitSQL;
         return fullSQL;
     }
-    runQuery() {
+    runQuery(querySQL, queryParameters) {
         return new Promise(async (resolve, reject) => {
-            let queryValues = this.queryAble.getValues();
-            let sql = this.getSQL();
-            let results = await this.db._mysqlAssignable.queryExecutor.runQuery(sql, queryValues.filter.parameters);
-            let mapper = new entityMapper(this.db);
-            let entities = mapper.mapValues(results);
-            console.log(sql);
-            resolve(entities);
+            let parameters = queryParameters || this.queryAble.getValues().filter.parameters;
+            let sql = querySQL || this.getSQL();
+            let results = await this.db._mysqlAssignable.queryExecutor.runQuery(sql, parameters);
+            resolve(new entityMapper(this.db).mapValues(results));
         });
     }
 }

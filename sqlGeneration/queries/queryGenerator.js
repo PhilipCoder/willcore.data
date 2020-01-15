@@ -287,14 +287,16 @@ class queryGenerator {
     getScopeValues(scopeObj, fieldArray) {
         let scopedFields = this.getScopeFields(scopeObj, fieldArray);
         let parameterValues = [];
+        let parameterIndexes =[];
         scopedFields.forEach(fields => {
             if (fields.length === 0) return;
             fields[0].type = "Numeric";
             let paramterValue = this.getObjectProperty(scopeObj, fields);
+            parameterIndexes.push(fields[0].value);
             fields[0].value = "?";//this.getObjectProperty(scopeObj, fields);
             parameterValues.push(paramterValue);
         });
-        return { nodes: fieldArray.filter(x => !x.delete), parameters: parameterValues };
+        return { nodes: fieldArray.filter(x => !x.delete), parameters: parameterValues,parameterIndexes:parameterIndexes };
     }
 
     getScopeFields(scopeObj, fieldArray) {
@@ -307,7 +309,7 @@ class queryGenerator {
             currentField.index = i;
             if (isLoaded && currentField.type === "Identifier") {
                 isLoaded = false;
-                if (scopeObj[currentField.value]) {
+                if (scopeObj.hasOwnProperty(currentField.value)) {
                     isAdding = true;
                     fieldParts = [currentField];
                     result.push(fieldParts);

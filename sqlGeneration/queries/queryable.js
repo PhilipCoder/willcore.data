@@ -3,7 +3,7 @@ const query = require("../../sqlGeneration/queries/queryGenerator.js");
 const preProcessor = require("./tokenPreProcessor.js");
 
 class queryFactory {
-    static get(dbConfig, tableName,queryFactory ) {
+    static get(dbConfig, tableName, queryFactory) {
         let scopedVariables = {
             dbConfig: dbConfig,
             tableName: tableName,
@@ -12,8 +12,9 @@ class queryFactory {
             },
             filter: {
                 filterExpression: null,
-                parameters:null,
-                queryScope: null
+                parameters: null,
+                queryScope: null,
+                parameterIndexes: null
             },
             select: {
                 selectObj: null
@@ -36,6 +37,20 @@ class queryFactory {
         };
 
         /**
+         * Saves a query for reuse.
+         * Query name should be unique to the table and should start with an underscore.
+         */
+        queryable.save = function (name) {
+            if (!name.startsWith("_")) throw `Invalid query name: ${name}. Query names should start with an underscore, "_".`;
+            queryFactory.runQuery.bind(queryFactory);
+            let sql = queryFactory.getSQL();
+            queryFactory.db[scopedVariables.tableName][name] = function (parameters) {
+                queryFactory.runQuery.bind(queryFactory);
+                return queryFactory.runQuery(sql,  scopedVariables.filter.parameterIndexes.map(x=>parameters[x]));
+            };
+        }
+
+        /**
          * Adds a filter clause to a SQL query.
          */
         queryable.filter = function (filterExpression, queryScope) {
@@ -46,6 +61,7 @@ class queryFactory {
             let filterValues = selectQuery.filter(filterExpression.toString(), queryScope);
             scopedVariables.filter.parts = filterValues.nodes;
             scopedVariables.filter.parameters = filterValues.parameters;
+            scopedVariables.filter.parameterIndexes = filterValues.parameterIndexes;
             scopedVariables.filter.parts = new preProcessor().process(scopedVariables.filter.parts);
             return queryable;
         };
@@ -93,7 +109,7 @@ class queryFactory {
         /**
          * Adds a sort clause to a SQL query
          */
-        queryable.sort = function (sortFunc,descending) {
+        queryable.sort = function (sortFunc, descending) {
             scopedVariables.sort.descending = descending;
             scopedVariables.sort.sortFunc = sortFunc;
             scopedVariables.sort.sortParts = sortFunc(chainableProxy.new(scopedVariables.tableName))._name;
