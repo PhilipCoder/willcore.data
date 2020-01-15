@@ -52,6 +52,9 @@ const typeMappings = {
     }, bool: {
         dbType: "boolean",
         resizeAble: false
+    }, text: {
+        dbType: "text",
+        resizeAble: false
     }
 
 };

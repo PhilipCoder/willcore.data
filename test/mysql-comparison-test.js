@@ -5,20 +5,23 @@ const dbStatus = require("../sqlGeneration/migration/statusEnum.js");
 const migrationSetup = require("../assignables/mysql/setup/dbMigrationSetup.js");
 
 describe('mysql-comparison-test', function () {
-    migrationSetup.migrationTablesEnabled = false;
-    let proxy = willCoreProxy.new();
-    proxy.baseDB.mysql = ["127.0.0.1", "root", "Bandit1250s"];
-    proxy.baseDB.user.table;
-    proxy.baseDB.user.id.column.int;
-    proxy.baseDB.user.id.primary;
-    proxy.baseDB.user.name.column.string;
-
-    proxy.baseDB.product.table;
-    proxy.baseDB.product.id.column.int;
-    proxy.baseDB.product.id.primary;
-    proxy.baseDB.product.name.column.string;
-    proxy.baseDB.product.owner.column.int;
-    proxy.baseDB.product.owner = proxy.baseDB.user.id;
+    let proxy = null;
+    before(function () {
+        migrationSetup.migrationTablesEnabled = false;
+        proxy = willCoreProxy.new();
+        proxy.baseDB.mysql = ["127.0.0.1", "root", "Bandit1250s"];
+        proxy.baseDB.user.table;
+        proxy.baseDB.user.id.column.int;
+        proxy.baseDB.user.id.primary;
+        proxy.baseDB.user.name.column.string;
+    
+        proxy.baseDB.product.table;
+        proxy.baseDB.product.id.column.int;
+        proxy.baseDB.product.id.primary;
+        proxy.baseDB.product.name.column.string;
+        proxy.baseDB.product.owner.column.int;
+        proxy.baseDB.product.owner = proxy.baseDB.user.id;
+    });
     it('test-no-changes', function () {
         let proxyScoped = willCoreProxy.new();
         proxyScoped.baseDB.mysql = ["127.0.0.1", "root", "Bandit1250s"];

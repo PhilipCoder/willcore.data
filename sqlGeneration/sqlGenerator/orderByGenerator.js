@@ -1,5 +1,9 @@
+/**
+ * Final stage SQL generation module that generates the order by SQL of a select query.
+ * 
+ * Author: Philip Schoeman
+ */
 class orderByGenerator {
-    //Todo: implement recursion here
     static getSQL(sortDetails) {
         if (!sortDetails.sortParts) return '';
         let sortColumn = sortDetails.sortParts.length > 2 ?

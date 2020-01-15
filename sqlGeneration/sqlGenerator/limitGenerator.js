@@ -1,5 +1,9 @@
+/**
+ * Final stage SQL generation module that generates the limit clause of a select query.
+ * 
+ * Author: Philip Schoeman
+ */
 class limitGenerator {
-    //Todo: implement recursion here
     static getSQL(takeDetails) {
         if (takeDetails.skipCount === null && takeDetails.takeCount === null) return ``;
         if (takeDetails.skipCount === null && takeDetails.takeCount) return `\nLIMIT ${takeDetails.takeCount}`;

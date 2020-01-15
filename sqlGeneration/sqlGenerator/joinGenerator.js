@@ -1,5 +1,9 @@
+/**
+ * Final stage SQL generation module that generates the joins between tables in a select query.
+ * 
+ * Author: Philip Schoeman
+ */
 class joinGenerator {
-    //Todo: implement recursion here
     static getSQL(joinTree) {
         let sqlJoinParts = joinGenerator.getJoinSQL(joinTree.joins, joinTree.alias);
         return `FROM ${joinTree.table}\n` + sqlJoinParts.map(x => `        ${x}`).join("\n");
