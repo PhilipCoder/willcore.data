@@ -8,60 +8,67 @@ const migrationSetup = require("../assignables/mysql/setup/dbMigrationSetup.js")
 const runQuery = require("../sqlExecutor/runQuery.js");
 describe('mysql-dbGenerator-test', function () {
     migrationSetup.migrationTablesEnabled = false;
-    it('test-get-comparison-info', function () {
+    it('test-get-comparison-info', async function () {
         rewiremock(() => require("../sqlGeneration/migration/migrationSource.js")).with(mocks.migrationSourceStub);
         rewiremock.enable();
         const dbGenerator = new (require("../sqlGeneration/dbGenerator.js"))(mocks.defaultTwoTableDBFactory());
-        let comparisonTarget = dbGenerator.comparisonInfo;
+        await dbGenerator.updateTargets();
         assert(dbGenerator.getTablesWithStatus(status.skip).length === 2);
         rewiremock.disable();
     });
-    it('test-get-new-db-sql', function () {
+    it('test-get-new-db-sql', async function () {
         rewiremock(() => require("../sqlGeneration/migration/migrationSource.js")).with(mocks.emptyMigrationSource);
         rewiremock.enable();
         const dbGenerator = new (require("../sqlGeneration/dbGenerator.js"))(mocks.defaultTwoTableDBFactory());
+        await dbGenerator.updateTargets();
         assert(dbGenerator.sql === sqlResults.getNewDBSql, "New DB sql incorrect");
         rewiremock.disable();
     });
-    it('test-no-changes', function () {
+    it('test-no-changes', async function () {
         rewiremock(() => require("../sqlGeneration/migration/migrationSource.js")).with(mocks.migrationSourceStub);
         rewiremock.enable();
         const dbGenerator = new (require("../sqlGeneration/dbGenerator.js"))(mocks.defaultTwoTableDBFactory());
+        await dbGenerator.updateTargets();
         assert(dbGenerator.sql === sqlResults.noChangeSQL, "No change sql incorrect");
         rewiremock.disable();
     });
-    it('add-table-test', function () {
+    it('add-table-test', async function () {
         rewiremock(() => require("../sqlGeneration/migration/migrationSource.js")).with(mocks.migrationSourceStub);
         rewiremock.enable();
         const dbGenerator = new (require("../sqlGeneration/dbGenerator.js"))(mocks.addtableDBFactory());
+        await dbGenerator.updateTargets();
         assert(dbGenerator.sql === sqlResults.addTableSQL, "Add table sql incorrect");
         rewiremock.disable();
     });
-    it('add-column-test', function () {
+    it('add-column-test', async function () {
         rewiremock(() => require("../sqlGeneration/migration/migrationSource.js")).with(mocks.migrationSourceStub);
         rewiremock.enable();
         const dbGenerator = new (require("../sqlGeneration/dbGenerator.js"))(mocks.addColumnDBFactory());
+        await dbGenerator.updateTargets();
         assert(dbGenerator.sql === sqlResults.addColumnsSQL, "Add column sql incorrect");
         rewiremock.disable();
     });
-    it('add-column-foreign-key-test', function () {
+    it('add-column-foreign-key-test', async function () {
         rewiremock(() => require("../sqlGeneration/migration/migrationSource.js")).with(mocks.migrationSourceNoFKStub);
         rewiremock.enable();
         const dbGenerator = new (require("../sqlGeneration/dbGenerator.js"))(mocks.addFKDBFactory());
+        await dbGenerator.updateTargets();
         assert(dbGenerator.sql === sqlResults.addColumnWithForeignKey, "No change sql incorrect");
         rewiremock.disable();
     });
-    it('add-foreign-key-test', function () {
+    it('add-foreign-key-test',async function () {
         rewiremock(() => require("../sqlGeneration/migration/migrationSource.js")).with(mocks.migrationSourceNoFKColStub);
         rewiremock.enable();
         const dbGenerator = new (require("../sqlGeneration/dbGenerator.js"))(mocks.addColumnFKDBFactory());
+        await dbGenerator.updateTargets();
         assert(dbGenerator.sql === sqlResults.addForeignKeyToExistingColumn, "No change sql incorrect");
         rewiremock.disable();
     });
-    it('drop-columns-get-column-fk-test', function () {
+    it('drop-columns-get-column-fk-test',async function () {
         rewiremock(() => require("../sqlGeneration/migration/migrationSource.js")).with(mocks.migrationSourceMultipuleFKStub);
         rewiremock.enable();
         const dbGenerator = new (require("../sqlGeneration/dbGenerator.js"))(mocks.defaultTwoTableDBFactory());
+        await dbGenerator.updateTargets();
         const dbCodeGen = new db(dbGenerator.comparisonTarget, dbGenerator.comparisonSource);
         const idRef = dbCodeGen.getForeignKeysForColumn("user", "id");
         const productRef = dbCodeGen.getForeignKeysForColumn("profile", "person");
@@ -70,10 +77,11 @@ describe('mysql-dbGenerator-test', function () {
         rewiremock.disable();
     });
 
-    it('drop-columns-get-table-fk-test', function () {
+    it('drop-columns-get-table-fk-test', async function () {
         rewiremock(() => require("../sqlGeneration/migration/migrationSource.js")).with(mocks.migrationSourceMultipuleFKStub);
         rewiremock.enable();
         const dbGenerator = new (require("../sqlGeneration/dbGenerator.js"))(mocks.defaultTwoTableDBFactory());
+        await dbGenerator.updateTargets();
         const dbCodeGen = new db(dbGenerator.comparisonTarget, dbGenerator.comparisonSource);
         const idRef = dbCodeGen.getForeignKeysForTable("user");
         const productRef = dbCodeGen.getForeignKeysForTable("profile");
@@ -81,16 +89,17 @@ describe('mysql-dbGenerator-test', function () {
         assert(productRef.length === 1, "Foreign keys not found");
         rewiremock.disable();
     });
-    it('get-deleted-columns-test', function () {
+    it('get-deleted-columns-test',async function () {
         rewiremock(() => require("../sqlGeneration/migration/migrationSource.js")).with(mocks.migrationSourceMultipuleFKStub);
         rewiremock.enable();
         const dbGenerator = new (require("../sqlGeneration/dbGenerator.js"))(mocks.dropColumns());
+        await dbGenerator.updateTargets();
         const dbCodeGen = new db(dbGenerator.comparisonTarget, dbGenerator.comparisonSource);
         const deletedColumns = dbCodeGen.getDeletedColumns();
         assert(deletedColumns.length === 2, "Deleted columns not detected.");
         rewiremock.disable();
     });
-    it('get-deleted-columns-sql-test', function () {
+    it('get-deleted-columns-sql-test',async function () {
         rewiremock(() => require("../sqlGeneration/migration/migrationSource.js")).with(mocks.migrationSourceManyFKStub);
         rewiremock.enable();
         const dbGenerator = new (require("../sqlGeneration/dbGenerator.js"))(mocks.dropFK());
@@ -98,7 +107,7 @@ describe('mysql-dbGenerator-test', function () {
 
         rewiremock.disable();
     });
-    it('full-db-create-drop-test', function () {
+    it('full-db-create-drop-test',async function () {
         rewiremock(() => require("../sqlGeneration/migration/migrationSource.js")).with(mocks.emptyMigrationSource);
         rewiremock.enable();
         const dbGenerator = new (require("../sqlGeneration/dbGenerator.js"))(mocks.manyFKCreateDB());

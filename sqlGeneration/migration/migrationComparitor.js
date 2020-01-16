@@ -9,10 +9,10 @@ class migrationComparitor {
      * @param {object} target The target database configuration object. This is generated via proxies.
      */
     static runMigrationComparison(source, target) {
-        if (source && source.name !== target.name)  return "DB names does not match.";
-        
-        if (!source) return { target: migrationComparitor.getDBCopyObj(target,dbStatus.new) };
-        
+        if (source && source.name && source.name !== target.name) return "DB names does not match.";
+
+        if (!source) return { target: migrationComparitor.getDBCopyObj(target, dbStatus.new) };
+
         let sourceDBTables = migrationComparitor.getDBCopyObj(source);
         let targetDBTables = migrationComparitor.getDBCopyObj(target);
 
@@ -54,7 +54,7 @@ class migrationComparitor {
         currentTargetTable.columnList.forEach(targetColumn => {
             modifiedColumnCounter = migrationComparitor.processColumn(currentSourceTable, targetColumn, modifiedColumnCounter);
         });
-        currentTargetTable.status = modifiedColumnCounter === 0 ? dbStatus.skip :dbStatus.modified;
+        currentTargetTable.status = modifiedColumnCounter === 0 ? dbStatus.skip : dbStatus.modified;
     }
 
     /**
@@ -100,7 +100,7 @@ class migrationComparitor {
             (Array.isArray(targetColumn.size) && targetColumn.size.filter((x, i) => targetColumn.size[i] !== sourceColumn.size[i]).length !== 0) ||
             (!Array.isArray(targetColumn.size) && targetColumn.size !== sourceColumn.size)) {
             modifiedColumnCounter++;
-            targetColumn.status =  dbStatus.typeChanged;
+            targetColumn.status = dbStatus.typeChanged;
         }
         else if (targetColumn.reference && !sourceColumn.reference) {
             modifiedColumnCounter++;
@@ -120,19 +120,19 @@ class migrationComparitor {
         return modifiedColumnCounter;
     }
 
-    static getDBCopyObj(source,status) {
+    static getDBCopyObj(source, status) {
         let dbInfo = {};
         Object.assign(dbInfo, source);
         dbInfo.tables = {};
         dbInfo.tableList = [];
-        if (status){
+        if (status) {
             dbInfo.status = status;
         }
         source.tables.forEach(t => {
             let sourceTable = {};
             Object.assign(sourceTable, t);
             sourceTable.columns = {};
-            if (status){
+            if (status) {
                 sourceTable.status = status;
             }
             sourceTable.columnList = [];
@@ -140,7 +140,7 @@ class migrationComparitor {
                 let sourceColumn = {};
                 Object.assign(sourceColumn, c);
                 sourceTable.columns[c.name] = sourceColumn;
-                if (status){
+                if (status) {
                     sourceColumn.status = status;
                 }
                 sourceTable.columnList.push(sourceColumn);

@@ -38,8 +38,7 @@ class dbGenerator {
 
     /** The comparison database core information structure. */
     get comparisonInfo() {
-        this._comparisonInfo = this._comparisonInfo || require("./migration/migrationSource.js").getSource(this.dbInfo.name);
-        return this._comparisonInfo;
+        return this._comparisonInfo || null;
     }
 
     /** The comparison target database core information structure. */
@@ -62,8 +61,11 @@ class dbGenerator {
     //Methods
     /** Calls the getters and setters of the comparative target and source databases to update them. */
     updateTargets() {
-        this.comparisonTarget;
-        this.comparisonSource;
+        return new Promise(async (resolve,reject) => {
+            this._comparisonInfo = await require("./migration/migrationSource.js").getSource(this.dbInfo.name, this._queryExecutor);
+            this._comparisonInfo = this._comparisonInfo  || null;
+            resolve();
+        });
     }
 
     /** Gets the database generation SQL */
@@ -74,10 +76,11 @@ class dbGenerator {
     /** Generates the database's SQL and executes the SQL to create the database. */
     generateDB(debugVal) {
         return new Promise(async (resolve, reject) => {
+            await this.updateTargets();
             let creationResult = await this._queryExecutor.execute(this.sql);
             if (migrationSetup.migrationTablesEnabled) {
                 let queryDB = this._proxy.queryDB;
-                queryDB.migration["+"] = {"migrationState": JSON.stringify(this.dbInfo)};
+                queryDB.migration["+"] = { "migrationState": JSON.stringify(this.dbInfo) };
                 await queryDB.save();
             }
             resolve(creationResult);
