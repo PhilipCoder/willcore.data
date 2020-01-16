@@ -16,19 +16,20 @@ class runQuery {
         this.password = password;
         this.dbname = dbName;
         return new Promise((resolve, reject) => {
-            this.connection = mysql.createConnection({
-                host: connection,
-                user: userName,
-                password: password,
-                multipleStatements: true,
-                flags: '-CONNECT_WITH_DB,IGNORE_SPACE'
-            });
+            
             resolve();
         });
     }
 
     execute(sql) {
         return new Promise((resolve, reject) => {
+            this.connection = mysql.createConnection({
+                host:  this.connectionString,
+                user: this.userName,
+                password: this.password,
+                multipleStatements: true,
+                flags: '-CONNECT_WITH_DB,IGNORE_SPACE'
+            });
             this.connection.connect((err) => {
                 if (err) {
                     reject(err);
