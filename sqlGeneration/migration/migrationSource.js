@@ -17,10 +17,11 @@ class migrationSource {
                                                 ${dbName}.migration 
                                             ORDER BY ID DESC 
                                             LIMIT 1;`;
-                let migrationSourceResult = await queryExecutor.runQuery(dbMigrationSource,[]);
-                resolve(migrationSourceResult[0].migrationState)
+                let migrationSourceResult = await queryExecutor.runQuery(dbMigrationSource, []);
+                resolve(JSON.parse(migrationSourceResult[0].migrationState))
+            } else {
+                resolve(null);
             }
-            resolve(null);
         });
     }
 }

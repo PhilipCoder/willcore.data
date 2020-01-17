@@ -61,9 +61,11 @@ class dbGenerator {
     //Methods
     /** Calls the getters and setters of the comparative target and source databases to update them. */
     updateTargets() {
-        return new Promise(async (resolve,reject) => {
-            this._comparisonInfo = await require("./migration/migrationSource.js").getSource(this.dbInfo.name, this._queryExecutor);
-            this._comparisonInfo = this._comparisonInfo  || null;
+        return new Promise(async (resolve, reject) => {
+            if (!this._dropDB) {
+                this._comparisonInfo = await require("./migration/migrationSource.js").getSource(this.dbInfo.name, this._queryExecutor);
+            }
+            this._comparisonInfo = this._comparisonInfo || null;
             resolve();
         });
     }

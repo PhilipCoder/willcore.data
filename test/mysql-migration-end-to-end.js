@@ -45,18 +45,18 @@ describe('mysql-migration-end-to-end', function () {
         //creates db
         await proxy.cars.init(true);
 
-        let queryDB = proxy.cars.queryDB;
+        // let queryDB = proxy.cars.queryDB;
 
-        queryDB.person["+"] = users;
-        await queryDB.save();
-        queryDB.carMake["+"] = carMakes;
-        await queryDB.save();
-        queryDB.car["+"] = cars;
-        await queryDB.save();
+        // queryDB.person["+"] = users;
+        // await queryDB.save();
+        // queryDB.carMake["+"] = carMakes;
+        // await queryDB.save();
+        // queryDB.car["+"] = cars;
+        // await queryDB.save();
     });
-    after(function () {
-        migrationSetup.migrationTablesEnabled = false;
-    });
+    // after(function () {
+    //     migrationSetup.migrationTablesEnabled = false;
+    // });
     it('add-column', async function () {
         let proxy = willCoreProxy.new();
         proxy.cars.mysql = ["127.0.0.1", "root", "Bandit1250s"];
@@ -91,7 +91,7 @@ describe('mysql-migration-end-to-end', function () {
         proxy.cars.car.owner = proxy.cars.person.id;
         proxy.cars.person.cars = proxy.cars.car.owner;
         //creates db
-        await proxy.cars.init(true);
+        await proxy.cars.init();
     });
     it('add-column-foreign-key', async function () {
        
