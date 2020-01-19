@@ -1,4 +1,4 @@
-const proxyHandler = require("./willCoreProxyHandler.js");
+const proxyHandler = require("./proxies/willCore/willCoreProxyHandler.js");
 /**
  * Proxy class for the main willCore instance.
  */

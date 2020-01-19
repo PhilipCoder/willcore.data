@@ -1,6 +1,6 @@
 const assert = require('chai').assert;
 const assignable = require("../assignables/assignable.js");
-const willCoreProxy = require("../proxies/willCore/willCoreProxy.js");
+const willCoreProxy = require("../willCoreProxy.js");
 
 describe('mysql-assignable-test', function() {
     it('constructor - direct', function() {

@@ -1,5 +1,5 @@
 const assert = require('chai').assert;
-const willCoreProxy = require("../proxies/willCore/willCoreProxy.js");
+const willCoreProxy = require("../willCoreProxy.js");
 const migrationComparitor = require("../sqlGeneration/migration/migrationComparitor.js");
 const dbStatus = require("../sqlGeneration/migration/statusEnum.js");
 const migrationSetup = require("../assignables/mysql/setup/dbMigrationSetup.js");

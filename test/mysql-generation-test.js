@@ -1,5 +1,5 @@
 const assert = require('chai').assert;
-const willCoreProxy = require("../proxies/willCore/willCoreProxy.js");
+const willCoreProxy = require("../willCoreProxy.js");
 const db = require("../sqlGeneration/components/db.js");
 const table = require("../sqlGeneration/components/table.js");
 const column = require("../sqlGeneration/components/column.js");

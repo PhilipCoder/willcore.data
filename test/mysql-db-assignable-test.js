@@ -1,6 +1,6 @@
 const assert = require('chai').assert;
 const assignable = require("../assignables/assignable.js");
-const willCoreProxy = require("../proxies/willCore/willCoreProxy.js");
+const willCoreProxy = require("../willCoreProxy.js");
 const mysqlProxy = require("../assignables/mysql/db/mysqlProxy.js");
 const dbTableProxy = require("../assignables/mysql/table/dbTableProxy.js");
 const dbColumnProxy = require("../assignables/mysql/column/dbColumnProxy.js");

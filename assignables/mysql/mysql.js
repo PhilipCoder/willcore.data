@@ -1,5 +1,5 @@
 const assignable = require("../assignable.js");
-const willCoreProxy = require("../../proxies/willCore/willCoreProxy.js");
+const willCoreProxy = require("../../willCoreProxy.js");
 const mysqlProxy = require("./db/mysqlProxy.js");
 const dbMigrationSetup = require("./setup/dbMigrationSetup.js");
 const dbGenerator = require("../../sqlGeneration/dbGenerator.js");

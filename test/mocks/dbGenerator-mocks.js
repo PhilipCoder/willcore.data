@@ -1,4 +1,4 @@
-const willCoreProxy = require("../../proxies/willCore/willCoreProxy.js");
+const willCoreProxy = require("../../willCoreProxy.js");
 
 const migrationSourceStub = {
     getSource: (name) => {

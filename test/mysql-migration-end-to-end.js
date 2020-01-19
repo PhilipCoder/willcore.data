@@ -1,10 +1,6 @@
 const assert = require('chai').assert;
-const mocks = require("./mocks/dbGenerator-mocks.js");
 const migrationSetup = require("../assignables/mysql/setup/dbMigrationSetup.js");
-const willCoreProxy = require("../proxies/willCore/willCoreProxy.js");
-const users = require("./mocks/jsonTestData/userAccount.json");
-const carMakes = require("./mocks/jsonTestData/carMakes.json");
-const cars = require("./mocks/jsonTestData/cars.json");
+const willCoreProxy = require("../willCoreProxy.js");
 
 describe('mysql-migration-end-to-end', function () {
     before(function () {
@@ -31,15 +27,6 @@ describe('mysql-migration-end-to-end', function () {
             proxy.cars.carMake.name.column.string;
             //creates db
             await proxy.cars.init(true);
-            // done();
-            // let queryDB = proxy.cars.queryDB;
-
-            // queryDB.person["+"] = users;
-            // await queryDB.save();
-            // queryDB.carMake["+"] = carMakes;
-            // await queryDB.save();
-            // queryDB.car["+"] = cars;
-            // await queryDB.save();
             resolve();
         });
     });

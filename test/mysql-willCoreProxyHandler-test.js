@@ -1,9 +1,9 @@
 const assert = require('chai').assert;
 const willCoreProxyHandler = require("../proxies/willCore/willCoreProxyHandler.js");
-const willCoreProxy = require("../proxies/willCore/willCoreProxy.js");
+const willCoreProxy = require("../willCoreProxy.js");
 const assignable = require("../assignables/assignable.js");
 const intermediateAssignableProxy = require("../proxies/intermediateAssignable/intermediateAssignableProxy.js");
-const willCoreModules = require("../willCoreModules.js");
+const willCoreModules = require("../moduleContainer/willCoreModules.js");
 
 class testAssingable extends assignable {
     constructor() {

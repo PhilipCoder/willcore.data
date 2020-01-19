@@ -1,5 +1,5 @@
 const baseProxyHandler = require("../base/baseProxyHandler.js");
-const willCoreModules = require("../../willCoreModules.js");
+const willCoreModules = require("../../moduleContainer/willCoreModules.js");
 const intermediateProxy = require("../intermediate/intermediateProxy.js");
 
 class intermediateAssignableProxyHandler extends baseProxyHandler {
