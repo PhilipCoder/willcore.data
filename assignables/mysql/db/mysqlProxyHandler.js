@@ -1,5 +1,6 @@
 const assignableProxyHandler = require("../../../proxies/base/assignableProxyHandler.js");
 const contextStateManager = require("../../../sqlGeneration/state/contextStateManager.js");
+const dbInfoQuery = require("../../../sqlExecutor/dbInfoQuery.js");
 //const tableProxy = require("../table/dbTable.js");
 class mysqlProxyHandler extends assignableProxyHandler {
   constructor() {
@@ -8,6 +9,18 @@ class mysqlProxyHandler extends assignableProxyHandler {
     this.getTraps.unshift(this.getUpdateFunction);
     this.getTraps.unshift(this.getSaveFunction);
     this.getTraps.unshift(this.getQueryDB);
+    this.getTraps.unshift(this.getDBStructure);
+  }
+
+  getDBStructure(target, property, proxy){
+    if (property === "getStructure") {
+      let structureFunction = async function () {
+        return await dbInfoQuery.getDBInfo(proxy._mysqlAssignable);
+      };
+      structureFunction.bind(proxy);
+      return { value: structureFunction, status: true };
+    }
+    return { value: false, status: false };
   }
 
   getTableCopy(target, property, proxy){

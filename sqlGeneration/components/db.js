@@ -77,7 +77,9 @@ class db {
         let result = [];
         this.sourceDBInfo.tableList.forEach(table => {
             table.columnList.forEach(column => {
-                if (column.status === status.deleted) {
+                let isPrimary = !column.reference ||
+                !this.sourceDBInfo.tables[column.reference.table].columns[column.reference.column].reference;
+                if (column.status === status.deleted && isPrimary) {
                     result.push({ column, table });
                 }
             });
@@ -100,6 +102,7 @@ class db {
         let currentColumn = this.sourceDBInfo.tables[tableName].columns[columnName];
         if (currentColumn.reference) {
             foreignKeys.push({ table: tableName, key: this.getForeignKeyName(tableName, columnName, currentColumn.reference.table, currentColumn.reference.column) });
+            return foreignKeys;
         }
         this.sourceDBInfo.tableList.forEach(table => {
             table.columnList.forEach(column => {
@@ -112,6 +115,13 @@ class db {
     }
 
     getForeignKeyName(tableName, columnName, targetTable, targetColumn) {
+        let targetColumnObj = this.sourceDBInfo.tables[targetTable].columns[targetColumn];
+        if (targetColumnObj.reference){
+            tableName = targetTable;
+            columnName = targetColumn;
+            targetTable = targetColumnObj.reference.table;
+            targetColumn = targetColumnObj.reference.column;
+        }
         return `fk_${tableName}_${columnName}_${targetTable}_${targetColumn}`;
     }
 

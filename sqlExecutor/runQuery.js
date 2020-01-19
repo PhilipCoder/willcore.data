@@ -36,8 +36,12 @@ class runQuery {
                 } else {
                     this.connection.query(sql, (err, result) => {
                         this.connection.end();
-                        if (err) { reject(err); }
-                        else { resolve(result); }
+                        if (err) { 
+                            reject(err); 
+                        }
+                        else { 
+                            resolve(result); 
+                        }
                     });
                 }
             });;
