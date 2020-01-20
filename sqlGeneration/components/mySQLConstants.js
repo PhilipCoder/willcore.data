@@ -37,6 +37,10 @@ const typeMappings = {
         dbType: "varchar",
         resizeAble: true,
         defaultSize: 256
+    }, nstring: {
+        dbType: "nvarchar",
+        resizeAble: true,
+        defaultSize: 256
     }, decimal: {
         dbType: "decimal",
         resizeAble: true,
