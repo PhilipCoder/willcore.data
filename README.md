@@ -128,16 +128,16 @@ dbContainerProxy.testDB.users.id.column.int;
 
 #### Available data types (data type mappings)
 
-Column Assignable Data Type | MySQL Data Type | Default Size
---------------------------- | --------------- | ------------
-int | int | -
-string | varchar | 256
-nstring | nvarchar | 256
-decimal | decimal | 20, 7
-float | float | 20, 7
-date | datetime | 6
-bool | boolean | -
-text | text | -
+| Column Assignable Data Type | MySQL Data Type | Default Size |
+| --------------------------- | --------------- | ------------ |
+| int                         | int             | -            |
+| string                      | varchar         | 256          |
+| nstring                     | nvarchar        | 256          |
+| decimal                     | decimal         | 20, 7        |
+| float                       | float           | 20, 7        |
+| date                        | datetime        | 6            |
+| bool                        | boolean         | -            |
+| text                        | text            | -            |
 
 #### Specifying custom sizes for column types
 
@@ -244,5 +244,91 @@ let queryableDB = proxy.testDB.queryDB;
 ## 5. Adding data to a table.
 
 Data rows can be added to table via a queryDB instance. The add method on a table proxy or the table's "+" property. The add method can only take a single row at a time, while the "+" property can take an array of data rows. After the data is added to the internal state of the queryDB instance, the "save" method can be called to persist the data to the database. The save method returns a promise that will resolve once the data is persisted to the database.
+
+To add a row to table, the data passed to the table proxy should be an object with values on properties named the same as the columns on the table. For example: (please note that primary key columns are auto incrementing, so values are not passed for primary keys)
+
+``` javascript
+//To add data to a table with columns id, name, price and description, the following object can be used to populate the table:
+
+let newDataRow = {name:"John Doe", price: 2000.21, description:"Our first client."};
+```
+
+### 5.1 Adding data using the __add__ method.
+
+#### A single row at a time using the _add_ method
+```javascript
+//Adds a single row to the context
+queryDB.person.add(
+    {
+        firstName:"John",
+        lastName:"Doe",
+        email:"johndoe@common.com", 
+        gender:"male", 
+        dateCreated:"2020/01/01"
+    });
+//Saves the changes of the context to the database
+await queryDB.save();
+```
+
+#### A single row at a time using the "+" property
+```javascript
+//Adds a single row to the context
+queryDB.person["+"] = 
+    {
+        firstName:"John",
+        lastName:"Doe",
+        email:"johndoe@common.com", 
+        gender:"male", 
+        dateCreated:"2020/01/01"
+    };
+//Saves the changes of the context to the database
+await queryDB.save();
+```
+
+#### A multiple rows at a time using the "+" property
+```javascript
+//Adds an array of data rows to the context
+queryDB.person["+"] = 
+    [
+        {
+            firstName:"John",
+            lastName:"Doe",
+            email:"johndoe@common.com", 
+            gender:"male", 
+            dateCreated:"2020/01/01"
+        },
+        {
+            firstName:"Johanna",
+            lastName:"Doe",
+            email:"johanna@common.com", 
+            gender:"female", 
+            dateCreated:"2020/01/01"
+        }
+    ];
+//Saves the changes of the context to the database
+await queryDB.save();
+```
+
+## 6. Deleting rows
+
+Rows can be deleted from a table by calling the delete method on a table or assigning an entry to undefined.
+
+#### Deleting a record by calling the delete method
+
+```javascript
+//Deleting a user record with primary key 10
+queryDB.user.delete(10);
+//Saves the changes of the context to the database
+await queryDB.save();
+```
+
+#### Deleting a record by assigning to undefined
+
+```javascript
+//Deleting a user record with primary key 10
+queryDB.user[10] = undefined;
+//Saves the changes of the context to the database
+await queryDB.save();
+```
 
 __Documentation is still under construction...__
