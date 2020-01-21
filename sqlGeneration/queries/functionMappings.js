@@ -28,9 +28,6 @@ const functionMappings = {
         dateDiff:function(valueA, valueB){
             return `DATEDIFF(${valueA},${valueB})`
         },
-        dateDiff:function(valueA, valueB){
-            return `DATEDIFF(${valueA},${valueB})`
-        },
         equals:function(valueA, valueB){
             return `${valueA} = ${valueB}`;
         },

@@ -331,4 +331,118 @@ queryDB.user[10] = undefined;
 await queryDB.save();
 ```
 
+## 7. Querying data
+
+>___
+> All query examples will be demonstrated on a database with the following structure:
+>___
+```javascript
+let proxy = willCoreProxy.new();
+proxy.cars.mysql = ["127.0.0.1", "root", "Bandit1250s"];
+//defines person table
+proxy.cars.person.table;
+proxy.cars.person.id.column.int;
+proxy.cars.person.id.primary;
+proxy.cars.person.firstName.column.string;
+proxy.cars.person.lastName.column.string;
+proxy.cars.person.email.column.string;
+proxy.cars.person.gender.column.string;
+proxy.cars.person.ipAddress.column.string;
+proxy.cars.person.dateCreated.column.date;
+//defines car make table
+proxy.cars.carMake.table;
+proxy.cars.carMake.id.column.int;
+proxy.cars.carMake.id.primary;
+proxy.cars.carMake.name.column.string;
+//defines cars table
+proxy.cars.car.table;
+proxy.cars.car.id.column.int;
+proxy.cars.car.id.primary;
+proxy.cars.car.model.column.string;
+proxy.cars.car.year.column.int;
+proxy.cars.car.color.column.string;
+proxy.cars.car.price.column.decimal;
+//make relation
+proxy.cars.car.make = proxy.cars.carMake.id;
+proxy.cars.carMake.cars = proxy.cars.car.make;
+//owner relation
+proxy.cars.car.owner = proxy.cars.person.id;
+proxy.cars.person.cars = proxy.cars.car.owner;
+
+let queryDB = proxy.cars.queryDB;
+```
+___
+
+WillCore queries data using queryables. A queryable is a query that can be built up using JavaScript. A queryable always has one main table but can be linked to many tables. To get an instance of a queryable, simply call any of the query functions of a queryable on a queryDB table proxy.
+
+#### Queryable functions
+
+Function Name | Parameters | Description
+------------- | ---------- | -----------
+filter | filterExpression (function), queryScope (object) | The filter function adds a __where__ clause to a query.
+include | tableLinkExpression (function) | Adds data from tables linked by foreign keys to the result of the query.
+select  | selectFunction (function) | Selects aggregate values.
+sort | sortFunction (function), isDescending (bool) | Sorts the results of a query.
+skip | skipCount (int) | Skips a number of records in a query.
+take | takeCount (int) | Takes a number of records of a query.
+save | queryName (string) | Saves a query for reuse
+
+#### Getting an instance of a queryable
+
+```javascript
+//Via the filter function
+let query = queryDB.cars.filter((car) => car.year === 1990);
+//Via the include function
+let query = queryDB.cars.include((car) => car.owner);
+//Via the sort function
+let query = queryDB.cars.sort((car) => car.price);
+//Via the skip function
+let query = queryDB.cars.skip(10);
+//Via the take function
+let query = queryDB.cars.take(20);
+```
+
+### 7.1 Query data with the filter function
+
+Querying a database using nothing else than JavaScript is now possible deu to WillCore's JavaScript to MySQL SQL transpiler. All transpiling happens at run-time and no pre-compilers are needed. Because of this, not all JavaScript methods and objects are supported.
+
+The filter function's first parameter is an arrow function with a single parameter indicating the table the filter is on. The filter can be used similar to a normal JavaScript array filter function, but only using an arrow function filter.
+
+#### Basic usage of a filter
+
+```javascript
+//Finding all cars with a price greater than 10 000
+let expensiveCarQuery = queryDB.car.filter((car) => car.price > 10000);
+//Finding all cars with a price greater than 10 000 and has a year model of either 2000 or 2002
+let expensiveOrMillennialCarQuery = queryDB.car.filter((car) => car.price > 10000 && (car.year === 2000 || car.year === 2002));
+```
+
+### Using MySQL specific statements
+
+Some statements like "like" is not supported by default by JavaScript. To use MySQL specific statements, they are invoked as methods on columns inside a query function.
+
+#### Using like within a query function
+
+```javascript
+//Generates a query to return all users with first names starting with A
+let usersAQuery = queryDB.users.filter((user) => user.firstName.like("A%"));
+//Generates a query to return all users cars
+let usersWithCarsQuery = queryDB.users.filter((user) => user.cars.id.count() > 0);
+```
+
+#### Available MySQL specific functions
+
+Function Name | Parameters | Description
+------------- | ---------- | -----------
+like | comparisonValue (string) | Generates a __like__ statement in the where clause. Checks if a string is contained within another string.
+notLike | comparisonValue (string) | Generates a __not like__ statement in the where clause. Checks if a string is not contained within another string.
+isNull | - | Checks if a value is null.
+isNotNull | - | Checks if a value is not null.
+dateDiff | comparisonValue (date) | Generates a __datediff__ statement in the where clause. Returns the number of days between two dates.
+count | - | Generates a __count__ aggregation statement in the where clause. Returns the count of items.
+avg | - | Generates a __avg__ aggregation statement in the where clause. Returns the average of number values in a query.
+max | - | Generates a __max__ aggregation statement in the where clause. Returns the maximum number value in a query.
+min | - | Generates a __min__ aggregation statement in the where clause. Returns the minimum number value in a query.
+sum | - | Generates a __sum__ aggregation statement in the where clause. Returns the sum of items.
+
 __Documentation is still under construction...__
