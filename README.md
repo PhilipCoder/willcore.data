@@ -116,13 +116,13 @@ ___
 
 #### Install via NPM:
 
-Command will be added when NPM package is available.
+>npm install willcore.data
 
 ## 2 Defining a database
 All database operations is done via the willCore proxy. The willCore proxy factory can be imported from:
 
 ```javascript
-const willCoreProxyFactory = require("willCore.Data");
+const willCoreProxyFactory = require("willCore.data");
 ```
 
 An instance of the database proxy can be created via the new() function on the willCoreProxyFactory. 
@@ -130,7 +130,7 @@ An instance of the database proxy can be created via the new() function on the w
 __The database definition should be added to a function that gets called when the program starts up or only when the database should be created. It should not be called for every server request. Or the database can be defined as a singleton:__
 
 ```javascript
-const willCoreProxyFactory = require("willCore.Data");
+const willCoreProxyFactory = require("willCore.data");
 //Creates an instance of the database proxy via the factory method
 let dbProxy = willCoreProxyFactory.new();
 
@@ -145,7 +145,7 @@ A database can be defined by assigning an array to a "mysql" assignable database
 3. The MySQL server password.
 
 ```javascript
-const willCoreProxyFactory = require("willCore.Data");
+const willCoreProxyFactory = require("willCore.data");
 //Creates an instance of the database proxy via the factory method
 let dbContainerProxy = willCoreProxyFactory.new();
 //Defining a database named testDB on localhost
