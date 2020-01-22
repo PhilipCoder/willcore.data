@@ -525,4 +525,77 @@ let customSelectQuery = queryDB.person
       .take(5);
 ```
 
-__Documentation is still under construction...__
+## 11. Executing a query
+
+A queryable is a function itself. To the execute a query, the queryable has to be executed. It will return a promise that will resolve with the data returned from the database as entities.
+
+#### Executing a query
+
+```javascript
+//define the query
+let customSelectQuery = queryDB.person.filter((person) => person.firstName === "John");
+//executes the query
+let dbResult = await customSelectQuery();
+```
+
+#### Executing a query inline
+
+```javascript
+let dbResult = await queryDB.person.filter((person) => person.firstName === "John")();
+```
+
+## 13 Updating data
+
+A row record can be updated by simply changing values on a database result and then saving the database.
+
+#### Changing the last name of a person with ID 10
+
+```javascript
+let personId = 10;
+let dbResult = await queryDB.person.filter((person) => person.id === personId,{ personId: personId })();
+dbResult[0].lastName = "Doe";
+//Persist the changes to the database
+await queryDB.save();
+```
+
+#### Changing the year of a person's, with ID 10, first car
+
+```javascript
+let personId = 10;
+let dbResult = await queryDB.person.filter((person) => person.id === personId,{ personId: personId })();
+dbResult[0].cars[0].year = "2001";
+//Persist the changes to the database
+await queryDB.save();
+```
+
+## 14. Saving queries
+
+The transpiling process WillCore uses to generate queries can be resource intensive. To get around this issue, WillCore allows you to save queries to a table. By saving the queries, the generated SQL will be persisted, and only the parameter values be injected when the queries are used again.
+
+To save a query, call the __save__ method on a queryable to save it after building it up. You can provide the query scope with null values when calling the filter function, and then provide values when the saved query is called.
+
+> Please note: All query names must start with an underscore.
+
+>Saved queries are saved to the main database proxy, but can be accessed by all queryDB's generated from the main database.
+
+```javascript
+//Saves a query to get all cars with a certain manufacturer as "_getCarsByCarMakeName"
+queryDB.
+car.
+include((car) => car.make).
+filter((car) => car.make.name === carMakeName, { carMakeName: null }).
+sort((car) => car.model).
+save("_getCarsByCarMakeName");
+
+//Calling a saved query:
+let toyotaCars = await queryDB.car._getCarsByCarMakeName({ carMakeName: "Toyota" });
+```
+
+## 15. Sorting data
+
+The sort method on a queryable provides a quick way to sort data. The sort function takes an arrow function that returns the column that the data should be sorted by. The second parameter is a boolean that indicates if the values should be returned in descending order. If it is not provided or false, the results will be in ascending order.
+
+```javascript
+let ascendingCars = await queryDB.car.sort((car) => car.model)();
+let descendingCars = await queryDB.car.sort((car) => car.model, true)();
+```
