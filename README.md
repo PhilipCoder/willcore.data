@@ -445,4 +445,84 @@ max | - | Generates a __max__ aggregation statement in the where clause. Returns
 min | - | Generates a __min__ aggregation statement in the where clause. Returns the minimum number value in a query.
 sum | - | Generates a __sum__ aggregation statement in the where clause. Returns the sum of items.
 
+## Query scope
+
+The filter of a query works by breaking down the filter function down to an expression tree and then it builds up SQL from the expression tree. The filter arrow function is never executed and WillCore does not have access to the parent scope and closure. Because of this, passing variables directly into the filter function won't work.
+
+<h4 style="color:red">The following won't work</h4>
+
+```javascript
+//Finding all cars with a price greater than 10 000
+//Since WillCore doesn't have access to the parent scope, it will think that minPrice is a column
+let minPrice = 10000;
+let expensiveCarQuery = queryDB.car.filter((car) => car.price > minPrice);
+```
+
+To give WillCore access to the values of the variables and tell it what statements are variables, the variables has to be passed in as properties on an object to the filter function as a second parameter.
+
+<h4 style="color:green">The following will work</h4>
+
+```javascript
+//Finding all cars with a price greater than 10 000
+//The second parameter tells WillCore that minPrice is a variable and provides the value to the engine.
+let minPrice = 10000;
+let expensiveCarQuery = queryDB.car.filter((car) => car.price > minPrice, { minPrice: minPrice });
+```
+
+## 8. Selecting aggregated values
+
+When a custom select query is needed, the select function on a queryable can be used. The select function can return aggregated values. By default WillCore will select all the columns on the primary table and included tables. By calling the select function, the default select columns are changed to a custom one.
+
+For instance, a query that should return the first name of a person, surname, the amount of cars a person own and the sum of the values of the cars would be:
+
+```javascript
+let customSelectQuery = queryDB.person.select((person) => ({
+        name: person.firstName,
+        ownerName: person.lastName,
+        carCount: person.cars.id.count(),
+        sumOfCarValue: product.cars.price.sum()
+      }));
+```
+
+## 9. Skipping and taking rows
+
+When a subset of the data should be returned, for example, a single page of data, the skip and take methods on a queryable. The skip and take methods generate a __limit__ statement in the SQL query.
+
+#### Skipping the first 50 results
+
+```javascript
+let subsetQuery = queryDB.person.skip(50);
+```
+
+#### Taking only the first 50 results
+
+```javascript
+let subsetQuery = queryDB.person.take(50);
+```
+
+#### Taking results from number 20 to 50
+
+```javascript
+let subsetQuery = queryDB.person.skip(20).take(30);
+```
+
+## 10. Building up a query
+
+All queryable methods return the queryable, so a query can be built up by chaining the methods. However, every method can only be called once.
+
+#### Complex query
+
+```javascript
+let customSelectQuery = queryDB.person
+    .filter((person) => person.firstName === "John")
+    .select((person) => ({
+        name: person.firstName,
+        ownerName: person.lastName,
+        carCount: person.cars.id.count(),
+        sumOfCarValue: product.cars.price.sum()
+      }))
+      .skip(2)
+      .take(5);
+```
+
 __Documentation is still under construction...__
