@@ -10,8 +10,6 @@ ___
 > * Queries via JavaScript like syntax.
 > * Database migrations.
 
-__
-
 ___
 > ### A) Assignable-Introduction
 ___
