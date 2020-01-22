@@ -1,4 +1,5 @@
 <p align="center">
+<img src="res/WillCoreLogo.png"  />
 <h1 align="center">WillCore.Data</h1>
 <h5 align="center">A MySQL ORM for NodeJS - By Philip Schoeman</h5>
 </p>
@@ -11,7 +12,58 @@ ___
 > * Database migrations.
 
 ___
-> ### A) Assignable-Introduction
+## Table of contents
+- [Table of contents](#table-of-contents)
+  - [A) Assignable-Introduction](#a-assignable-introduction)
+    - [The syntax for assignables is:](#the-syntax-for-assignables-is)
+- [1 Using WillCore.Data](#1-using-willcoredata)
+    - [Install via NPM:](#install-via-npm)
+- [2 Defining a database](#2-defining-a-database)
+  - [2.1 Define a database instance](#21-define-a-database-instance)
+  - [2.2 Defining tables and columns](#22-defining-tables-and-columns)
+    - [The syntax for creating a table:](#the-syntax-for-creating-a-table)
+    - [The syntax for creating a column on a table:](#the-syntax-for-creating-a-column-on-a-table)
+    - [Available data types (data type mappings)](#available-data-types-data-type-mappings)
+    - [Specifying custom sizes for column types](#specifying-custom-sizes-for-column-types)
+    - [Defining a primary key on a column](#defining-a-primary-key-on-a-column)
+  - [2.3 Defining foreign keys between columns](#23-defining-foreign-keys-between-columns)
+- [3 Create database from database definition](#3-create-database-from-database-definition)
+- [4 The queryDB](#4-the-querydb)
+- [5 Adding data to a table.](#5-adding-data-to-a-table)
+  - [5.1 Adding data using the __add__ method.](#51-adding-data-using-the-add-method)
+    - [A single row at a time using the _add_ method](#a-single-row-at-a-time-using-the-add-method)
+  - [5.2 Adding data using the __+__ property.](#52-adding-data-using-the--property)
+    - [A single row at a time using the "+" property](#a-single-row-at-a-time-using-the-%22%22-property)
+    - [A multiple rows at a time using the "+" property](#a-multiple-rows-at-a-time-using-the-%22%22-property)
+- [6 Deleting rows](#6-deleting-rows)
+    - [Deleting a record by calling the delete method](#deleting-a-record-by-calling-the-delete-method)
+    - [Deleting a record by assigning to undefined](#deleting-a-record-by-assigning-to-undefined)
+- [7 Querying data](#7-querying-data)
+    - [Queryable functions](#queryable-functions)
+    - [Getting an instance of a queryable](#getting-an-instance-of-a-queryable)
+  - [7.1 Query data with the filter function](#71-query-data-with-the-filter-function)
+    - [Basic usage of a filter](#basic-usage-of-a-filter)
+  - [7.2 Using MySQL specific statements](#72-using-mysql-specific-statements)
+    - [Using like within a query function](#using-like-within-a-query-function)
+    - [Available MySQL specific functions](#available-mysql-specific-functions)
+- [7.3 Query scope](#73-query-scope)
+- [8 Selecting aggregated values](#8-selecting-aggregated-values)
+- [9 Skipping and taking rows](#9-skipping-and-taking-rows)
+    - [Skipping the first 50 results](#skipping-the-first-50-results)
+    - [Taking only the first 50 results](#taking-only-the-first-50-results)
+    - [Taking results from number 20 to 50](#taking-results-from-number-20-to-50)
+- [10 Building up a query](#10-building-up-a-query)
+    - [Complex query](#complex-query)
+- [11 Executing a query](#11-executing-a-query)
+    - [Executing a query](#executing-a-query)
+    - [Executing a query inline](#executing-a-query-inline)
+- [12 Updating data](#12-updating-data)
+    - [Changing the last name of a person with ID 10](#changing-the-last-name-of-a-person-with-id-10)
+    - [Changing the year of a person's, with ID 10, first car](#changing-the-year-of-a-persons-with-id-10-first-car)
+- [13 Saving queries](#13-saving-queries)
+- [14 Sorting data](#14-sorting-data)
+___
+### A) Assignable-Introduction
 ___
 
 In order to make the API as simple as possible, WillCore.Data uses the concept of assignables to instantiate and assign state to internal objects. The concept might be a bit weird at first, but it simplifies the API.
@@ -60,13 +112,13 @@ When the class is assigned to $elementId, the framework checks if the class inhe
 
 ___
 
-## 1. Using WillCore.Data
+## 1 Using WillCore.Data
 
 #### Install via NPM:
 
 Command will be added when NPM package is available.
 
-## 2. Defining a database
+## 2 Defining a database
 All database operations is done via the willCore proxy. The willCore proxy factory can be imported from:
 
 ```javascript
@@ -216,7 +268,7 @@ proxy.cars.car.owner = proxy.cars.person.id;
 proxy.cars.person.cars = proxy.cars.car.owner;
 ```
 
-## 3. Create database from database definition
+## 3 Create database from database definition
 
 In order to create a database from a database definition, the init method on the database proxy can be called. This method returns a promise that will resolve once the database is created. The method takes one boolean parameter to indicate if the database should dropped before created. If the value is false or undefined, the database will use the migration engine to update the database accordingly.
 
@@ -227,7 +279,7 @@ await proxy.testDB.init();
 await proxy.testDB.init(true);
 ```
 
-## 4. The queryDB
+## 4 The queryDB
 
 Since the database definition should be defined as a singleton, it is not a thread-safe module. It can't be used to add data to the database or query the database since different threads might change the state of the database context and interfere with each other. To add, update or query data in the database, the queryDB proxy should be used. This proxy can be generated from the queryDB property on the database proxy. 
 
@@ -239,7 +291,7 @@ Accessing the queryDB:
 let queryableDB = proxy.testDB.queryDB;
 ```
 
-## 5. Adding data to a table.
+## 5 Adding data to a table.
 
 Data rows can be added to table via a queryDB instance. The add method on a table proxy or the table's "+" property. The add method can only take a single row at a time, while the "+" property can take an array of data rows. After the data is added to the internal state of the queryDB instance, the "save" method can be called to persist the data to the database. The save method returns a promise that will resolve once the data is persisted to the database.
 
@@ -267,6 +319,7 @@ queryDB.person.add(
 //Saves the changes of the context to the database
 await queryDB.save();
 ```
+### 5.2 Adding data using the __+__ property.
 
 #### A single row at a time using the "+" property
 ```javascript
@@ -307,7 +360,7 @@ queryDB.person["+"] =
 await queryDB.save();
 ```
 
-## 6. Deleting rows
+## 6 Deleting rows
 
 Rows can be deleted from a table by calling the delete method on a table or assigning an entry to undefined.
 
@@ -329,7 +382,7 @@ queryDB.user[10] = undefined;
 await queryDB.save();
 ```
 
-## 7. Querying data
+## 7 Querying data
 
 >___
 > All query examples will be demonstrated on a database with the following structure:
@@ -415,7 +468,7 @@ let expensiveCarQuery = queryDB.car.filter((car) => car.price > 10000);
 let expensiveOrMillennialCarQuery = queryDB.car.filter((car) => car.price > 10000 && (car.year === 2000 || car.year === 2002));
 ```
 
-### Using MySQL specific statements
+### 7.2 Using MySQL specific statements
 
 Some statements like "like" is not supported by default by JavaScript. To use MySQL specific statements, they are invoked as methods on columns inside a query function.
 
@@ -443,7 +496,7 @@ max | - | Generates a __max__ aggregation statement in the where clause. Returns
 min | - | Generates a __min__ aggregation statement in the where clause. Returns the minimum number value in a query.
 sum | - | Generates a __sum__ aggregation statement in the where clause. Returns the sum of items.
 
-## Query scope
+## 7.3 Query scope
 
 The filter of a query works by breaking down the filter function down to an expression tree and then it builds up SQL from the expression tree. The filter arrow function is never executed and WillCore does not have access to the parent scope and closure. Because of this, passing variables directly into the filter function won't work.
 
@@ -467,7 +520,7 @@ let minPrice = 10000;
 let expensiveCarQuery = queryDB.car.filter((car) => car.price > minPrice, { minPrice: minPrice });
 ```
 
-## 8. Selecting aggregated values
+## 8 Selecting aggregated values
 
 When a custom select query is needed, the select function on a queryable can be used. The select function can return aggregated values. By default WillCore will select all the columns on the primary table and included tables. By calling the select function, the default select columns are changed to a custom one.
 
@@ -482,7 +535,7 @@ let customSelectQuery = queryDB.person.select((person) => ({
       }));
 ```
 
-## 9. Skipping and taking rows
+## 9 Skipping and taking rows
 
 When a subset of the data should be returned, for example, a single page of data, the skip and take methods on a queryable. The skip and take methods generate a __limit__ statement in the SQL query.
 
@@ -504,7 +557,7 @@ let subsetQuery = queryDB.person.take(50);
 let subsetQuery = queryDB.person.skip(20).take(30);
 ```
 
-## 10. Building up a query
+## 10 Building up a query
 
 All queryable methods return the queryable, so a query can be built up by chaining the methods. However, every method can only be called once.
 
@@ -523,7 +576,7 @@ let customSelectQuery = queryDB.person
       .take(5);
 ```
 
-## 11. Executing a query
+## 11 Executing a query
 
 A queryable is a function itself. To the execute a query, the queryable has to be executed. It will return a promise that will resolve with the data returned from the database as entities.
 
@@ -542,7 +595,7 @@ let dbResult = await customSelectQuery();
 let dbResult = await queryDB.person.filter((person) => person.firstName === "John")();
 ```
 
-## 13 Updating data
+## 12 Updating data
 
 A row record can be updated by simply changing values on a database result and then saving the database.
 
@@ -566,7 +619,7 @@ dbResult[0].cars[0].year = "2001";
 await queryDB.save();
 ```
 
-## 14. Saving queries
+## 13 Saving queries
 
 The transpiling process WillCore uses to generate queries can be resource intensive. To get around this issue, WillCore allows you to save queries to a table. By saving the queries, the generated SQL will be persisted, and only the parameter values be injected when the queries are used again.
 
@@ -589,7 +642,7 @@ save("_getCarsByCarMakeName");
 let toyotaCars = await queryDB.car._getCarsByCarMakeName({ carMakeName: "Toyota" });
 ```
 
-## 15. Sorting data
+## 14 Sorting data
 
 The sort method on a queryable provides a quick way to sort data. The sort function takes an arrow function that returns the column that the data should be sorted by. The second parameter is a boolean that indicates if the values should be returned in descending order. If it is not provided or false, the results will be in ascending order.
 
