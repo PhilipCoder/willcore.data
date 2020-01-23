@@ -242,7 +242,7 @@ Foreign keys are defined by assigning a new column to a primary key on another t
 ```javascript
  let proxy = willCoreProxy.new();
 //Creates a cars database
-proxy.cars.mysql = ["127.0.0.1", "root", "Bandit1250s"];
+proxy.cars.mysql = ["127.0.0.1", "root", "Password"];
 //defines person table
 proxy.cars.person.table;
 proxy.cars.person.id.column.int;
@@ -389,7 +389,7 @@ await queryDB.save();
 >___
 ```javascript
 let proxy = willCoreProxy.new();
-proxy.cars.mysql = ["127.0.0.1", "root", "Bandit1250s"];
+proxy.cars.mysql = ["127.0.0.1", "root", "Password"];
 //defines person table
 proxy.cars.person.table;
 proxy.cars.person.id.column.int;
