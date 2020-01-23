@@ -455,7 +455,7 @@ let query = queryDB.cars.take(20);
 
 ### 7.1 Query data with the filter function
 
-Querying a database using nothing else than JavaScript is now possible deu to WillCore's JavaScript to MySQL SQL transpiler. All transpiling happens at run-time and no pre-compilers are needed. Because of this, not all JavaScript methods and objects are supported.
+Querying a database using nothing else than JavaScript is now possible duu to WillCore's JavaScript to MySQL SQL transpiler. All transpiling happens at run-time and no pre-compilers are needed. Because of this, not all JavaScript methods and objects are supported.
 
 The filter function's first parameter is an arrow function with a single parameter indicating the table the filter is on. The filter can be used similar to a normal JavaScript array filter function, but only using an arrow function filter.
 
