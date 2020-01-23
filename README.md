@@ -99,7 +99,7 @@ dbProxy.usersDB.usersTable.table;
 <br/>
 
 >The two examples above do the exact same thing. 
-When the class is assigned to $elementId, the framework checks if the class inherits from an assignable. Then it creates an instance of the mysql class. The instance of the mysql class then tells WillCore.UI that it needs 3 strings to complete assignment. When the strings are assigned, the mysql class initiates itself.
+When the class is assigned to $elementId, the framework checks if the class inherits from an assignable. Then it creates an instance of the mysql class. The instance of the mysql class then tells WillCore that it needs 3 strings to complete assignment. When the strings are assigned, the mysql class initiates itself.
 
  #### The syntax for assignables is:
 > proxyInstance.newPropertyName.newObjectType = assignmentValues (optional)
@@ -198,7 +198,7 @@ Custom sizes can be set to column proxies with data types that support custom si
 proxy.testDB.users.name.column.string;
 //Sets the size of the column's data type. Will be varchar(100)
 proxy.testDB.users.name.size = 100; 
-//Define a name column
+//Define a price column
 proxy.testDB.users.price.column.decimal;
 //Sets the size of the column's data type. Will be decimal(4,2)
 proxy.testDB.users.price.size = [4,2]; 
