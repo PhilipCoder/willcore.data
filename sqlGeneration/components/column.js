@@ -24,7 +24,8 @@ class column {
 
     getColumn(tableExists){
         let alterationStatement = tableExists ? `${keywords.alterTable.addColumn} ` : '';
-        return `${alterationStatement}\`${this.columnInfo.name}\` ${this.getSQLType(this.columnInfo.type, this.columnInfo.size)} null`;
+        let indexStatement = this.columnInfo.indexed ? `,\n${keywords.createColumn.index} d_${this.columnInfo.name}(${this.columnInfo.name})` : '';
+        return `${alterationStatement}\`${this.columnInfo.name}\` ${this.getSQLType(this.columnInfo.type, this.columnInfo.size)} null${indexStatement}`;
     }
 
     getPrimaryKey(tableExists){

@@ -16,7 +16,7 @@ describe('mysql-car-db-test', function () {
         rewiremock.enable();
         //defines db
         let proxy = willCoreProxy.new();
-        proxy.cars.mysql = ["127.0.0.1", "root", "Bandit1250s"];
+        proxy.cars.mysql = ["127.0.0.1", "root", "mySQLPassword01"];
         //defines person table
         proxy.cars.person.table;
         proxy.cars.person.id.column.int;
@@ -176,4 +176,5 @@ describe('mysql-car-db-test', function () {
 
         mazdaCars.forEach(x=>assert(x.make[0].name === "Mazda","Saved query returned wrong make."));
     });
+   
 });

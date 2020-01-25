@@ -442,7 +442,7 @@ save | queryName (string) | Saves a query for reuse
 
 ```javascript
 //Via the filter function
-let query = queryDB.cars.filter((car) => car.year === 1990);
+let query = queryDB.cars.filter((cars) => cars.year === 1990);
 //Via the include function
 let query = queryDB.cars.include((car) => car.owner);
 //Via the sort function
@@ -458,6 +458,8 @@ let query = queryDB.cars.take(20);
 Querying a database using nothing else than JavaScript is now possible duu to WillCore's JavaScript to MySQL SQL transpiler. All transpiling happens at run-time and no pre-compilers are needed. Because of this, not all JavaScript methods and objects are supported.
 
 The filter function's first parameter is an arrow function with a single parameter indicating the table the filter is on. The filter can be used similar to a normal JavaScript array filter function, but only using an arrow function filter.
+
+> ## __Important: The table parameter of the arrow function has to named the same as the table the filter is on. Example: for table users: .filter((users)=>users.name === "Philip").__
 
 #### Basic usage of a filter
 
@@ -476,9 +478,9 @@ Some statements like "like" is not supported by default by JavaScript. To use My
 
 ```javascript
 //Generates a query to return all users with first names starting with A
-let usersAQuery = queryDB.users.filter((user) => user.firstName.like("A%"));
+let usersAQuery = queryDB.users.filter((users) => users.firstName.like("A%"));
 //Generates a query to return all users cars
-let usersWithCarsQuery = queryDB.users.filter((user) => user.cars.id.count() > 0);
+let usersWithCarsQuery = queryDB.users.filter((users) => users.cars.id.count() > 0);
 ```
 
 #### Available MySQL specific functions
@@ -650,3 +652,16 @@ The sort method on a queryable provides a quick way to sort data. The sort funct
 let ascendingCars = await queryDB.car.sort((car) => car.model)();
 let descendingCars = await queryDB.car.sort((car) => car.model, true)();
 ```
+
+## 15 Defining indexes
+
+Indexes can be defined on single columns my calling the "index" property on a column proxy. 
+
+#### Define an index on a column
+
+````javascript
+//Defines a column on an table
+proxyInstance.demoDB.users.name.column.string;
+//Adds an index to a column
+proxyInstance.demoDB.users.name.index;
+````

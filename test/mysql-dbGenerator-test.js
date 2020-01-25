@@ -131,7 +131,7 @@ describe('mysql-dbGenerator-test', function () {
         migrationSetup.migrationTablesEnabled = true;
         rewiremock(() => require("../sqlGeneration/migration/migrationSource.js")).with(mocks.emptyMigrationSource);
         rewiremock.enable();
-        const dbGenerator = new (require("../sqlGeneration/dbGenerator.js"))(mocks.manyFKCreateDB(),new runQuery("127.0.0.1","root","Bandit1250s","mydb"));
+        const dbGenerator = new (require("../sqlGeneration/dbGenerator.js"))(mocks.manyFKCreateDB(),new runQuery("127.0.0.1","root","mySQLPassword01","mydb"));
         dbGenerator.dropDB = true;
         await dbGenerator.generateDB("the one").catch(ex=>{
             console.log(ex);

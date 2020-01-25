@@ -9,7 +9,7 @@ describe('mysql-migration-end-to-end', function () {
             migrationSetup.migrationTablesEnabled = true;
             //defines db
             let proxy = willCoreProxy.new();
-            proxy.cars.mysql = ["127.0.0.1", "root", "Bandit1250s"];
+            proxy.cars.mysql = ["127.0.0.1", "root", "mySQLPassword01"];
             //defines person table
             proxy.cars.person.table;
             proxy.cars.person.id.column.int;
@@ -34,7 +34,7 @@ describe('mysql-migration-end-to-end', function () {
         this.timeout(10000);
         return new Promise(async (resolve, reject) => {
             let proxy = willCoreProxy.new();
-            proxy.cars.mysql = ["127.0.0.1", "root", "Bandit1250s"];
+            proxy.cars.mysql = ["127.0.0.1", "root", "mySQLPassword01"];
             //defines person table
             proxy.cars.person.table;
             proxy.cars.person.id.column.int;
@@ -89,7 +89,7 @@ describe('mysql-migration-end-to-end', function () {
         this.timeout(10000);
         return new Promise(async (resolve, reject) => {
             let proxy = willCoreProxy.new();
-            proxy.cars.mysql = ["127.0.0.1", "root", "Bandit1250s"];
+            proxy.cars.mysql = ["127.0.0.1", "root", "mySQLPassword01"];
             //defines person table
             proxy.cars.person.table;
             proxy.cars.person.id.column.int;
@@ -132,7 +132,7 @@ describe('mysql-migration-end-to-end', function () {
         this.timeout(10000);
         return new Promise(async (resolve, reject) => {
             let proxy = willCoreProxy.new();
-            proxy.cars.mysql = ["127.0.0.1", "root", "Bandit1250s"];
+            proxy.cars.mysql = ["127.0.0.1", "root", "mySQLPassword01"];
             //defines person table
             proxy.cars.person.table;
             proxy.cars.person.id.column.int;
@@ -179,7 +179,7 @@ describe('mysql-migration-end-to-end', function () {
         this.timeout(10000);
         return new Promise(async (resolve, reject) => {
             let proxy = willCoreProxy.new();
-            proxy.cars.mysql = ["127.0.0.1", "root", "Bandit1250s"];
+            proxy.cars.mysql = ["127.0.0.1", "root", "mySQLPassword01"];
             //defines person table
             proxy.cars.person.table;
             proxy.cars.person.id.column.int;
@@ -222,7 +222,7 @@ describe('mysql-migration-end-to-end', function () {
         this.timeout(10000);
         return new Promise(async (resolve, reject) => {
             let proxy = willCoreProxy.new();
-            proxy.cars.mysql = ["127.0.0.1", "root", "Bandit1250s"];
+            proxy.cars.mysql = ["127.0.0.1", "root", "mySQLPassword01"];
             //defines person table
             proxy.cars.person.table;
             proxy.cars.person.id.column.int;
@@ -262,7 +262,7 @@ describe('mysql-migration-end-to-end', function () {
         this.timeout(10000);
         return new Promise(async (resolve, reject) => {
             let proxy = willCoreProxy.new();
-            proxy.cars.mysql = ["127.0.0.1", "root", "Bandit1250s"];
+            proxy.cars.mysql = ["127.0.0.1", "root", "mySQLPassword01"];
             //defines person table
             proxy.cars.person.table;
             proxy.cars.person.id.column.int;

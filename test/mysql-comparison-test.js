@@ -9,7 +9,7 @@ describe('mysql-comparison-test', function () {
     before(function () {
         migrationSetup.migrationTablesEnabled = false;
         proxy = willCoreProxy.new();
-        proxy.baseDB.mysql = ["127.0.0.1", "root", "Bandit1250s"];
+        proxy.baseDB.mysql = ["127.0.0.1", "root", "mySQLPassword01"];
         proxy.baseDB.user.table;
         proxy.baseDB.user.id.column.int;
         proxy.baseDB.user.id.primary;
@@ -24,7 +24,7 @@ describe('mysql-comparison-test', function () {
     });
     it('test-no-changes', function () {
         let proxyScoped = willCoreProxy.new();
-        proxyScoped.baseDB.mysql = ["127.0.0.1", "root", "Bandit1250s"];
+        proxyScoped.baseDB.mysql = ["127.0.0.1", "root", "mySQLPassword01"];
         proxyScoped.baseDB.user.table;
         proxyScoped.baseDB.user.id.column.int;
         proxyScoped.baseDB.user.id.primary;
@@ -54,7 +54,7 @@ describe('mysql-comparison-test', function () {
 
     it('test-create-new', function () {
         let proxyScoped = willCoreProxy.new();
-        proxyScoped.baseDB.mysql = ["127.0.0.1", "root", "Bandit1250s"];
+        proxyScoped.baseDB.mysql = ["127.0.0.1", "root", "mySQLPassword01"];
         proxyScoped.baseDB.user.table;
         proxyScoped.baseDB.user.id.column.int;
         proxyScoped.baseDB.user.id.primary;
@@ -83,7 +83,7 @@ describe('mysql-comparison-test', function () {
     });
     it('test-add-table', function () {
         let proxyScoped = willCoreProxy.new();
-        proxyScoped.baseDB.mysql = ["127.0.0.1", "root", "Bandit1250s"];
+        proxyScoped.baseDB.mysql = ["127.0.0.1", "root", "mySQLPassword01"];
         proxyScoped.baseDB.user.table;
         proxyScoped.baseDB.user.id.column.int;
         proxyScoped.baseDB.user.id.primary;
@@ -119,7 +119,7 @@ describe('mysql-comparison-test', function () {
     });
     it('test-type-change', function () {
         let proxyScoped = willCoreProxy.new();
-        proxyScoped.baseDB.mysql = ["127.0.0.1", "root", "Bandit1250s"];
+        proxyScoped.baseDB.mysql = ["127.0.0.1", "root", "mySQLPassword01"];
         proxyScoped.baseDB.user.table;
         proxyScoped.baseDB.user.id.column.int;
         proxyScoped.baseDB.user.id.primary;
@@ -148,7 +148,7 @@ describe('mysql-comparison-test', function () {
     });
     it('test-reference-change', function () {
         let proxyScoped = willCoreProxy.new();
-        proxyScoped.baseDB.mysql = ["127.0.0.1", "root", "Bandit1250s"];
+        proxyScoped.baseDB.mysql = ["127.0.0.1", "root", "mySQLPassword01"];
         proxyScoped.baseDB.user.table;
         proxyScoped.baseDB.user.id.column.int;
         proxyScoped.baseDB.user.id.primary;
@@ -177,7 +177,7 @@ describe('mysql-comparison-test', function () {
     });
     it('test-reference-add', function () {
         let proxyScoped = willCoreProxy.new();
-        proxyScoped.baseDB.mysql = ["127.0.0.1", "root", "Bandit1250s"];
+        proxyScoped.baseDB.mysql = ["127.0.0.1", "root", "mySQLPassword01"];
         proxyScoped.baseDB.user.table;
         proxyScoped.baseDB.user.id.column.int;
         proxyScoped.baseDB.user.id.primary;
@@ -207,7 +207,7 @@ describe('mysql-comparison-test', function () {
     });
     it('test-reference-remove', function () {
         let proxyScoped = willCoreProxy.new();
-        proxyScoped.baseDB.mysql = ["127.0.0.1", "root", "Bandit1250s"];
+        proxyScoped.baseDB.mysql = ["127.0.0.1", "root", "mySQLPassword01"];
         proxyScoped.baseDB.user.table;
         proxyScoped.baseDB.user.id.column.int;
         proxyScoped.baseDB.user.id.primary;
@@ -235,7 +235,7 @@ describe('mysql-comparison-test', function () {
     });
     it('test-columns-remove', function () {
         let proxyScoped = willCoreProxy.new();
-        proxyScoped.baseDB.mysql = ["127.0.0.1", "root", "Bandit1250s"];
+        proxyScoped.baseDB.mysql = ["127.0.0.1", "root", "mySQLPassword01"];
         proxyScoped.baseDB.user.table;
         proxyScoped.baseDB.user.id.column.int;
         proxyScoped.baseDB.user.id.primary;
@@ -261,7 +261,7 @@ describe('mysql-comparison-test', function () {
     });
     it('test-table-column-remove', function () {
         let proxyScoped = willCoreProxy.new();
-        proxyScoped.baseDB.mysql = ["127.0.0.1", "root", "Bandit1250s"];
+        proxyScoped.baseDB.mysql = ["127.0.0.1", "root", "mySQLPassword01"];
         proxyScoped.baseDB.user.table;
         proxyScoped.baseDB.user.id.column.int;
         proxyScoped.baseDB.user.id.primary;
@@ -283,7 +283,7 @@ describe('mysql-comparison-test', function () {
     });
     it('test-db-comparison-obj-copy', function () {
         let proxy = willCoreProxy.new();
-        proxy.myDB.mysql = ["127.0.0.1", "root", "Bandit1250s"];
+        proxy.myDB.mysql = ["127.0.0.1", "root", "mySQLPassword01"];
   
         proxy.myDB.product.table;
         proxy.myDB.product.id.column.int;
