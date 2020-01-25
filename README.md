@@ -461,7 +461,8 @@ Querying a database using nothing else than JavaScript is now possible duu to Wi
 The filter function's first parameter is an arrow function with a single parameter indicating the table the filter is on. The filter can be used similar to a normal JavaScript array filter function, but only using an arrow function filter.
 
 >___
->#### __Important: The table parameter of the arrow function has to named the same as the table the filter is on. Example: for table users: .filter((users)=>users.name === "Philip").__
+>#### __Important:__
+>#### The table parameter of the arrow function has to named the same as the table the filter is on. Example: for table users: .filter((users)=>users.name === "Philip").
 >___
 
 #### Basic usage of a filter
