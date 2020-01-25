@@ -306,7 +306,7 @@ const manyFKCreateDB = () =>{
     proxy.myDB.productDetails.name.column.string;
     proxy.myDB.productDetails.product.column.int;
     proxy.myDB.productDetails.product = proxy.myDB.product.id;
-
+    proxy.myDB._mysqlAssignable.dbInfo.instantiated = true;
     return proxy.myDB;
 };
 

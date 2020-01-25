@@ -57,7 +57,9 @@ class queryFactory {
             let queryArrowFunction = filterExpression.toString();
             if (queryArrowFunction.indexOf("(") === -1 || queryArrowFunction.indexOf(")") === -1 || queryArrowFunction.indexOf("=>") === -1) throw "Invalid arrow function used for filter query."
             let filterArrowParameterName = queryArrowFunction.substring(queryArrowFunction.indexOf("(") + 1, queryArrowFunction.indexOf(")") - (queryArrowFunction.lastIndexOf("(")));
+            filterArrowParameterName = filterArrowParameterName.trim();
             if (filterArrowParameterName !== scopedVariables.tableName) {
+                if (!filterArrowParameterName || filterArrowParameterName.indexOf(" ") > -1 || filterArrowParameterName.indexOf(",") > -1) throw "Invalid filter function parameter.";
                 queryArrowFunction = queryArrowFunction.split(`${filterArrowParameterName}.`).join(`${scopedVariables.tableName}.`);
             }
             queryScope = queryScope || {};

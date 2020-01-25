@@ -38,6 +38,7 @@ class mysqlProxyHandler extends assignableProxyHandler {
   getUpdateFunction(target, property, proxy) {
     if (property === "init") {
       let initFunction = function (dropDB) {
+        proxy._mysqlAssignable.dbInfo.instantiated = true;
         proxy._mysqlAssignable.dbGenerator.dropDB = !!dropDB;
         return proxy._mysqlAssignable.dbGenerator.generateDB();
       };
@@ -60,6 +61,9 @@ class mysqlProxyHandler extends assignableProxyHandler {
 
   getQueryDB(target, property, proxy) {
     if (property === "queryDB") {
+      if (!proxy._mysqlAssignable.dbInfo.instantiated){
+        throw "Unable to retrieve the queryDB. Database should first be instantiated via the init() command().";
+      }
       let handler = new mysqlProxyHandler();
       for (let key in this.hiddenVariables) {
         handler.hiddenVariables[key] = this.hiddenVariables[key];
