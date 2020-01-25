@@ -46,7 +46,7 @@ class queryFactory {
             let sql = queryFactory.getSQL();
             queryFactory.db[scopedVariables.tableName][name] = function (parameters) {
                 queryFactory.runQuery.bind(queryFactory);
-                return queryFactory.runQuery(sql,  scopedVariables.filter.parameterIndexes.map(x=>parameters[x]));
+                return queryFactory.runQuery(sql, scopedVariables.filter.parameterIndexes.map(x => parameters[x]));
             };
         }
 
@@ -54,11 +54,17 @@ class queryFactory {
          * Adds a filter clause to a SQL query.
          */
         queryable.filter = function (filterExpression, queryScope) {
+            let queryArrowFunction = filterExpression.toString();
+            if (queryArrowFunction.indexOf("(") === -1 || queryArrowFunction.indexOf(")") === -1 || queryArrowFunction.indexOf("=>") === -1) throw "Invalid arrow function used for filter query."
+            let filterArrowParameterName = queryArrowFunction.substring(queryArrowFunction.indexOf("(") + 1, queryArrowFunction.indexOf(")") - (queryArrowFunction.lastIndexOf("(")));
+            if (filterArrowParameterName !== scopedVariables.tableName) {
+                queryArrowFunction = queryArrowFunction.split(`${filterArrowParameterName}.`).join(`${scopedVariables.tableName}.`);
+            }
             queryScope = queryScope || {};
             scopedVariables.filter.filterExpression = filterExpression;
             scopedVariables.filter.queryScope = queryScope;
             let selectQuery = new query();
-            let filterValues = selectQuery.filter(filterExpression.toString(), queryScope);
+            let filterValues = selectQuery.filter(queryArrowFunction, queryScope);
             scopedVariables.filter.parts = filterValues.nodes;
             scopedVariables.filter.parameters = filterValues.parameters;
             scopedVariables.filter.parameterIndexes = filterValues.parameterIndexes;

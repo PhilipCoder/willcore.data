@@ -1,8 +1,8 @@
 const willCoreProxy = require("../willCoreProxy.js");
 const assert = require('chai').assert;
 
-describe('test-index', function () {
-    it('index', async function () {
+describe('mysql-query-test', function () {
+    it('test-arrow-function-parameter-renaming', async function () {
         let proxyInstance = willCoreProxy.new();
         proxyInstance.jurgDemoDB.mysql = ["127.0.0.1","root","mySQLPassword01"];
         proxyInstance.jurgDemoDB.users.table;
@@ -23,7 +23,7 @@ describe('test-index', function () {
         let newUserB = {name:"doe",email:"bbbb@gmail.com"};
         db.users["+"] = [newUserA,newUserB];
         await db.save();
-        let john = await db.users.filter((users) => users.name === "john")()
+        let john = await db.users.filter((user) => user.name === "john")()
         assert(john.length === 1);
         assert(john[0].name === "john");
 
