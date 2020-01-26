@@ -61,7 +61,7 @@ ___
     [12.1 Via an entity](#12.1-via-an-entity)
     - [Changing the last name of a person with ID 10](#changing-the-last-name-of-a-person-with-id-10)
     - [Changing the year of a person's, with ID 10, first car](#changing-the-year-of-a-persons-with-id-10-first-car)
-    [12.2 Changing data directly](#12.2-changing-data-directly)
+[12.2 Changing data directly](#12.2-changing-data-directly)
     - [Changing record with id 10 directly](#changing-record-with-id-10-directly)
 - [13 Saving queries](#13-saving-queries)
 - [14 Sorting data](#14-sorting-data)
