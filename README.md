@@ -58,8 +58,11 @@ ___
     - [Executing a query](#executing-a-query)
     - [Executing a query inline](#executing-a-query-inline)
 - [12 Updating data](#12-updating-data)
+    [12.1 Via an entity](#12.1-via-an-entity)
     - [Changing the last name of a person with ID 10](#changing-the-last-name-of-a-person-with-id-10)
     - [Changing the year of a person's, with ID 10, first car](#changing-the-year-of-a-persons-with-id-10-first-car)
+    [12.2 Changing data directly](#12.2-changing-data-directly)
+    - [Changing record with id 10 directly](#changing-record-with-id-10-directly)
 - [13 Saving queries](#13-saving-queries)
 - [14 Sorting data](#14-sorting-data)
 - [15 Defining indexes](#15-Defining-indexes)
@@ -601,7 +604,7 @@ let dbResult = await queryDB.person.filter((person) => person.firstName === "Joh
 
 ## 12 Updating data
 
-### Via an entity
+### 12.1 Via an entity
 
 A row record can be updated by simply changing values on a database result and then saving the database.
 
@@ -625,11 +628,11 @@ dbResult[0].cars[0].year = "2001";
 await queryDB.save();
 ```
 
-### Changing data directly
+### 12.2 Changing data directly
 
 Using an entity requires you to first fetch the data, then by changing the properties you can update the values in the database. Values can be assigned directly to a table proxy by setting the ID value on the proxy to an object that contains the columns as properties and values as property values.
 
-#### Changing the last name of a person with ID 10
+#### Changing record with id 10 directly
 
 ```javascript
 let personId = 10;
