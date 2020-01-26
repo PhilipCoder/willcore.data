@@ -33,7 +33,20 @@ const typeMappings = {
         dbType: "int",
         resizeAble: true,
         defaultSize: null
-    }, string: {
+    }, smallInt: {
+        dbType: "smallint",
+        resizeAble: false,
+        defaultSize: null
+    }, tinyInt: {
+        dbType: "tinyint",
+        resizeAble: false,
+        defaultSize: null
+    }, bigInt: {
+        dbType: "bigint",
+        resizeAble: false,
+        defaultSize: null
+    }
+    , string: {
         dbType: "varchar",
         resizeAble: true,
         defaultSize: 256

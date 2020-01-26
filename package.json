@@ -12,7 +12,7 @@
   },
   "name": "willcore.data",
   "description": "```javascript\r //index.server.js\r module.exports = (view, willCore, assignables) => {\r     //Create DB\r     //Create DB\r     willCore.myDB = [assignables.mysql,\"connection string\", \"username\",\"password\"];\r     //Create table\r     willCore.myDB.owners = assignables.dbTable;\r     willCore.myDB.owners.name = assignables.dbString;\r     willCore.myDB.owners.auditDate = assignables.dbDate;\r     //default value\r     willCore.myDB.dogs.auditDate = () => new Date();\r     //Create table\r     willCore.myDB.dogs = assignables.dbTable;;\r     willCore.myDB.dogs.name = assignables.dbString;\r     willCore.myDB.dogs.age = assignables.dbInt;\r     //Foreign key (one)\r     willCore.myDB.dogs.owner = willCore.myDB.owners;\r     //Foreign key (many)\r     willCore.myDB.dogs[\"*owners\"] = willCore.myDB.owners;\r     //Updates the db\r     await willCore.myDB();",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "main": "willCoreProxy.js",
   "directories": {
     "test": "test"

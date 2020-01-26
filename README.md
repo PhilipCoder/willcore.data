@@ -182,6 +182,9 @@ dbContainerProxy.testDB.users.id.column.int;
 | Column Assignable Data Type | MySQL Data Type | Default Size |
 | --------------------------- | --------------- | ------------ |
 | int                         | int             | -            |
+| smallInt                    | smallInt        | -            |
+| tinyInt                     | tinyInt         | -            |
+| bigInt                      | bigInt          | -            |
 | string                      | varchar         | 256          |
 | nstring                     | nvarchar        | 256          |
 | decimal                     | decimal         | 20, 7        |
@@ -598,6 +601,8 @@ let dbResult = await queryDB.person.filter((person) => person.firstName === "Joh
 
 ## 12 Updating data
 
+### Via an entity
+
 A row record can be updated by simply changing values on a database result and then saving the database.
 
 #### Changing the last name of a person with ID 10
@@ -616,6 +621,20 @@ await queryDB.save();
 let personId = 10;
 let dbResult = await queryDB.person.filter((person) => person.id === personId,{ personId: personId })();
 dbResult[0].cars[0].year = "2001";
+//Persist the changes to the database
+await queryDB.save();
+```
+
+### Changing data directly
+
+Using an entity requires you to first fetch the data, then by changing the properties you can update the values in the database. Values can be assigned directly to a table proxy by setting the ID value on the proxy to an object that contains the columns as properties and values as property values.
+
+#### Changing the last name of a person with ID 10
+
+```javascript
+let personId = 10;
+//Updates the first name value to "John" and last name value to "Doe"
+queryDB.person[personId] = {lastName:"Doe", firstName:"John"};
 //Persist the changes to the database
 await queryDB.save();
 ```

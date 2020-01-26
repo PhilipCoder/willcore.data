@@ -12,7 +12,7 @@ class mysqlProxyHandler extends assignableProxyHandler {
     this.getTraps.unshift(this.getDBStructure);
   }
 
-  getDBStructure(target, property, proxy){
+  getDBStructure(target, property, proxy) {
     if (property === "getStructure") {
       let structureFunction = async function () {
         return await dbInfoQuery.getDBInfo(proxy._mysqlAssignable);
@@ -23,8 +23,8 @@ class mysqlProxyHandler extends assignableProxyHandler {
     return { value: false, status: false };
   }
 
-  getTableCopy(target, property, proxy){
-    if (target[property]){
+  getTableCopy(target, property, proxy) {
+    if (target[property]) {
       let result = target[property].getCopy();
       let dbTableAssignable = new target[property]._dbTableAssignable.constructor();
       dbTableAssignable.tableInfo = target[property]._dbTableAssignable.tableInfo;
@@ -61,21 +61,21 @@ class mysqlProxyHandler extends assignableProxyHandler {
 
   getQueryDB(target, property, proxy) {
     if (property === "queryDB") {
-      if (!proxy._mysqlAssignable.dbInfo.instantiated){
-        throw "Unable to retrieve the queryDB. Database should first be instantiated via the init() command().";
-      }
-      let handler = new mysqlProxyHandler();
-      for (let key in this.hiddenVariables) {
-        handler.hiddenVariables[key] = this.hiddenVariables[key];
-      }
-      let mysqlAssignable ={};
-      mysqlAssignable.queryExecutor = this.hiddenVariables._mysqlAssignable.queryExecutor;
-      mysqlAssignable.dbInfo = this.hiddenVariables._mysqlAssignable.dbInfo;
-      mysqlAssignable.dbGenerator = this.hiddenVariables._mysqlAssignable.dbGenerator;
-      mysqlAssignable.contextStateManager = new contextStateManager(this.hiddenVariables._mysqlAssignable.queryExecutor);
-      handler.hiddenVariables._mysqlAssignable = mysqlAssignable;
-      let result = new Proxy(target, handler);
-      return { value: result, status: true };
+        if (!proxy._mysqlAssignable.dbInfo.instantiated) {
+          throw "Unable to retrieve the queryDB. Database should first be instantiated via the init() command().";
+        }
+        let handler = new mysqlProxyHandler();
+        for (let key in this.hiddenVariables) {
+          handler.hiddenVariables[key] = this.hiddenVariables[key];
+        }
+        let mysqlAssignable = {};
+        mysqlAssignable.queryExecutor = this.hiddenVariables._mysqlAssignable.queryExecutor;
+        mysqlAssignable.dbInfo = this.hiddenVariables._mysqlAssignable.dbInfo;
+        mysqlAssignable.dbGenerator = this.hiddenVariables._mysqlAssignable.dbGenerator;
+        mysqlAssignable.contextStateManager = new contextStateManager(this.hiddenVariables._mysqlAssignable.queryExecutor);
+        handler.hiddenVariables._mysqlAssignable = mysqlAssignable;
+        let result = new Proxy(target, handler);
+        return { value: result, status: true };
     }
     return { value: false, status: false };
   }
