@@ -7,7 +7,7 @@ const proxyMapper = require("../proxies/entities/proxyMapper.js");
 describe('mysql-context-state-manager-tests', function () {
     migrationSetup.migrationTablesEnabled = false;
     it('test-add-row', function () {
-        let manager = new contextStateManager();
+        let manager = new contextStateManager(null, "mySQL");
         assert(manager.operations.isEmpty(), "Queue should be empty.");
         manager.addRow("person", { name: "John", surname: "Doe", age: 47 });
         assert(manager.operations.isEmpty() === false, "Queue should contain items.");
@@ -17,7 +17,7 @@ describe('mysql-context-state-manager-tests', function () {
         assert(queryObj.parameter.name === "John", "Wrong query parameter returned.");
     });
     it('test-update-row', function () {
-        let manager = new contextStateManager();
+        let manager = new contextStateManager(null, "mySQL");
         assert(manager.operations.isEmpty(), "Queue should be empty.");
         manager.updateField("person", {name:"Johnny"}, "id", 32);
         assert(manager.operations.isEmpty() === false, "Queue should contain items.");
@@ -28,7 +28,7 @@ describe('mysql-context-state-manager-tests', function () {
         assert(queryObj.parameter[1] === 32, "Wrong query parameter returned.");
     });
     it('test-delete-row', function () {
-        let manager = new contextStateManager();
+        let manager = new contextStateManager(null, "mySQL");
         assert(manager.operations.isEmpty(), "Queue should be empty.");
         manager.deleteRow("person", "id", 32);
         assert(manager.operations.isEmpty() === false, "Queue should contain items.");

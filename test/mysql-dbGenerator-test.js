@@ -3,7 +3,7 @@ const rewiremock = require('rewiremock/node');
 const mocks = require("./mocks/dbGenerator-mocks.js");
 const status = require("../sqlGeneration/migration/statusEnum.js");
 const sqlResults = require("./mocks/sqlResults.js");
-const db = require("../sqlGeneration/components/db.js");
+const db = require("../sqlGeneration/components/mysql/db.js");
 const migrationSetup = require("../assignables/mysql/setup/dbMigrationSetup.js");
 const runQuery = require("../sqlExecutor/runQuery.js");
 describe('mysql-dbGenerator-test', function () {

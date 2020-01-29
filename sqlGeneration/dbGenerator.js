@@ -1,5 +1,4 @@
 const migrationComparitor = require("./migration/migrationComparitor.js");
-const db = require("./components/db.js");
 const dbStatus = require("../sqlGeneration/migration/statusEnum.js");
 const migrationSetup = require("../assignables/mysql/setup/dbMigrationSetup.js");
 /**
@@ -55,6 +54,8 @@ class dbGenerator {
 
     /** Gets the database generation SQL */
     get sql() {
+        let dbType = this._proxy ? this._proxy._mysqlAssignable.type : "mySQL";
+        let db = require(`./components/${dbType}/db.js`);
         return new db(this.comparisonTarget, this.comparisonSource, this._dropDB).getSQL();
     }
 

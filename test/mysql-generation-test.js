@@ -1,8 +1,8 @@
 const assert = require('chai').assert;
 const willCoreProxy = require("../willCoreProxy.js");
-const db = require("../sqlGeneration/components/db.js");
-const table = require("../sqlGeneration/components/table.js");
-const column = require("../sqlGeneration/components/column.js");
+const db = require("../sqlGeneration/components/mysql/db.js");
+const table = require("../sqlGeneration/components/mysql/table.js");
+const column = require("../sqlGeneration/components/mysql/column.js");
 const migrationSetup = require("../assignables/mysql/setup/dbMigrationSetup.js");
 
 describe('mysql-generation-test', function () {

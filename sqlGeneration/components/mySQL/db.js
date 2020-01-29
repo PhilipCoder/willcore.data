@@ -1,6 +1,6 @@
 const keywords = require("./mySQLConstants.js").keywords;
 const table = require("./table.js");
-const status = require("../migration/statusEnum.js");
+const status = require("../../migration/statusEnum.js");
 
 class db {
     constructor(dbInfo, sourceDBInfo, dropDB) {

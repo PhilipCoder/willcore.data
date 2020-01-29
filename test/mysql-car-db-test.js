@@ -176,5 +176,4 @@ describe('mysql-car-db-test', function () {
 
         mazdaCars.forEach(x=>assert(x.make[0].name === "Mazda","Saved query returned wrong make."));
     });
-   
 });

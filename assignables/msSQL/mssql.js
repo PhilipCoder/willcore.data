@@ -4,10 +4,10 @@ const mysqlProxy = require("./db/mysqlProxy.js");
 const dbMigrationSetup = require("./setup/dbMigrationSetup.js");
 const dbGenerator = require("../../sqlGeneration/dbGenerator.js");
 const queryExecutor = require("../../sqlExecutor/runQuery.js");
-class mysql extends assignable {
+class mssql extends assignable {
     constructor() {
         super({ string: 3 }, willCoreProxy);
-        this.type = "mySQL"
+        this.type = "msSQL"
         this.dbInfo = {
             name: null,
             connectionString: null,
@@ -41,4 +41,4 @@ class mysql extends assignable {
     }
 }
 
-module.exports = mysql;
+module.exports = mssql;

@@ -1,6 +1,6 @@
 const keywords = require("./mySQLConstants.js").keywords;
 const typeMappings =require("./mySQLConstants.js").typeMappings;
-const status = require("../migration/statusEnum.js");
+const status = require("../../migration/statusEnum.js");
 
 class column {
     constructor(columnInfo){

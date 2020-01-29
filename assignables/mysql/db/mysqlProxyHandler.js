@@ -72,7 +72,7 @@ class mysqlProxyHandler extends assignableProxyHandler {
         mysqlAssignable.queryExecutor = this.hiddenVariables._mysqlAssignable.queryExecutor;
         mysqlAssignable.dbInfo = this.hiddenVariables._mysqlAssignable.dbInfo;
         mysqlAssignable.dbGenerator = this.hiddenVariables._mysqlAssignable.dbGenerator;
-        mysqlAssignable.contextStateManager = new contextStateManager(this.hiddenVariables._mysqlAssignable.queryExecutor);
+        mysqlAssignable.contextStateManager = new contextStateManager(this.hiddenVariables._mysqlAssignable.queryExecutor,this.hiddenVariables._mysqlAssignable.type);
         handler.hiddenVariables._mysqlAssignable = mysqlAssignable;
         let result = new Proxy(target, handler);
         return { value: result, status: true };

@@ -36,7 +36,7 @@ class assignable {
      * @param {string} propertyName 
      */
     canAssign(parentProxy, propertyName) {
-        if (parentProxy instanceof this.targetAssignableProxy){
+        if ((Array.isArray(this.targetAssignableProxy) && this.targetAssignableProxy.filter(type => parentProxy instanceof type).length > 0) || parentProxy instanceof this.targetAssignableProxy){
             this.propertyName = propertyName;
             this.parentProxy = parentProxy;
             return true;
