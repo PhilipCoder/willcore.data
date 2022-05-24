@@ -78,6 +78,7 @@ class queryFactory {
          * Adds a select clause to a SQL query.
         */
         queryable.select = function (selectFunc) {
+            if (typeof selectFunc === "string") selectFunc = eval(selectFunc);
             scopedVariables.select.selectObj = selectFunc;
             scopedVariables.select.selectParts = scopedVariables.select.selectParts || {};
             let selectObj = selectFunc(chainableProxy.new(scopedVariables.tableName));
@@ -91,6 +92,7 @@ class queryFactory {
          * Adds a table to the result of a query.
          */
         queryable.include = function (tableLinkedProxy) {
+            if (typeof tableLinkedProxy === "string") tableLinkedProxy = eval(tableLinkedProxy);
             if (typeof tableLinkedProxy !== "function") throw "Queryable include function expected a parameter of type function.";
             let proxyChain = chainableProxy.new(scopedVariables.tableName);
             let names = tableLinkedProxy(proxyChain)._name;
